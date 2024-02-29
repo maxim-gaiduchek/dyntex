@@ -29,7 +29,7 @@ def index():
     Returns:
         Response: A JSON response containing a greeting message.
     """
-    return jsonify({"response": "hello"})
+    return jsonify({"response": "hello 2"})
 
 if __name__ == '__main__':
     app.run(debug=True)
