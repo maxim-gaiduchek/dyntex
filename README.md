@@ -24,10 +24,8 @@ The "Building and Organizing a Database of Dynamic Textures" project aims to mod
 
 1. **Data Collection and Creation** - Acquiring and creating a comprehensive collection of dynamic textures.
 2. **Categorization and Typing** - Systematically organizing textures into categories by type.
-3. **Metrics and Analysis** - Developing and applying metrics to quantify texture properties.
-4. **Interface Development** - Creating an intuitive user interface for easy access and data manipulation.
-5. **Integration and Compatibility** - Ensuring easy integration with existing tools and platforms.
-6. **Openness and Scalability** - Supporting community contributions and modular development for future expansion.
+3. **Interface Development** - Creating an intuitive user interface for easy access and data manipulation.
+4. **Openness and Scalability** - Supporting community contributions and modular development for future expansion.
 
 ### Website Features for Dynamic Textures
 
