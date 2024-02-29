@@ -5,13 +5,11 @@ pytest:
   stage: test
   image: python:latest
   before_script:
-    - pip install -r requirements.txt
+    - pip install -r python/requirements.txt
   script:
     - cd python
     - pytest
   only:
-    changes:
-      - "/python/**/*"
     refs:
       - develop
 
