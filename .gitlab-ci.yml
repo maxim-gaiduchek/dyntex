@@ -10,8 +10,6 @@ pytest:
     - cd python
     - pytest
   only:
-    changes:
-      - "/python/**/*"
     refs:
       - develop
 
