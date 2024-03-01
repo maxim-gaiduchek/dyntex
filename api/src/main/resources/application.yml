@@ -1,1 +1,13 @@
-
+postgres-autostart:
+  enabled: true
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/dyntex-db
+    username: postgres
+    password: postgres
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: update
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
