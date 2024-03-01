@@ -14,7 +14,6 @@
         - [Docker Container with Spring Boot](#docker-container-with-spring-boot)
         - [Python Microservice for Image Processing](#python-microservice-for-image-processing)
         - [Database Container (PostgreSQL)](#database-container-postgresql)
-    - [Communication Flow](#communication-flow)
     - [Scalability and Maintainability](#scalability-and-maintainability)
 
 ## Project: Building and Organizing a Database of Dynamic Textures (BI-SP1.21)
@@ -34,10 +33,6 @@ The website for dynamic textures will offer a range of advanced features for use
 - **Browsing and Searching** - Users will be able to browse the database of textures, filtering them by category, type, or used metrics.
 - **Preview and Download** - The ability to play texture previews directly on the website and download textures for use in their own projects.
 - **Applying Masks to Textures** - Allows users to apply various masks to textures to create unique effects.
-- **Texture Generation** - Features for generating new textures based on user specifications or through AI.
-- **Texture Analysis** - Users will be able to analyze textures using available metrics to gain insights into their properties.
-- **Interactive Tutorials** - Educational materials and examples of using textures in application and game development.
-- **Community Forum** - A space for discussion, sharing ideas, and collaborating on projects involving dynamic textures.
 
 This project delivers a modern solution for working with dynamic textures that will find application across a broad range of areas, from computer graphics to augmented reality.
 
