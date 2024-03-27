@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import '@mantine/core/styles.css';
+import MainPage from './Components/Pages/MainPage';
+import SecondaryPage from './Components/Pages/SecondaryPage';
+import NotFound from './Components/Pages/NotFound';
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <MainPage/>,
+  },
+  {
+    path: "/secondary",
+    element: <SecondaryPage/>
+  },
+  {
+    path: "*",
+    element: <NotFound/>
+  }
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router} />  
   );
 }
 

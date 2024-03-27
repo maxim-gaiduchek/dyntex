@@ -3,11 +3,20 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createTheme, MantineProvider } from '@mantine/core';
+
+
+const theme = createTheme({
+  autoContrast: true,
+  luminanceThreshold: 0.3,
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <MantineProvider theme={theme}>
+      <App />
+    </MantineProvider>
   </React.StrictMode>
 );
 
