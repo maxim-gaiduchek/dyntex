@@ -40,10 +40,12 @@ export default function TextureCard(props) {
         <Text fz="sm" mt="xs">
           {description}
         </Text>
-      </Card.Section>
-
-      <Card.Section className={classes.section}>
-        <Text mt="md" className={classes.label} c="dimmed">
+        <Text size={"xs"} c="dimmed" fz="sm" mt="xs">
+          Size: 12KB
+          <br/>
+          Framerate: 60fps
+        </Text>
+        <Text mt="md" className={classes.label}>
           This texture is part of these categories:
         </Text>
         <Group gap={7} mt={5}>
@@ -52,9 +54,11 @@ export default function TextureCard(props) {
       </Card.Section>
 
       <Group mt="xs">
-        <Button radius="md" style={{ flex: 1 }}>
-          Show details
-        </Button>
+        <Link to="/media/asdsds" style={{ flex: 1 }}>
+          <Button radius="md" style={{width: "100%"}}>
+            Show details
+          </Button>
+        </Link>
         <ActionIcon
         onClick={() =>
           notifications.show({

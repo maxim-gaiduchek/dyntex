@@ -18,7 +18,7 @@ const textures = [
     },
     {
       image: "https://img.freepik.com/free-photo/grass-texture-background_64049-124.jpg",
-      title: "weed",
+      title: "Weed",
       country: "idk",
       description: "Cool grass texture =)))",
       badges: [
