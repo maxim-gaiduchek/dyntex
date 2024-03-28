@@ -1,9 +1,10 @@
 import { IconHeart } from '@tabler/icons-react';
 import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
 import classes from './BadgeCard.module.css';
+import { notifications } from '@mantine/notifications';
 
 export default function TextureCard(props) {
-  const { image, title, description, country, badges } = props.texture;
+  const { image, title, description, badges } = props.texture;
   const features = badges.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
       {badge.label}
@@ -44,7 +45,15 @@ export default function TextureCard(props) {
         <Button radius="md" style={{ flex: 1 }}>
           Show details
         </Button>
-        <ActionIcon variant="default" radius="md" size={36}>
+        <ActionIcon
+        onClick={() =>
+          notifications.show({
+            title: 'Texture added',
+            message: 'Texture has been added to favourites! ⭐',
+            color: "green"
+          })
+        }
+        variant="default" radius="md" size={36}>
           <IconHeart className={classes.like} stroke={1.5} />
         </ActionIcon>
       </Group>

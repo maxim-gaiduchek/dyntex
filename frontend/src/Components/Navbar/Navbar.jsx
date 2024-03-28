@@ -11,6 +11,8 @@ import {
 import { LinksGroup } from './NavbarLinksGroup';
 import classes from './NavbarNested.module.css';
 import { UserButton } from './UserButton';
+import { Link } from 'react-router-dom';
+import ColorSwitch from './ColorSwitch';
 
 const mockdata = [
   { label: 'Dashboard', icon: IconGauge, link: "/" },
@@ -52,6 +54,7 @@ const mockdata = [
 ];
 
 export function NavbarNested() {
+
   const links = mockdata.map((item) => <LinksGroup {...item} key={item.label} />);
   return (
     
@@ -60,7 +63,7 @@ export function NavbarNested() {
         <Group justify="space-between">
           Dyntex
           {/* <Logo style={{ width: rem(120) }} /> */}
-          <Code fw={700}>v0.0.1</Code>
+          <ColorSwitch/>
         </Group>
       </div> 
 
@@ -69,7 +72,9 @@ export function NavbarNested() {
       </ScrollArea>
 
       <div className={classes.footer}>
-        <UserButton />
+        <Link to={"/account"}>
+          <UserButton />
+        </Link>
       </div>
     </nav>
   );

@@ -2,6 +2,7 @@ import '@mantine/core/styles.css';
 import MainPage from './Components/Pages/MainPage';
 import SecondaryPage from './Components/Pages/SecondaryPage';
 import NotFound from './Components/Pages/NotFound';
+import Account from './Components/Pages/Account';
 
 import {
   createBrowserRouter,
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <NotFound/>
+  },
+  {
+    path: "/account",
+    element: <Account/>
   }
 ]);
 

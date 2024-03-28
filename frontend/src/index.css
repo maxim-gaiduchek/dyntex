@@ -22,3 +22,6 @@ a{
   text-decoration: none !important;
   color: inherit;
 }
+.mantine-Grid-root{
+  --grid-margin: calc(var(--grid-gutter) / -2) calc(var(--grid-gutter) / -2) 0 calc(var(--grid-gutter) / -2) !important;
+}
