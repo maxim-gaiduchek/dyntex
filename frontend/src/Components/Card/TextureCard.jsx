@@ -1,7 +1,9 @@
 import { IconHeart } from '@tabler/icons-react';
-import { Card, Image, Text, Group, Badge, Button, ActionIcon } from '@mantine/core';
+import { Card, Image, Text, Group, Badge, Button, ActionIcon, HoverCard } from '@mantine/core';
 import classes from './BadgeCard.module.css';
 import { notifications } from '@mantine/notifications';
+import { Link } from 'react-router-dom';
+import AccountPreview from './AccountPreview';
 
 export default function TextureCard(props) {
   const { image, title, description, badges } = props.texture;
@@ -20,13 +22,21 @@ export default function TextureCard(props) {
       <Card.Section className={classes.section} mt="md">
         <Group justify="apart">
           <Text fz="lg" fw={500}>
-            {title}
+            <Link to="/media/dads">{title}</Link>
           </Text>
           <Badge size="sm" variant="light">
             {/* {country} */}
-            new
+            Texture
           </Badge>
         </Group>
+        <HoverCard width={280} openDelay={300} shadow="md">
+          <HoverCard.Target>
+            <span className={classes.accountLink}>Added by: <Link to="/account/asd">Kvoza Onkay</Link></span>
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <AccountPreview/>
+          </HoverCard.Dropdown>
+        </HoverCard>
         <Text fz="sm" mt="xs">
           {description}
         </Text>
