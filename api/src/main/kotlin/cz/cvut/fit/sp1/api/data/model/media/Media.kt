@@ -1,5 +1,6 @@
 package cz.cvut.fit.sp1.api.data.model.media
 
+import cz.cvut.fit.sp1.api.data.model.Tag
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import jakarta.persistence.*
@@ -21,4 +22,7 @@ open class Media(
 
     @ManyToOne
     open var createdBy: UserAccount? = null
+
+    @ManyToMany(mappedBy = "media")
+    open var tags: MutableList<Tag> = mutableListOf()
 }
