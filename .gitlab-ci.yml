@@ -39,7 +39,7 @@ backend-build:
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
-    - gradlew jar
+    - ./gradlew jar
   artifacts:
     paths:
       - build/libs/*.jar
