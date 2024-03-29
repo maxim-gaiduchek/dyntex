@@ -5,6 +5,7 @@ stages:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  API_PROJECT_PATH: "/builds/stojkiva/sp1/api"
 
 before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
@@ -18,13 +19,14 @@ backend-compile:
   stage: compile
   image: openjdk:21-jdk
   script:
-    - ./api/gradlew assemble
+    - $API_PROJECT_PATH/gradlew assemble
+    - ls
 
 backend-test:
   stage: test
   image: openjdk:21-jdk
   script:
-    - ./api/gradlew test --stacktrace --info
+    - .$API_PROJECT_PATH/gradlew test --stacktrace --info
   artifacts:
     paths:
       - test.log
@@ -34,7 +36,7 @@ backend-build:
   stage: build
   image: openjdk:21-jdk
   script:
-    - ./api/gradlew jar
+    - $API_PROJECT_PATH/gradlew jar
   artifacts:
     paths:
       - build/libs/*.jar
