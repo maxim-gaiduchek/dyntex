@@ -22,4 +22,7 @@ class UserAccount(
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     var createdMedia: MutableList<Media> = mutableListOf()
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    var createdTags: MutableList<Tag> = mutableListOf()
 }
