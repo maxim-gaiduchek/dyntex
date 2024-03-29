@@ -1,5 +1,44 @@
 stages:
+  - compile
   - test
+  - build
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+backend-compile:
+  stage: compile
+  image: openjdk:21-jdk
+  script:
+    - ./api/gradlew assemble
+
+backend-test:
+  stage: test
+  image: openjdk:21-jdk
+  script:
+    - ./api/gradlew test --stacktrace --info
+  artifacts:
+    paths:
+      - test.log
+    expire_in: 1 day
+
+backend-build:
+  stage: build
+  image: openjdk:21-jdk
+  script:
+    - ./api/gradlew jar
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
 
 pytest:
   stage: test
