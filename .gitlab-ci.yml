@@ -5,7 +5,7 @@ stages:
 
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-  API_PROJECT_PATH: "api"
+  API_PROJECT_PATH: "api/"
   IMAGE: "eclipse-temurin:21-alpine"
 
 before_script:
@@ -20,15 +20,15 @@ backend-compile:
   stage: compile
   image: $IMAGE
   script:
-    - cd api
-    - $API_PROJECT_PATH/gradlew assemble
+    - cd $API_PROJECT_PATH
+    - gradlew assemble
 
 backend-test:
   stage: test
   image: $IMAGE
   script:
-    - cd api
-    - .$API_PROJECT_PATH/gradlew test --stacktrace --info
+    - cd $API_PROJECT_PATH
+    - gradlew test --stacktrace --info
   artifacts:
     paths:
       - test.log
@@ -38,8 +38,8 @@ backend-build:
   stage: build
   image: $IMAGE
   script:
-    - cd api
-    - $API_PROJECT_PATH/gradlew jar
+    - cd $API_PROJECT_PATH
+    - gradlew jar
   artifacts:
     paths:
       - build/libs/*.jar
