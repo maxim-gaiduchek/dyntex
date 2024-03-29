@@ -21,14 +21,14 @@ backend-compile:
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
-    - gradlew assemble
+    - ./gradlew assemble
 
 backend-test:
   stage: test
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
-    - gradlew test --stacktrace --info
+    - ./gradlew test --stacktrace --info
   artifacts:
     paths:
       - test.log
