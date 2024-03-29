@@ -19,8 +19,8 @@ backend-compile:
   stage: compile
   image: openjdk:21-jdk
   script:
-    - $API_PROJECT_PATH/gradlew assemble
     - ls
+    - $API_PROJECT_PATH/gradlew assemble
 
 backend-test:
   stage: test
