@@ -5,6 +5,7 @@ import SecondaryPage from './Components/Pages/SecondaryPage';
 import NotFound from './Components/Pages/NotFound';
 import Account from './Components/Pages/Account';
 import LoginPage from './Components/Login/LoginPage';
+import RegistrationPage from './Components/Login/RegistrationPage';
 
 import {
   createBrowserRouter,
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage/>
+  },
+  {
+    path: "/register",
+    element: <RegistrationPage/>
   },
   {
     path: "*",
