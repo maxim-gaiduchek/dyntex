@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.component
 
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import org.springframework.web.multipart.MultipartFile
 import java.text.SimpleDateFormat
 import java.util.*
@@ -13,7 +13,7 @@ class MediaProcessor(
         val basePath = "${System.getProperty("user.home")}/sp1/storage" // TODO need to create configuration with setters on path
     }
 
-    fun extractVideoInfo(): VideoDto {
+    fun extractVideoInfo(): Video {
         val name = generateFileName()
         val extension = determineFileType(media)
         val filePath = "$basePath/$name.$extension"
@@ -22,14 +22,10 @@ class MediaProcessor(
 
         // nado poprosit vanu ctoby on na pythone napisal script kotory by dostal ese info iz file
 
-        return VideoDto(
+        return Video(
             name = name,
-            fps = null,
-            width = null,
-            height = null,
             path = filePath,
-            extension = extension,
-            duration = null,
+            format = extension,
         )
     }
 
