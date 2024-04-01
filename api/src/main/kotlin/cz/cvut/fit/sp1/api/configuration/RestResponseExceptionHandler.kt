@@ -1,6 +1,10 @@
 package cz.cvut.fit.sp1.api.configuration
 
-import cz.cvut.fit.sp1.api.exception.*
+import cz.cvut.fit.sp1.api.exception.AbstractException
+import cz.cvut.fit.sp1.api.exception.AccessDeniedException
+import cz.cvut.fit.sp1.api.exception.AuthorizationException
+import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
+import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
