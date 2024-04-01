@@ -8,5 +8,5 @@ import org.mapstruct.Mapper
 interface TagMapper {
     fun toDto(tag: Tag): TagDto
 
-    fun toBean(tagDto: TagDto): Tag
+    fun toEntity(tagDto: TagDto): Tag
 }

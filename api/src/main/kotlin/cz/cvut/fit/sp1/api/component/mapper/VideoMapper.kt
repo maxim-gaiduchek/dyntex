@@ -10,5 +10,5 @@ interface VideoMapper {
     @InheritInverseConfiguration
     fun toDto(video: Video): VideoDto
 
-    fun toBean(videoDto: VideoDto): Video
+    fun toEntity(videoDto: VideoDto): Video
 }

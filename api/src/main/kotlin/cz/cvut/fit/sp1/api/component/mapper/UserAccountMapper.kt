@@ -8,5 +8,5 @@ import org.mapstruct.Mapper
 interface UserAccountMapper {
     fun toDto(userAccount: UserAccount): UserAccountDto
 
-    fun toBean(userAccountDto: UserAccountDto): UserAccount
+    fun toEntity(userAccountDto: UserAccountDto): UserAccount
 }

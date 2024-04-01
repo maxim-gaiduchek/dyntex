@@ -8,5 +8,5 @@ import org.mapstruct.Mapper
 interface MediaMapper {
     fun toDto(media: Media): MediaDto
 
-    fun toBean(mediaDto: MediaDto): Media
+    fun toEntity(mediaDto: MediaDto): Media
 }

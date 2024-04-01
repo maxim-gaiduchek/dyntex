@@ -10,5 +10,5 @@ interface MaskMapper {
     @InheritInverseConfiguration
     fun toDto(mask: Mask): MaskDto
 
-    fun toBean(maskDto: MaskDto): Mask
+    fun toEntity(maskDto: MaskDto): Mask
 }
