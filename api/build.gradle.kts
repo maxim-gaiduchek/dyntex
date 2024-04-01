@@ -42,6 +42,11 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2:2.2.222")
+
+    /*
+     * Auto dto mapper
+     * */
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
 }
 
 tasks.withType<KotlinCompile> {
