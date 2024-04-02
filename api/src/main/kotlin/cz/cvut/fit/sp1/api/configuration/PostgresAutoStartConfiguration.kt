@@ -11,7 +11,7 @@ import javax.sql.DataSource
 @Configuration
 @ConditionalOnProperty(name = ["postgres-autostart.enabled"], havingValue = "true")
 class PostgresAutoStartConfiguration(
-    val postgresAutoStartProperties: PostgresAutoStartProperties,
+        val postgresAutoStartProperties: PostgresAutoStartProperties,
 ) {
 
     private var dataSource: DataSource? = null
