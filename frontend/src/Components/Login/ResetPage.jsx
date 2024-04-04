@@ -1,7 +1,5 @@
 import {
     TextInput,
-    PasswordInput,
-    Checkbox,
     Anchor,
     Paper,
     Title,
@@ -16,10 +14,9 @@ import {
   import React from 'react';
   import { notifications } from '@mantine/notifications';
 
-  export default function LoginPage() {
+  export default function ResetPage() {
     const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [error, setError] = React.useState([false, false])
+    const [error, setError] = React.useState([false])
 
     const checkEmail = (event) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,14 +29,10 @@ import {
         setEmail(text);
     }
 
-    const checkPassword = (event) => {
-        setPassword(event.target.value)
-    }
-
     const login = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
-        if(password.trim() === "" || !emailRegex.test(email)){
+        if(!emailRegex.test(email)){
             notifications.show({
                 title: 'Invalid input',
                 color: 'red',
@@ -62,7 +55,7 @@ import {
     return (
       <Container size={420} my={40}>
         <Title ta="center" className={classes.title}>
-          Welcome back!
+          Password Recovery
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           Do not have an account yet?{' '}
@@ -73,14 +66,9 @@ import {
   
         <Paper withBorder shadow="md" p={30} mt={30} radius="md">
           <TextInput label="Email" error={error[0]} value={email} onChange={checkEmail} placeholder="you@example.com" required />
-          <PasswordInput label="Password" error={error[1]} value={password} onChange={checkPassword} placeholder="Your password" required mt="md" />
-          <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
-            <Anchor component="button" size="sm">
-              <Link to="/reset">Forgot password?</Link>
-            </Anchor>
+          <Group justify="space-between">
           </Group>
-          <Button onClick={login} disabled={(email === "" || password === "") ? true : error[0] || error[1]} fullWidth mt="xl">
+          <Button onClick={login} disabled={(email === "") ? true : error[0]} fullWidth mt="xl">
             Sign in
           </Button>
         </Paper>

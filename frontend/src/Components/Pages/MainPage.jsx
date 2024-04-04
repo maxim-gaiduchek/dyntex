@@ -2,10 +2,12 @@ import TextureCard from '../Card/TextureCard'
 import { Grid } from '@mantine/core'
 import { Pagination } from '@mantine/core';
 import { Center, Group } from '@mantine/core';
-import { SegmentedControl } from '@mantine/core';
+import { SegmentedControl, Modal, Button } from '@mantine/core';
 import React from 'react';
+import { useDisclosure } from '@mantine/hooks';
 
 import CategorySearch from '../Textures/CategorySearch';
+import DropZone from '../Textures/DropZone';
 const textures = [
     {
       image: "https://img.freepik.com/free-photo/relief-texture-brown-bark-tree-close-up_158595-6482.jpg",
@@ -56,10 +58,20 @@ const textures = [
 export default function MainPage(){
 
     const [value, setValue] = React.useState("All")
-    
+    const [opened, { open, close }] = useDisclosure(false);
+
     return (
         <>
           <h2>DYNTEX))</h2>
+          <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+            <DropZone/>
+          </Modal>
+          <Group justify='right'>
+            <Grid style={{paddingRight: 10}}>
+              <Button onClick={open}>Add Texture</Button>
+            </Grid>
+          </Group>
+          <br/>
           <Group justify="space-between" grow>
             <CategorySearch/>
             <SegmentedControl onChange={setValue} value={value} data={['All', 'Texture', 'Mask']} />

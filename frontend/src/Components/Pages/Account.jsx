@@ -54,11 +54,10 @@ export default function Account(){
     
     return (
         <>
-          <h2>User account</h2>
           <Grid>
               <Grid.Col span={3}>
                   <div className='avatar' style={{
-                      aspectRatio: "1/1", 
+                      aspectRatio: "1/1",
                       width: "100%", 
                       backgroundColor: "red",
                       backgroundImage: "url(https://avatars.githubusercontent.com/u/58140020?v=4)",
@@ -67,7 +66,11 @@ export default function Account(){
                       marginBottom: 20
                   }}>
                   </div>
-                  <Button radius={"md"} fullWidth>Edit Profile</Button>
+                  <Title order={3}>Kvoza Onkay</Title>
+                  <Text c="dimmed" size="xs">stojkiva@fit.cvut.cz</Text>
+                  Role: Admin <br/>
+                  Textures: 5
+                  <br/>
               </Grid.Col>
               <Grid.Col span={9}>
                   <Title order={3}>Kvoza Onkay</Title>

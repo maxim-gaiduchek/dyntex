@@ -6,6 +6,8 @@ import NotFound from './Components/Pages/NotFound';
 import Account from './Components/Pages/Account';
 import LoginPage from './Components/Login/LoginPage';
 import RegistrationPage from './Components/Login/RegistrationPage';
+import ResetPage from './Components/Login/ResetPage';
+import '@mantine/dropzone/styles.css';
 
 import {
   createBrowserRouter,
@@ -32,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <RegistrationPage/>
+  },
+  {
+    path: "/reset",
+    element: <ResetPage/>
   },
   {
     path: "*",
