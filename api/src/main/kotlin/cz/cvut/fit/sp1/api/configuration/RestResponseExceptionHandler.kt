@@ -1,10 +1,6 @@
 package cz.cvut.fit.sp1.api.configuration
 
-import cz.cvut.fit.sp1.api.exception.AbstractException
-import cz.cvut.fit.sp1.api.exception.AccessDeniedException
-import cz.cvut.fit.sp1.api.exception.AuthorizationException
-import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
-import cz.cvut.fit.sp1.api.exception.ValidationException
+import cz.cvut.fit.sp1.api.exception.*
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -57,6 +53,18 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
     protected fun exceptionHandler(exception: AuthorizationException): ResponseEntity<Any> {
         val body = getResponse(HttpStatus.UNAUTHORIZED, exception)
         return ResponseEntity(body, HttpHeaders(), HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(MediaFileIsNotMaskException::class)
+    protected fun exceptionHandler(exception: MediaFileIsNotMaskException): ResponseEntity<Any> {
+        val body = getResponse(HttpStatus.NOT_ACCEPTABLE, exception)
+        return ResponseEntity(body, HttpHeaders(), HttpStatus.NOT_ACCEPTABLE)
+    }
+
+    @ExceptionHandler(MediaFileIsNotVideoException::class)
+    protected fun exceptionHandler(exception: MediaFileIsNotVideoException): ResponseEntity<Any> {
+        val body = getResponse(HttpStatus.NOT_ACCEPTABLE, exception)
+        return ResponseEntity(body, HttpHeaders(), HttpStatus.NOT_ACCEPTABLE)
     }
 
     override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException,
