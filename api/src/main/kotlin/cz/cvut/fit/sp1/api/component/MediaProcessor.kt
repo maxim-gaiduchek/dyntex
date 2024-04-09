@@ -4,7 +4,9 @@ import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.exception.MediaFileIsNotMaskException
 import cz.cvut.fit.sp1.api.exception.MediaFileIsNotVideoException
+import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
+import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.web.multipart.MultipartFile
 import java.text.SimpleDateFormat
 import java.util.*
@@ -21,7 +23,7 @@ class MediaProcessor(
 
     fun extractVideoInfo(): Video {
         // need to check if it's video before conversion to one format
-        if (!isVideo(media)) throw MediaFileIsNotVideoException(ValidationExceptionCodes.INVALID_VIDEO_FILE)
+        if (!isVideo(media)) throw MediaFileIsNotVideoException(VideoExceptionCodes.INVALID_VIDEO_FILE)
 
         val name = generateFileName("video")
         val extension = determineFileType(media)
@@ -38,14 +40,7 @@ class MediaProcessor(
         )
     }
 
-    fun extractMaskInfo() : Mask {
-        // need to check if it's mask (png format image) before saving
-        if (!isMask(media)) throw MediaFileIsNotMaskException(ValidationExceptionCodes.INVALID_MASK_FILE)
-
-        val name = generateFileName("mask")
-        val extension = determineFileType(media)
-        val filePath = Path(basePath, "$name.$extension").toString()
-
+    private fun buildMask(name: String, extension: String, filePath: String) : Mask {
         val mask = Mask(
             name = name,
             path = filePath,
@@ -59,8 +54,19 @@ class MediaProcessor(
         mask.height = image.height
         mask.aspectRatio = mask.width.toDouble() / mask.height.toDouble()
 
-        saveFile(filePath)
         return mask
+    }
+    fun extractMaskInfo() : Mask {
+        // need to check if it's mask (png format image) before saving
+        if (!isMask(media)) throw MediaFileIsNotMaskException(MaskExceptionCodes.INVALID_MASK_FILE)
+
+        val name = generateFileName("mask")
+        val extension = determineFileType(media)
+        val filePath = Path(basePath, "$name.$extension").toString()
+
+        saveFile(filePath)
+
+        return buildMask(name, extension, filePath)
     }
 
     private fun generateFileName(type : String): String {
