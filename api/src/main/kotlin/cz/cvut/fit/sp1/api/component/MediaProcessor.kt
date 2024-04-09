@@ -63,9 +63,11 @@ class MediaProcessor(
         val extension = determineFileType(media)
         val filePath = Path(basePath, "$name.$extension").toString()
 
+        val mask = buildMask(name, extension, filePath)
+
         saveFile(filePath)
 
-        return buildMask(name, extension, filePath)
+        return mask
     }
 
     private fun generateFileName(type : String): String {
