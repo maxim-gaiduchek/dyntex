@@ -2,10 +2,9 @@ package cz.cvut.fit.sp1.api.component
 
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
-import cz.cvut.fit.sp1.api.exception.MediaFileIsNotMaskException
-import cz.cvut.fit.sp1.api.exception.MediaFileIsNotVideoException
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.mask.MediaFileIsNotMaskException
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.video.MediaFileIsNotVideoException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
-import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.web.multipart.MultipartFile
 import java.text.SimpleDateFormat

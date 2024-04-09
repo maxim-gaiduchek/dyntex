@@ -2,8 +2,8 @@ package cz.cvut.fit.sp1.api.service
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
-import cz.cvut.fit.sp1.api.exception.MediaFileIsNotMaskException
-import cz.cvut.fit.sp1.api.exception.MediaFileIsNotVideoException
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.mask.MediaFileIsNotMaskException
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.video.MediaFileIsNotVideoException
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

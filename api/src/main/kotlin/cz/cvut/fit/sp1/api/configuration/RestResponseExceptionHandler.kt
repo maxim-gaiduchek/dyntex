@@ -2,6 +2,8 @@ package cz.cvut.fit.sp1.api.configuration
 
 import cz.cvut.fit.sp1.api.exception.*
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.mask.MediaFileIsNotMaskException
+import cz.cvut.fit.sp1.api.exception.mediaExceptions.video.MediaFileIsNotVideoException
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
