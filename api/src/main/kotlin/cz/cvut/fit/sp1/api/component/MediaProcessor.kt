@@ -70,8 +70,8 @@ class MediaProcessor(
         return "${type}_${date}_${random}"
     }
 
-    private fun determineFileType(videoSource: MultipartFile): String {
-        return videoSource.contentType?.split("/")?.last() ?: ""
+    private fun determineFileType(mediaSource: MultipartFile): String {
+        return mediaSource.contentType?.split("/")?.last() ?: ""
     }
 
     fun isVideo(videoSource: MultipartFile) : Boolean {
