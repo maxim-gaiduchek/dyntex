@@ -14,10 +14,10 @@ class MaskController(
     private val maskService: MaskService
 ) {
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun upload(
+    fun upload( // TODO Get DTO with Media file
         @RequestParam("mask") mask: MultipartFile,
     ) {
         // TODO implement input validation
-        maskService.create(mask)
+        maskService.create(mask) // TODO return DTO
     }
 }
