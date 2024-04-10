@@ -15,7 +15,7 @@ class VideoService(
     private val fileStorage: FileStorage,
 ) {
     fun get(id: Long): Video {
-        return videoRepository.findById(id).orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.INVALID_VIDEO_ID) }
+        return videoRepository.findById(id).orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.VIDEO_DOES_NOT_EXIST) }
     }
 
     fun create(video: MultipartFile): Video {

@@ -15,7 +15,7 @@ class MaskService (
     private val fileStorage: FileStorage,
 ) {
     fun get(id: Long): Mask {
-        return maskRepository.findById(id).orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.INVALID_MASK_ID) }
+        return maskRepository.findById(id).orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.MASK_DOES_NOT_EXIST) }
     }
 
     fun create(mask: MultipartFile): Mask {
