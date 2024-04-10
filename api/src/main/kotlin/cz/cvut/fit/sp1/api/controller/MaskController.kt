@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @CrossOrigin(origins = ["*"])
 @RequestMapping(
-    value = ["/mask"],
+    value = ["/masks"],
 )
 class MaskController(
     private val maskService: MaskService
