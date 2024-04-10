@@ -2,10 +2,8 @@ package cz.cvut.fit.sp1.api.utils
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
-import lombok.experimental.UtilityClass
 import org.springframework.http.ResponseCookie
 
-@UtilityClass
 object CookieUtils {
 
     fun getCookie(cookies: Array<Cookie?>?, name: String): Cookie? {
