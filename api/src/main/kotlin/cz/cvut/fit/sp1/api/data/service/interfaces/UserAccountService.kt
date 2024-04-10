@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.data.service.interfaces
 
-import cz.cvut.fit.sp1.api.data.dto.UserRegistrationDto
+import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import java.util.*
 
@@ -14,5 +14,7 @@ interface UserAccountService {
 
     fun findByIdOrThrow(id: Long): UserAccount
 
-    fun register(userRegistrationDto: UserRegistrationDto): UserAccount
+    fun register(userCredentialsDto: UserCredentialsDto): UserAccount
+
+    fun login(userCredentialsDto: UserCredentialsDto): UserAccount
 }

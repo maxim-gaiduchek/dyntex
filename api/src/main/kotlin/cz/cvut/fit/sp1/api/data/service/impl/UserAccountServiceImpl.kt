@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
-import cz.cvut.fit.sp1.api.data.dto.UserRegistrationDto
+import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
@@ -48,30 +48,36 @@ class UserAccountServiceImpl(
             .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
     }
 
-    override fun register(userRegistrationDto: UserRegistrationDto): UserAccount {
-        checkUserAccountCreationPossibility(userRegistrationDto)
-        val user = buildNewUser(userRegistrationDto)
+    override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
+        checkUserAccountCreationPossibility(userCredentialsDto)
+        val user = buildNewUser(userCredentialsDto)
         return userAccountRepository.save(user)
     }
 
-    private fun checkUserAccountCreationPossibility(userRegistrationDto: UserRegistrationDto) {
-        val email = userRegistrationDto.email
-        if (userAccountRepository.existsByEmail(email)) {
-            throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
-        }
-        val password = userRegistrationDto.password
+    private fun checkUserAccountCreationPossibility(userCredentialsDto: UserCredentialsDto) {
+        val password = userCredentialsDto.password
         if (EMPTY_STRING_HASH == password) {
             throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
+        val email = userCredentialsDto.email
+        if (userAccountRepository.existsByEmail(email)) {
+            throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
+        }
     }
 
-    private fun buildNewUser(userRegistrationDto: UserRegistrationDto): UserAccount {
+    private fun buildNewUser(userCredentialsDto: UserCredentialsDto): UserAccount {
         val token = RandomStringUtils.random(TOKEN_SIZE, true, false)
         return UserAccount(
-            name = userRegistrationDto.name,
-            email = userRegistrationDto.email,
-            password = userRegistrationDto.password,
+            name = userCredentialsDto.name,
+            email = userCredentialsDto.email,
+            password = userCredentialsDto.password,
             token = token
         )
+    }
+
+    override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
+        val user = userAccountRepository.getByEmailAndPassword(userCredentialsDto.email, userCredentialsDto.password)
+        user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+        return user!!
     }
 }

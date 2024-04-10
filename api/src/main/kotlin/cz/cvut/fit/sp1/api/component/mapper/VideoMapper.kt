@@ -1,8 +1,6 @@
 package cz.cvut.fit.sp1.api.component.mapper
 
-import cz.cvut.fit.sp1.api.data.dto.MaskDto
 import cz.cvut.fit.sp1.api.data.dto.VideoDto
-import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import org.mapstruct.AfterMapping
 import org.mapstruct.Mapper

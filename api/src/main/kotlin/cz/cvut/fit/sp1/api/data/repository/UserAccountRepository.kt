@@ -8,5 +8,7 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
     fun getByToken(token: String): Optional<UserAccount>
 
+    fun getByEmailAndPassword(email: String, password: String): UserAccount?
+
     fun existsByEmail(email: String): Boolean
 }
