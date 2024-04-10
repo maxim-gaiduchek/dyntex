@@ -8,9 +8,9 @@ import org.mapstruct.ReportingPolicy
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = [UserAccountMapper::class, MediaMapper::class])
-interface TagMapper {
+abstract class TagMapper {
 
-    fun toDto(tag: Tag): TagDto
+    abstract fun toDto(tag: Tag?): TagDto?
 
-    fun toEntity(tagDto: TagDto): Tag
+    abstract fun toEntity(tagDto: TagDto?): Tag?
 }
