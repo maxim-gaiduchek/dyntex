@@ -57,14 +57,8 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpHeaders(), HttpStatus.UNAUTHORIZED)
     }
 
-    @ExceptionHandler(MediaFileIsNotMaskException::class)
-    protected fun exceptionHandler(exception: MediaFileIsNotMaskException): ResponseEntity<Any> {
-        val body = getResponse(HttpStatus.NOT_ACCEPTABLE, exception)
-        return ResponseEntity(body, HttpHeaders(), HttpStatus.NOT_ACCEPTABLE)
-    }
-
-    @ExceptionHandler(MediaFileIsNotVideoException::class)
-    protected fun exceptionHandler(exception: MediaFileIsNotVideoException): ResponseEntity<Any> {
+    @ExceptionHandler(MediaException::class)
+    protected fun exceptionHandler(exception: MediaException): ResponseEntity<Any> {
         val body = getResponse(HttpStatus.NOT_ACCEPTABLE, exception)
         return ResponseEntity(body, HttpHeaders(), HttpStatus.NOT_ACCEPTABLE)
     }
