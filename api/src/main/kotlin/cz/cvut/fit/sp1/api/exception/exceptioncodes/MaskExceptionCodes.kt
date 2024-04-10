@@ -1,9 +1,9 @@
 package cz.cvut.fit.sp1.api.exception.exceptioncodes
 
-enum class ValidationExceptionCodes(
+enum class MaskExceptionCodes(
         override val code: String,
         override val description: String
 ) : ExceptionCodes {
 
-    INVALID_DTO("DTEX-VLD-001", "Invalid DTO")
+    MASK_NOT_FOUND("DTEX-MSK-001", "Mask with id %d is not found")
 }
