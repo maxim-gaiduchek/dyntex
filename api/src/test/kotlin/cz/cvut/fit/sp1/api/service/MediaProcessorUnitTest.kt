@@ -2,8 +2,9 @@ package cz.cvut.fit.sp1.api.service
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
-import cz.cvut.fit.sp1.api.exception.mediaExceptions.mask.MediaFileIsNotMaskException
-import cz.cvut.fit.sp1.api.exception.mediaExceptions.video.MediaFileIsNotVideoException
+import cz.cvut.fit.sp1.api.exception.MediaException
+import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
+import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -89,12 +90,15 @@ class MediaProcessorUnitTest {
         Mockito.`when`(
             media.contentType
         ).thenReturn("image/png")
-        Assertions.assertThrows(
-            MediaFileIsNotVideoException::class.java,
+        val exception = Assertions.assertThrows(
+            MediaException::class.java,
             Executable {
                 mediaProcessor.extractVideoInfo()
             }
         )
+        val expectedCode = VideoExceptionCodes.INVALID_VIDEO_FILE.code
+        val actualCode = exception.code
+        Assertions.assertTrue(expectedCode == actualCode)
     }
     @Test
     fun extractMaskInfoSuccess() {
@@ -123,11 +127,14 @@ class MediaProcessorUnitTest {
         Mockito.`when`(
             media.contentType
         ).thenReturn("image/svg")
-        Assertions.assertThrows(
-            MediaFileIsNotMaskException::class.java,
+        val exception = Assertions.assertThrows(
+            MediaException::class.java,
             Executable {
                 mediaProcessor.extractMaskInfo()
             }
         )
+        val expectedCode = MaskExceptionCodes.INVALID_MASK_FILE.code
+        val actualCode = exception.code
+        Assertions.assertTrue(expectedCode == actualCode)
     }
 }

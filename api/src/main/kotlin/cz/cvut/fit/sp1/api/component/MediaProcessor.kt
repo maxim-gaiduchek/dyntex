@@ -2,8 +2,7 @@ package cz.cvut.fit.sp1.api.component
 
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
-import cz.cvut.fit.sp1.api.exception.mediaExceptions.mask.MediaFileIsNotMaskException
-import cz.cvut.fit.sp1.api.exception.mediaExceptions.video.MediaFileIsNotVideoException
+import cz.cvut.fit.sp1.api.exception.MediaException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.web.multipart.MultipartFile
@@ -22,7 +21,7 @@ class MediaProcessor(
 
     fun extractVideoInfo(): Video {
         // need to check if it's video before conversion to one format
-        if (!isVideo(media)) throw MediaFileIsNotVideoException(VideoExceptionCodes.INVALID_VIDEO_FILE)
+        if (!isVideo(media)) throw MediaException(VideoExceptionCodes.INVALID_VIDEO_FILE)
 
         val name = generateFileName("video")
         val extension = determineFileType(media)
@@ -57,7 +56,7 @@ class MediaProcessor(
     }
     fun extractMaskInfo() : Mask {
         // need to check if it's mask (png format image) before saving
-        if (!isMask(media)) throw MediaFileIsNotMaskException(MaskExceptionCodes.INVALID_MASK_FILE)
+        if (!isMask(media)) throw MediaException(MaskExceptionCodes.INVALID_MASK_FILE)
 
         val name = generateFileName("mask")
         val extension = determineFileType(media)
