@@ -5,6 +5,7 @@ import SecondaryPage from './Components/Pages/SecondaryPage';
 import NotFound from './Components/Pages/NotFound';
 import Account from './Components/Pages/Account';
 import LoginPage from './Components/Login/LoginPage';
+import MediaPage from './Components/Pages/MediaPage';
 import RegistrationPage from './Components/Login/RegistrationPage';
 import ResetPage from './Components/Login/ResetPage';
 import '@mantine/dropzone/styles.css';
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
   {
     path: "/account",
     element: <MainLayout><Account/></MainLayout>
+  },
+  {
+    path: "/account/:id",
+    element: <MainLayout><Account/></MainLayout>
+  },
+  {
+    path: "/media/:id",
+    element: <MainLayout><MediaPage/></MainLayout>
   },
   {
     path: "/login",

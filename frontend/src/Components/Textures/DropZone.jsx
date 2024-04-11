@@ -32,7 +32,7 @@ export default function DropZone(props) {
     };
 
     formData.append("video", file_loc);
-    axios.post('http://localhost:8080/api/videos', formData, options)
+    axios.post('http://localhost:8080/api/video', formData, options)
     .then((res) => {
       setProgress(100);
     });
@@ -43,7 +43,7 @@ export default function DropZone(props) {
       { file === null ?
         <Dropzone
           onDrop={getFile}
-          onReject={(files) => console.log('rejected files', files)}
+          onReject={rejectFile}
           maxSize={5 * 1024 ** 2}
           {...props}
         >
@@ -95,7 +95,7 @@ export default function DropZone(props) {
         </Group>
         <br/>
         <Group justify='center'>
-          <Button>Save</Button>
+          <Button onClick={props.close} disabled={progress!==100}>Save</Button>
         </Group>
         </>
       }

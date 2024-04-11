@@ -54,7 +54,7 @@ export default function Account(){
     
     return (
         <>
-          <Grid>
+          <Grid style={{marginTop: 50}}>
               <Grid.Col span={3}>
                   <div className='avatar' style={{
                       aspectRatio: "1/1",

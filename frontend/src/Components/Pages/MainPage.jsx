@@ -64,7 +64,7 @@ export default function MainPage(){
         <>
           <h2>DYNTEX))</h2>
           <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-            <DropZone/>
+            <DropZone close={close}/>
           </Modal>
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>
