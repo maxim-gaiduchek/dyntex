@@ -1,13 +1,27 @@
 postgres-autostart:
   enabled: true
+
 spring:
+  servlet:
+    multipart:
+      max-file-size: 128MB
+      max-request-size: 128MB
   datasource:
     url: jdbc:postgresql://localhost:5432/dyntex-db
     username: postgres
     password: postgres
   jpa:
+    generate-ddl: true
     properties:
       hibernate:
         ddl-auto: update
         dialect: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+  port: 8080
+  servlet:
+    context-path: '/api'
