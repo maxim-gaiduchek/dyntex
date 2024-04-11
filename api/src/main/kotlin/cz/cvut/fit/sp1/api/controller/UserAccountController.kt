@@ -49,7 +49,7 @@ class UserAccountController(
         return userAccountMapper.toDto(user)
     }
 
-    @PostMapping
+    @PostMapping("/login")
     fun login(
         @Validated(UserLoginGroup::class) userCredentialsDto: UserCredentialsDto,
         response: HttpServletResponse
