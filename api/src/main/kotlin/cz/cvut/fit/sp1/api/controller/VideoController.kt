@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @CrossOrigin(origins = ["*"])
 @RequestMapping(
-    value = ["/video"],
+    value = ["/videos"],
 )
 class VideoController(
     private val videoService: VideoService,
