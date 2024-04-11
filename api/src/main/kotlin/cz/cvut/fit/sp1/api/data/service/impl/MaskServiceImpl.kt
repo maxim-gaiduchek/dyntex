@@ -23,7 +23,7 @@ class MaskServiceImpl(
 
     override fun findByIdOrThrow(id: Long): Mask {
         return getById(id)
-            .orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.MASK_DOES_NOT_EXIST, id) }
+            .orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.MASK_NOT_FOUND, id) }
     }
 
     override fun create(mask: MultipartFile): Mask {

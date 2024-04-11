@@ -23,7 +23,7 @@ class VideoServiceImpl(
 
     override fun findByIdOrThrow(id: Long): Video {
         return getById(id)
-            .orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.VIDEO_DOES_NOT_EXIST) }
+            .orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.VIDEO_NOT_FOUND) }
     }
 
     override fun create(video: MultipartFile): Video {
