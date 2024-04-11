@@ -17,7 +17,9 @@ Dependencies:
     - Flask
 """
 
-from flask import Flask, jsonify
+import os
+from flask import Flask, jsonify, request
+from moviepy.editor import VideoFileClip
 
 app = Flask(__name__)
 
@@ -31,5 +33,44 @@ def index():
     """
     return jsonify({"response": "hello 2"})
 
+@app.route('/prepare', methods=['GET'])
+def prepare_video():
+    """
+    Change initial video to right format and sizze
+
+    Returns:
+        Response: A JSON response containing path to video
+    """
+
+    # pylint: disable=W0718, E1101
+
+    video_path = request.args.get('path')
+
+    if not video_path:
+        return jsonify({'success': False, 'error': 'Video path is missing'})
+
+    try:
+        video_directory = os.path.dirname(video_path)
+        video_filename = os.path.basename(video_path)
+        new_name = os.path.splitext(video_filename)[0] + '.mp4'
+
+        video_clip = VideoFileClip(video_path)
+
+        resized_clip = video_clip.resize(width=1920)
+
+        output_filepath = os.path.join(video_directory, new_name)
+        resized_clip.write_videofile(output_filepath, codec='libx264')
+
+        return jsonify(
+            {
+                'success': True, 
+                'message': 'Video prepared successfully', 
+                'output_file': output_filepath,
+                'fps': resized_clip.fps
+                }
+            )
+
+    except Exception as e:
+        return jsonify({'error': 'An error occurred: ' + str(e)})
 if __name__ == '__main__':
     app.run(debug=True)
