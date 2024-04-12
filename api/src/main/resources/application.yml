@@ -2,6 +2,17 @@ postgres-autostart:
   enabled: true
 
 spring:
+  autoconfigure:
+    exclude:
+      - 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
+      #- 'org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration'
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    dispatch-options-request: true
+  batch:
+    job:
+      enabled: false
   servlet:
     multipart:
       max-file-size: 128MB

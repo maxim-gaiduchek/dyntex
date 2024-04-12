@@ -5,9 +5,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
-@ConfigurationPropertiesScan
 @SpringBootApplication
 @EnableJpaAuditing
+@ConfigurationPropertiesScan
 class ApiApplication
 
 fun main(args: Array<String>) {
