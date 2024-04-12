@@ -3,6 +3,7 @@ package cz.cvut.fit.sp1.api.data.service.interfaces
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
+import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import java.util.*
 
 interface UserAccountService {
@@ -14,6 +15,8 @@ interface UserAccountService {
     fun getAuthenticated(): UserAccount
 
     fun update(id: Long, userAccountDto: UserAccountDto): UserAccount
+
+    fun updateAvatar(id: Long, avatar: Avatar): UserAccount
 
     fun findByIdOrThrow(id: Long): UserAccount
 
