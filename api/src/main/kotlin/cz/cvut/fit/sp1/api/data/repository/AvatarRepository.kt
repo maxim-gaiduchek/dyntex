@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.data.repository
 
-import cz.cvut.fit.sp1.api.data.model.media.Mask
+import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface AvatarRepository : JpaRepository<Mask, Long>
+interface AvatarRepository : JpaRepository<Avatar, Long>
