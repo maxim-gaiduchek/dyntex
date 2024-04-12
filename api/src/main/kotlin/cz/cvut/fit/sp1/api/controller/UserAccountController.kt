@@ -31,7 +31,7 @@ class UserAccountController(
         private const val TOKEN_COOKIE_AGE = 259200L // 3 days
     }
 
-    @GetMapping
+    @GetMapping("/authenticated")
     fun getAuthenticated(): UserAccountDto {
         val user = userAccountService.getAuthenticated()
         return userAccountMapper.toDto(user)
@@ -39,7 +39,7 @@ class UserAccountController(
 
     @GetMapping("/{id}")
     fun getById(@PathVariable id: Long): UserAccountDto {
-        val user = userAccountService.findByIdOrThrow(id)
+        val user = userAccountService.getByIdOrThrow(id)
         return userAccountMapper.toDto(user)
     }
 

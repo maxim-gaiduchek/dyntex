@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface VideoRepository : JpaRepository<Video, Long> {
 
-    fun findAll(specification: Specification<Video>?, pageable: Pageable?): Page<Video>
+    fun findAll(specification: Specification<Video>, pageable: Pageable): Page<Video>
 }

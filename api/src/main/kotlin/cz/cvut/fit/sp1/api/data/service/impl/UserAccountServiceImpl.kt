@@ -24,17 +24,17 @@ class UserAccountServiceImpl(
         private const val TOKEN_SIZE = 128
     }
 
-    override fun getById(id: Long): Optional<UserAccount> {
+    override fun findById(id: Long): Optional<UserAccount> {
         return userAccountRepository.findById(id)
     }
 
-    override fun getByToken(token: String): Optional<UserAccount> {
+    override fun findByToken(token: String): Optional<UserAccount> {
         return userAccountRepository.getByToken(token)
     }
 
     override fun getAuthenticated(): UserAccount {
         val id = fetchUserIdFromAuthentication()
-        return findByIdOrThrow(id)
+        return getByIdOrThrow(id)
     }
 
     private fun fetchUserIdFromAuthentication(): Long {
@@ -43,8 +43,8 @@ class UserAccountServiceImpl(
         return auth.userId
     }
 
-    override fun findByIdOrThrow(id: Long): UserAccount {
-        return getById(id)
+    override fun getByIdOrThrow(id: Long): UserAccount {
+        return findById(id)
             .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
     }
 

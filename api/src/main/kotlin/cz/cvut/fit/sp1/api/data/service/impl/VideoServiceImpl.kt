@@ -2,6 +2,7 @@ package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
+import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -15,8 +16,9 @@ import java.util.*
 
 @Service
 class VideoServiceImpl(
-    private val videoRepository: VideoRepository,
-    private val fileStorage: FileStorage,
+        private val videoRepository: VideoRepository,
+        private val fileStorage: FileStorage,
+        private val videoMapper: VideoMapper
 ) : VideoService {
 
     override fun findById(id: Long): Optional<Video> {
@@ -28,23 +30,22 @@ class VideoServiceImpl(
                 .orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.VIDEO_NOT_FOUND, id) }
     }
 
-    override fun findAll(paramsDto: SearchMediaParamsDto?): SearchVideoDto? {
-        /*if (paramsDto == null) {
+    override fun findAll(paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto? {
+        if (paramsDto == null) {
             return null
         }
-        val specification
-        val pageable
+        val specification = paramsDto.buildSpecification()
+        val pageable = paramsDto.buildPageable()
         val page = videoRepository.findAll(specification, pageable)
         val videos = page.content.stream()
-                .map { videoMapper.toDto(it) }
+                .map { videoMapper.toDto(it)!! }
                 .toList()
         return SearchVideoDto(
                 videos = videos,
                 currentPage = page.number - 1,
                 totalPages = page.totalPages,
                 totalMatches = page.totalElements
-        )*/
-        return null
+        )
     }
 
     override fun create(video: MultipartFile): Video {

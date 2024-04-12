@@ -6,13 +6,13 @@ import java.util.*
 
 interface UserAccountService {
 
-    fun getById(id: Long): Optional<UserAccount>
+    fun findById(id: Long): Optional<UserAccount>
 
-    fun getByToken(token: String): Optional<UserAccount>
+    fun findByToken(token: String): Optional<UserAccount>
 
     fun getAuthenticated(): UserAccount
 
-    fun findByIdOrThrow(id: Long): UserAccount
+    fun getByIdOrThrow(id: Long): UserAccount
 
     fun register(userCredentialsDto: UserCredentialsDto): UserAccount
 

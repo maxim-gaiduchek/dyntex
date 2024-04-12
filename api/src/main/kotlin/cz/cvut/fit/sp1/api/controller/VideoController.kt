@@ -1,10 +1,10 @@
 package cz.cvut.fit.sp1.api.controller
 
-import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
+import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
@@ -19,15 +19,15 @@ class VideoController(
 ) {
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): VideoDto {
+    fun findById(@PathVariable id: Long): VideoDto? {
         val video = videoService.getByIdOrThrow(id)
         return videoMapper.toDto(video)
     }
 
-    /*@GetMapping
-    fun find(@RequestBody paramsDto: SearchMediaParamsDto): SearchVideoDto {
+    @GetMapping
+    fun findAll(@RequestBody paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto? {
         return videoService.findAll(paramsDto)
-    }*/
+    }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun upload(

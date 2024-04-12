@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("io.vavr:vavr:0.10.4")
 
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")

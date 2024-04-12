@@ -26,7 +26,7 @@ class SecurityConfiguration(
         return http
             .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
             .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
-            .authorizeHttpRequests { it.anyRequest().authenticated() }
+            .authorizeHttpRequests { it.anyRequest().authenticated() } // TODO fix (403)
             .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter::class.java)
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .build()

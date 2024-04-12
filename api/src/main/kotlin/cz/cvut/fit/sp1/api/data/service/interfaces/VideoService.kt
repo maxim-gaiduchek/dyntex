@@ -12,7 +12,7 @@ interface VideoService {
 
     fun getByIdOrThrow(id: Long): Video
 
-    fun findAll(paramsDto: SearchMediaParamsDto?): SearchVideoDto?
+    fun findAll(paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto?
 
     fun create(video: MultipartFile): Video
 }
