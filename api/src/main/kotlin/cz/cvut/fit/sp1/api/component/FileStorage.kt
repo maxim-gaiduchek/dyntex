@@ -18,5 +18,14 @@ class FileStorage {
         }
     }
 
+    fun delete(path: String) {
+        val file = getFile(path)
+        if (file.exists()) {
+            file.delete()
+        } else {
+            throw IllegalStateException("File not found")
+        }
+    }
+
     fun getFile(path: String) = File(path)
 }
