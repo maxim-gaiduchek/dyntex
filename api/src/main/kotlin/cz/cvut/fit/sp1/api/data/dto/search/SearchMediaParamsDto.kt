@@ -27,17 +27,17 @@ class SearchMediaParamsDto<T : Media>(
         val predicates = super.getSpecificationPredicates(root, query, builder)
 
         if (!ids.isNullOrEmpty()) {
-            predicates.addLast(root.get<Any>("id").`in`(ids))
+            predicates.add(root.get<Any>("id").`in`(ids))
         }
 
         if (!tags.isNullOrEmpty()) {
-            predicates.addLast(root.join<Any, Any>("tags").get<Any>("id").`in`(tags))
+            predicates.add(root.join<Any, Any>("tags").get<Any>("id").`in`(tags))
         }
 
         if (!name.isNullOrBlank()) {
             val pattern = "%%%s%%".format(name!!.lowercase())
             val lower = builder.lower(root.get("name"))
-            predicates.addLast(builder.like(lower, pattern))
+            predicates.add(builder.like(lower, pattern))
         }
 
         return predicates

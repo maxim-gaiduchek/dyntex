@@ -7,20 +7,15 @@ import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.utils.CookieUtils
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
 import cz.cvut.fit.sp1.api.validation.group.UserRegistrationGroup
+import jakarta.annotation.security.RolesAllowed
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = ["*"])
 class UserAccountController(
     private var userAccountService: UserAccountService,
     private var userAccountMapper: UserAccountMapper
@@ -32,6 +27,7 @@ class UserAccountController(
     }
 
     @GetMapping("/authenticated")
+    @RolesAllowed("USER", "ADMIN")
     fun getAuthenticated(): UserAccountDto {
         val user = userAccountService.getAuthenticated()
         return userAccountMapper.toDto(user)
