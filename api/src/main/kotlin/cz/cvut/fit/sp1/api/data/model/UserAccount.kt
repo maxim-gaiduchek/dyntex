@@ -10,9 +10,10 @@ import org.hibernate.annotations.ColumnDefault
 
 @Entity
 class UserAccount(
-    var name: String = "",
-    var email: String = "",
-    var password: String = "",
+    var name: String,
+    var email: String,
+    var password: String,
+    var token: String,
 ) : StandardAuditModel() {
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER

@@ -9,4 +9,6 @@ interface MaskService {
     fun findById(id: Long): Optional<Mask>
 
     fun getByIdOrThrow(id: Long): Mask
+
+    fun create(mask: MultipartFile): Mask
 }

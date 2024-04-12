@@ -5,5 +5,6 @@ enum class MaskExceptionCodes(
         override val description: String
 ) : ExceptionCodes {
 
-    MASK_NOT_FOUND("DTEX-MSK-001", "Mask with id %d is not found")
+    MASK_NOT_FOUND("DTEX-MSK-001", "Mask with id %d not found"),
+    INVALID_MASK_FILE("DTEX-MSK-002", "Excepted mask file in format .png, but don't receive it");
 }

@@ -1,8 +1,13 @@
 import '@mantine/core/styles.css';
+import MainLayout from './Components/Layout/MainLayout';
 import MainPage from './Components/Pages/MainPage';
 import SecondaryPage from './Components/Pages/SecondaryPage';
 import NotFound from './Components/Pages/NotFound';
 import Account from './Components/Pages/Account';
+import LoginPage from './Components/Login/LoginPage';
+import RegistrationPage from './Components/Login/RegistrationPage';
+import ResetPage from './Components/Login/ResetPage';
+import '@mantine/dropzone/styles.css';
 
 import {
   createBrowserRouter,
@@ -12,19 +17,31 @@ import {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage/>,
+    element: <MainLayout><MainPage/></MainLayout>,
   },
   {
     path: "/secondary",
-    element: <SecondaryPage/>
+    element: <MainLayout><SecondaryPage/></MainLayout>
+  },
+  {
+    path: "/account",
+    element: <MainLayout><Account/></MainLayout>
+  },
+  {
+    path: "/login",
+    element: <LoginPage/>
+  },
+  {
+    path: "/register",
+    element: <RegistrationPage/>
+  },
+  {
+    path: "/reset",
+    element: <ResetPage/>
   },
   {
     path: "*",
     element: <NotFound/>
-  },
-  {
-    path: "/account",
-    element: <Account/>
   }
 ]);
 

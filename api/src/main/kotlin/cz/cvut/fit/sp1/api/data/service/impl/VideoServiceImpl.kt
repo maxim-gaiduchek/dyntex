@@ -2,7 +2,6 @@ package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
-import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -16,9 +15,8 @@ import java.util.*
 
 @Service
 class VideoServiceImpl(
-        private val videoRepository: VideoRepository,
-        private val fileStorage: FileStorage,
-        private val videoMapper: VideoMapper
+    private val videoRepository: VideoRepository,
+    private val fileStorage: FileStorage,
 ) : VideoService {
 
     override fun findById(id: Long): Optional<Video> {
@@ -26,9 +24,8 @@ class VideoServiceImpl(
     }
 
     override fun getByIdOrThrow(id: Long): Video {
-        return findById(id).orElseThrow {
-            throw EntityNotFoundException(VideoExceptionCodes.VIDEO_NOT_FOUND, id)
-        }
+        return findById(id)
+                .orElseThrow { throw EntityNotFoundException(VideoExceptionCodes.VIDEO_NOT_FOUND, id) }
     }
 
     override fun findAll(paramsDto: SearchMediaParamsDto?): SearchVideoDto? {
@@ -54,6 +51,7 @@ class VideoServiceImpl(
         val processor = MediaProcessor(video, fileStorage)
         val videoEntity = processor.extractVideoInfo()
         videoRepository.save(videoEntity)
+
         return videoEntity
     }
 }
