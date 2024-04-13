@@ -9,5 +9,7 @@ data class VideoDto(
     override var size: Long,
     override var description: String,
     override var format: String,
+    override var createdById: Long,
+    override var likes: Int,
     override var tags: MutableList<TagDto> = mutableListOf(),
-) : MediaDto(id, name, size, description, path, format, tags)
+) : MediaDto(id, name, size, description, path, format, createdById, likes, tags)
