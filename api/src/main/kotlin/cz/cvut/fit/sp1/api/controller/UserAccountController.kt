@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/users")
 class UserAccountController(
     private var userAccountService: UserAccountService,
-    private var userAccountMapper: UserAccountMapper
+    private var userAccountMapper: UserAccountMapper,
 ) {
-
     companion object {
         private const val TOKEN_COOKIE_NAME = "token"
         private const val TOKEN_COOKIE_AGE = 259200L // 3 days
@@ -39,13 +38,17 @@ class UserAccountController(
     }
 
     @GetMapping("/{id}")
-    fun getById(@PathVariable id: Long): UserAccountDto {
+    fun getById(
+        @PathVariable id: Long,
+    ): UserAccountDto {
         val user = userAccountService.getByIdOrThrow(id)
         return userAccountMapper.toDto(user)
     }
 
     @PostMapping
-    fun register(@Validated(UserRegistrationGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto): UserAccountDto {
+    fun register(
+        @Validated(UserRegistrationGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto,
+    ): UserAccountDto {
         val user = userAccountService.register(userCredentialsDto)
         return userAccountMapper.toDto(user)
     }
@@ -53,7 +56,7 @@ class UserAccountController(
     @PostMapping("/login")
     fun login(
         @Validated(UserLoginGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): UserAccountDto {
         val user = userAccountService.login(userCredentialsDto)
         val tokenCookie = createRefreshTokenCookie(user.token)

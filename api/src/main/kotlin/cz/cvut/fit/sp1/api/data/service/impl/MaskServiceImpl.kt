@@ -16,18 +16,17 @@ import java.util.*
 
 @Service
 class MaskServiceImpl(
-        private val maskRepository: MaskRepository,
-        private val fileStorage: FileStorage,
-        private val maskMapper: MaskMapper
+    private val maskRepository: MaskRepository,
+    private val fileStorage: FileStorage,
+    private val maskMapper: MaskMapper,
 ) : MaskService {
-
     override fun findById(id: Long): Optional<Mask> {
         return maskRepository.findById(id)
     }
 
     override fun getByIdOrThrow(id: Long): Mask {
         return findById(id)
-                .orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.MASK_NOT_FOUND, id) }
+            .orElseThrow { throw EntityNotFoundException(MaskExceptionCodes.MASK_NOT_FOUND, id) }
     }
 
     override fun findAll(paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
@@ -37,14 +36,15 @@ class MaskServiceImpl(
         val specification = paramsDto.buildSpecification()
         val pageable = paramsDto.buildPageable()
         val page = maskRepository.findAll(specification, pageable)
-        val masks = page.content.stream()
+        val masks =
+            page.content.stream()
                 .map { maskMapper.toDto(it)!! }
                 .toList()
         return SearchMaskDto(
-                masks = masks,
-                currentPage = page.number - 1,
-                totalPages = page.totalPages,
-                totalMatches = page.totalElements
+            masks = masks,
+            currentPage = page.number - 1,
+            totalPages = page.totalPages,
+            totalMatches = page.totalElements,
         )
     }
 

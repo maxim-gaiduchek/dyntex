@@ -13,12 +13,12 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserAccountServiceImpl(
-    private val userAccountRepository: UserAccountRepository
+    private val userAccountRepository: UserAccountRepository,
 ) : UserAccountService {
-
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         private const val TOKEN_SIZE = 128
@@ -44,8 +44,11 @@ class UserAccountServiceImpl(
     }
 
     override fun getByIdOrThrow(id: Long): UserAccount {
-        return findById(id)
-            .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
+        val user =
+            findById(id).getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND)
+            }
+        return user
     }
 
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
@@ -71,7 +74,7 @@ class UserAccountServiceImpl(
             name = userCredentialsDto.name!!,
             email = userCredentialsDto.email!!,
             password = userCredentialsDto.password!!,
-            token = token
+            token = token,
         )
     }
 
