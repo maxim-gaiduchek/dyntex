@@ -59,7 +59,7 @@ class UserAccountServiceImpl(
         if (EMPTY_STRING_HASH == password) {
             throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
-        val email = userCredentialsDto.email
+        val email = userCredentialsDto.email!!
         if (userAccountRepository.existsByEmail(email)) {
             throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
         }
@@ -68,15 +68,16 @@ class UserAccountServiceImpl(
     private fun buildNewUser(userCredentialsDto: UserCredentialsDto): UserAccount {
         val token = RandomStringUtils.random(TOKEN_SIZE, true, false)
         return UserAccount(
-            name = userCredentialsDto.name,
-            email = userCredentialsDto.email,
-            password = userCredentialsDto.password,
+            name = userCredentialsDto.name!!,
+            email = userCredentialsDto.email!!,
+            password = userCredentialsDto.password!!,
             token = token
         )
     }
 
     override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
-        val user = userAccountRepository.getByEmailAndPassword(userCredentialsDto.email, userCredentialsDto.password)
+        val user =
+            userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
         user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
         return user!!
     }

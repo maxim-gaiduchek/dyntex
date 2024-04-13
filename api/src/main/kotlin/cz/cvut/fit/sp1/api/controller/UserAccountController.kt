@@ -12,7 +12,12 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseCookie
 import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
@@ -40,14 +45,14 @@ class UserAccountController(
     }
 
     @PostMapping
-    fun register(@Validated(UserRegistrationGroup::class) userCredentialsDto: UserCredentialsDto): UserAccountDto {
+    fun register(@Validated(UserRegistrationGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto): UserAccountDto {
         val user = userAccountService.register(userCredentialsDto)
         return userAccountMapper.toDto(user)
     }
 
     @PostMapping("/login")
     fun login(
-        @Validated(UserLoginGroup::class) userCredentialsDto: UserCredentialsDto,
+        @Validated(UserLoginGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto,
         response: HttpServletResponse
     ): UserAccountDto {
         val user = userAccountService.login(userCredentialsDto)
