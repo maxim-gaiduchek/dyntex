@@ -44,11 +44,10 @@ class UserAccountServiceImpl(
     }
 
     override fun getByIdOrThrow(id: Long): UserAccount {
-        val user =
-            findById(id).getOrElse {
-                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND)
+        return findById(id)
+            .getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
             }
-        return user
     }
 
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {

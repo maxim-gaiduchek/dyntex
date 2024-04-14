@@ -40,4 +40,4 @@ server:
 logging:
   level:
     cz: TRACE
-    org.springframework: TRACE
+#    org.springframework: TRACE
