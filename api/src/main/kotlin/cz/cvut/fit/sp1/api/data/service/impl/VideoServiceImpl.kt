@@ -42,7 +42,7 @@ class VideoServiceImpl(
                 .toList()
         return SearchVideoDto(
                 videos = videos,
-                currentPage = page.number - 1,
+                currentPage = page.number + 1,
                 totalPages = page.totalPages,
                 totalMatches = page.totalElements
         )

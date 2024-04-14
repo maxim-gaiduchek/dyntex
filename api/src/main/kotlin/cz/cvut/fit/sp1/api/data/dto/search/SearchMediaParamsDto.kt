@@ -7,23 +7,29 @@ import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
 
 class SearchMediaParamsDto<T : Media>(
-        var ids: MutableList<Long>? = mutableListOf(),
-        var tags: MutableList<Long>? = mutableListOf(),
-        var name: String? = null,
-        override var page: Int,
-        override var pageSize: Int,
-        override var sortBy: String,
-        override var sortDirection: String
+    private var ids: MutableList<Long>? = mutableListOf(),
+    private var tags: MutableList<Long>? = mutableListOf(),
+    private var name: String? = null,
+    override var page: Int = 1,
+    override var pageSize: Int = 20,
+    override var sortBy: String = "createdAt",
+    override var sortDirection: String = "desc",
 ) : BaseSearchParamsDto<T>(page, pageSize, sortBy, sortDirection) {
 
     override val sortVariants: Map<String, List<String>> = super.sortVariants.toMutableMap().apply {
-        putAll(mapOf(
+        putAll(
+            mapOf(
                 "tag" to listOf("tag.id"),
                 "name" to listOf("name")
-        ))
+            )
+        )
     }
 
-    override fun getSpecificationPredicates(root: Root<T>, query: CriteriaQuery<*>, builder: CriteriaBuilder): MutableList<Predicate> {
+    override fun getSpecificationPredicates(
+        root: Root<T>,
+        query: CriteriaQuery<*>,
+        builder: CriteriaBuilder
+    ): MutableList<Predicate> {
         val predicates = super.getSpecificationPredicates(root, query, builder)
 
         if (!ids.isNullOrEmpty()) {

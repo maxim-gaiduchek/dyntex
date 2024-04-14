@@ -25,16 +25,14 @@ class VideoController(
     }
 
     @GetMapping
-    fun findAll(@RequestBody paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto? {
+    fun findAll(@ModelAttribute paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto? {
         return videoService.findAll(paramsDto)
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @RolesAllowed("USER", "ADMIN")
-    fun upload(
-            @RequestParam("video") video: MultipartFile,
-    ) {
-        // TODO implement input validation
-        videoService.create(video)
+    fun upload(@RequestParam("video") videoFile: MultipartFile) : VideoDto? {
+        val video = videoService.create(videoFile)
+        return videoMapper.toDto(video)
     }
 }
