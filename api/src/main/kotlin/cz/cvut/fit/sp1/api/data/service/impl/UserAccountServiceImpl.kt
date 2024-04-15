@@ -1,8 +1,10 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
+import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
+import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
@@ -12,12 +14,14 @@ import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
+    private val avatarService: AvatarService
 ) : UserAccountService {
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -48,6 +52,20 @@ class UserAccountServiceImpl(
             .getOrElse {
                 throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
             }
+    }
+
+    override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
+        val user = getByIdOrThrow(id)
+        user.name = userAccountDto.name
+        return userAccountRepository.save(user)
+    }
+
+    override fun updateAvatar(id: Long, file: MultipartFile): UserAccount {
+        val user = getByIdOrThrow(id)
+        val avatar = avatarService.save(id, file)
+        user.avatar = avatar
+        avatar.userAccount = user
+        return userAccountRepository.save(user)
     }
 
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
