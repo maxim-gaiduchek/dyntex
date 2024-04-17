@@ -2,11 +2,11 @@ package cz.cvut.fit.sp1.api.data.dto
 
 data class VideoDto(
     var fps: Long?,
-    var duration: Long?,
+    var duration: Double,
     override var id: Long?,
     override var name: String,
     override var path: String,
-    override var size: Long,
+    override var size: String,
     override var description: String,
     override var format: String,
     override var createdById: Long,
