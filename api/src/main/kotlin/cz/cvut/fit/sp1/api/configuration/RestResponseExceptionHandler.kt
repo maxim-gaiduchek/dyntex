@@ -24,11 +24,11 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
         private const val DESCRIPTION_KEY = "description"
     }
 
-    @ExceptionHandler(Exception::class)
-    protected fun exceptionHandler(exception: Exception): ResponseEntity<Any> {
-        val body = LinkedHashMap<Any, Any>()
-        return ResponseEntity(body, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+//    @ExceptionHandler(Exception::class)
+//    protected fun exceptionHandler(exception: Exception): ResponseEntity<Any> {
+//        val body = LinkedHashMap<Any, Any>()
+//        return ResponseEntity(body, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
+//    }
 
     @ExceptionHandler(ValidationException::class)
     protected fun exceptionHandler(exception: ValidationException): ResponseEntity<Any> {

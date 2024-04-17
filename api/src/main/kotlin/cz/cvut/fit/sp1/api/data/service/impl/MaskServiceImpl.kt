@@ -11,6 +11,7 @@ import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import org.springframework.stereotype.Service
+import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
@@ -19,6 +20,7 @@ class MaskServiceImpl(
     private val maskRepository: MaskRepository,
     private val fileStorage: FileStorage,
     private val maskMapper: MaskMapper,
+    private val restTemplate: RestTemplate,
 ) : MaskService {
     override fun findById(id: Long): Optional<Mask> {
         return maskRepository.findById(id)
@@ -49,7 +51,7 @@ class MaskServiceImpl(
     }
 
     override fun create(mask: MultipartFile): Mask {
-        val processor = MediaProcessor(mask, fileStorage)
+        val processor = MediaProcessor(mask, fileStorage, restTemplate)
         val maskEntity = processor.extractMaskInfo()
         maskRepository.save(maskEntity)
         return maskEntity

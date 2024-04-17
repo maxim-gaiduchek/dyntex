@@ -14,24 +14,29 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 @RequestMapping("/videos")
 class VideoController(
-        private val videoService: VideoService,
-        private val videoMapper: VideoMapper
+    private val videoService: VideoService,
+    private val videoMapper: VideoMapper,
 ) {
-
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): VideoDto? {
+    fun findById(
+        @PathVariable id: Long,
+    ): VideoDto? {
         val video = videoService.getByIdOrThrow(id)
         return videoMapper.toDto(video)
     }
 
     @GetMapping
-    fun findAll(@ModelAttribute paramsDto: SearchMediaParamsDto<Video>?): SearchVideoDto? {
+    fun findAll(
+        @ModelAttribute paramsDto: SearchMediaParamsDto<Video>?,
+    ): SearchVideoDto? {
         return videoService.findAll(paramsDto)
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @RolesAllowed("USER", "ADMIN")
-    fun upload(@RequestParam("video") videoFile: MultipartFile) : VideoDto? {
+    fun upload(
+        @RequestParam("video") videoFile: MultipartFile,
+    ): VideoDto? {
         val video = videoService.create(videoFile)
         return videoMapper.toDto(video)
     }

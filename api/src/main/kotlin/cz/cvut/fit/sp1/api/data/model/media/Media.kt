@@ -12,11 +12,12 @@ open class Media(
     open var path: String,
     open var format: String,
 ) : StandardAuditModel() {
-    open var size: Long = 0
+    open var size: String = ""
     open var description: String? = ""
     open var aspectRatio: Double = 0.0
     open var width: Int = 0
     open var height: Int = 0
+
     @ManyToMany(mappedBy = "likedMedia")
     open var likedBy: MutableList<UserAccount> = mutableListOf()
 
