@@ -15,13 +15,35 @@ import {
   import classes from './LoginPage.module.css';
   import { Link } from 'react-router-dom';
   import React from 'react';
+  import { notifications } from '@mantine/notifications';
+  import { IconExclamationCircle } from '@tabler/icons-react';
+  import axios from 'axios';
 
   export default function LoginPage() {
 
     const [active, setActive] = React.useState(0);
     const nextStep = async () => {
         if(active == 2){
-            console.log(await hashPasswd())
+            try {
+                const response = await axios.post('http://localhost:8080/api/users', {
+                  email,
+                  "name" : name + " " + surname,
+                  "password": await hashPasswd(),
+                });
+          
+                console.log('User created:', response.data);
+                setActive((current) => (current < 3 ? current + 1 : current));
+              } catch (error) {
+                notifications.show({
+                    title: 'Invalid input',
+                    color: 'red',
+                    icon: <IconExclamationCircle/>,
+                    autoClose: 2000,
+                    message: error.description,
+                })
+                console.error('Error creating user:', error);
+              }
+            return
         }
         setActive((current) => (current < 3 ? current + 1 : current));
     }

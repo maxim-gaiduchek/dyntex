@@ -32,7 +32,7 @@ export default function DropZone(props) {
     };
 
     formData.append("video", file_loc);
-    axios.post('http://localhost:8080/api/video', formData, options)
+    axios.post('http://localhost:8080/api/videos', formData, options)
     .then((res) => {
       setProgress(100);
     });
