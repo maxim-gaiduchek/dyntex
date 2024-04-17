@@ -50,7 +50,11 @@ class MediaProcessor(
                 format = ".mp4",
             )
         videoEntity.fps = videoInfo.fps.toDouble()
-
+        videoEntity.height = videoInfo.height
+        videoEntity.width = videoInfo.width
+        videoEntity.duration = videoInfo.duration
+        videoEntity.previewPath = videoInfo.preview
+        videoEntity.size = videoInfo.size
         return videoEntity
     }
 
@@ -96,7 +100,7 @@ class MediaProcessor(
         val inputStream = media.inputStream
         val image = ImageIO.read(inputStream)
 
-        mask.size = media.size
+        mask.size = media.size.toString()
         mask.width = image.width
         mask.height = image.height
         mask.aspectRatio = mask.width.toDouble() / mask.height.toDouble()
