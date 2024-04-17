@@ -3,9 +3,11 @@ import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
+import { Loader } from '@mantine/core';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
+  const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
 
   const rejectFile = () => {
@@ -26,7 +28,6 @@ export default function DropZone(props) {
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
         var percentage = Math.floor((loaded * 100) / total);
-        console.log(percentage);
         setProgress(percentage);
       }
     };
@@ -34,6 +35,7 @@ export default function DropZone(props) {
     formData.append("video", file_loc);
     axios.post('http://localhost:8080/api/videos', formData, options)
     .then((res) => {
+      setFinished(true)
       setProgress(100);
     });
   }
@@ -43,7 +45,7 @@ export default function DropZone(props) {
       { file === null ?
         <Dropzone
           onDrop={getFile}
-          onReject={rejectFile}
+          onReject={(files) => console.log('rejected files', files)}
           maxSize={5 * 1024 ** 2}
           {...props}
         >
@@ -86,16 +88,28 @@ export default function DropZone(props) {
           </Box>
           <div style={{width: "100%"}}>
             {file.name}
-            <Progress.Root size="xl">
-              <Progress.Section value={progress}>
-                <Progress.Label>{progress}%</Progress.Label>
-              </Progress.Section>
-            </Progress.Root>
+            {!finished ? 
+              <>
+                {progress !== 100 ?
+                  <Progress.Root size="xl">
+                    <Progress.Section value={progress}>
+                      <Progress.Label>{progress}%</Progress.Label>
+                    </Progress.Section>
+                  </Progress.Root>
+                  :
+                  <>
+                    <Loader type='dots'/>
+                  </>
+                }
+              </>
+              :
+              <></>
+            }
           </div>
         </Group>
         <br/>
         <Group justify='center'>
-          <Button onClick={props.close} disabled={progress!==100}>Save</Button>
+          <Button onClick={props.close} disabled={!finished}>Save</Button>
         </Group>
         </>
       }
