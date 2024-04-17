@@ -16,29 +16,29 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
     private val avatarService: AvatarService
 ) : UserAccountService {
-
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         private const val TOKEN_SIZE = 128
     }
 
-    override fun getById(id: Long): Optional<UserAccount> {
+    override fun findById(id: Long): Optional<UserAccount> {
         return userAccountRepository.findById(id)
     }
 
-    override fun getByToken(token: String): Optional<UserAccount> {
+    override fun findByToken(token: String): Optional<UserAccount> {
         return userAccountRepository.getByToken(token)
     }
 
     override fun getAuthenticated(): UserAccount {
         val id = fetchUserIdFromAuthentication()
-        return findByIdOrThrow(id)
+        return getByIdOrThrow(id)
     }
 
     private fun fetchUserIdFromAuthentication(): Long {
@@ -47,23 +47,25 @@ class UserAccountServiceImpl(
         return auth.userId
     }
 
+    override fun getByIdOrThrow(id: Long): UserAccount {
+        return findById(id)
+            .getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
+            }
+    }
+
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
-        val user = findByIdOrThrow(id)
+        val user = getByIdOrThrow(id)
         user.name = userAccountDto.name
         return userAccountRepository.save(user)
     }
 
     override fun updateAvatar(id: Long, file: MultipartFile): UserAccount {
-        val user = findByIdOrThrow(id)
+        val user = getByIdOrThrow(id)
         val avatar = avatarService.save(id, file)
         user.avatar = avatar
         avatar.userAccount = user
         return userAccountRepository.save(user)
-    }
-
-    override fun findByIdOrThrow(id: Long): UserAccount {
-        return getById(id)
-            .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
     }
 
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
@@ -77,7 +79,7 @@ class UserAccountServiceImpl(
         if (EMPTY_STRING_HASH == password) {
             throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
-        val email = userCredentialsDto.email
+        val email = userCredentialsDto.email!!
         if (userAccountRepository.existsByEmail(email)) {
             throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
         }
@@ -86,16 +88,17 @@ class UserAccountServiceImpl(
     private fun buildNewUser(userCredentialsDto: UserCredentialsDto): UserAccount {
         val token = RandomStringUtils.random(TOKEN_SIZE, true, false)
         return UserAccount(
-            name = userCredentialsDto.name,
-            email = userCredentialsDto.email,
-            password = userCredentialsDto.password,
-            token = token
+            name = userCredentialsDto.name!!,
+            email = userCredentialsDto.email!!,
+            password = userCredentialsDto.password!!,
+            token = token,
         )
     }
 
     override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
-        val user = userAccountRepository.getByEmailAndPassword(userCredentialsDto.email, userCredentialsDto.password)
-        user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+        val user =
+            userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
+                .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
     }
 }

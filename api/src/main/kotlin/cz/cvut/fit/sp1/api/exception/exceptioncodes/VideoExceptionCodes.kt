@@ -5,6 +5,6 @@ enum class VideoExceptionCodes(
     override val description: String
 ) : ExceptionCodes {
 
-    INVALID_VIDEO_FILE("DTEX-VID-001", "Excepted video file, but don't receive it"),
-    VIDEO_NOT_FOUND("DTEX-VID-002", "Video with id %d don't exist"),
+    VIDEO_NOT_FOUND("DTEX-VID-001", "Video with id %d is not found"),
+    INVALID_VIDEO_FILE("DTEX-VID-002", "Excepted video file, but don't receive it"),
 }

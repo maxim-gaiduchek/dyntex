@@ -17,18 +17,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Profile("!local") // TODO spring profiles idk how to do it on gradle
 class SecurityConfiguration(
-    private val userAccountService: UserAccountService
+        private val userAccountService: UserAccountService
 ) {
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         val tokenFilter = TokenFilter(userAccountService)
         return http
-            .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
-            .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
-            .authorizeHttpRequests { it.anyRequest().authenticated() }
-            .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter::class.java)
-            .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .build()
+                .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
+                .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
+                .authorizeHttpRequests { it.anyRequest().permitAll() }
+                .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter::class.java)
+                .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+                .build()
     }
 }
