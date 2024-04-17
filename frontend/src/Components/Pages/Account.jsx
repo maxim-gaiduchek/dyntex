@@ -1,7 +1,6 @@
 import { Grid } from '@mantine/core'
 import { Title, Text } from '@mantine/core'
 import TextureCard from '../Card/TextureCard'
-import { Button } from '@mantine/core';
 
 const textures = [
     {

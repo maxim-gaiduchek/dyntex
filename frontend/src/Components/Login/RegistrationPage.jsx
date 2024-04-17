@@ -19,7 +19,12 @@ import {
   export default function LoginPage() {
 
     const [active, setActive] = React.useState(0);
-    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
+    const nextStep = async () => {
+        if(active == 2){
+            console.log(await hashPasswd())
+        }
+        setActive((current) => (current < 3 ? current + 1 : current));
+    }
     const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
     const [email, setEmail] = React.useState("");
@@ -43,11 +48,26 @@ import {
         setEmail(text);
     }
 
+    const hashPasswd = async () => {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
     const checkPassword = (event) => {
+        let errcpy = [...error];
+        
+        errcpy[4] = passwordRep === "" ? false : event.target.value !== passwordRep;
+        setError(errcpy);
         setPassword(event.target.value)
     }
 
     const checkRepPassword = (event) => {
+        let errcpy = [...error];
+        
+        errcpy[4] = event.target.value === "" ? false : password !== event.target.value;
+        setError(errcpy);
         setPasswordRep(event.target.value)
     }
 
@@ -104,7 +124,11 @@ import {
                     active !== 3 ?
                     <>
                         <Button variant="default" onClick={prevStep}>Back</Button>
-                        <Button onClick={nextStep}>Next step</Button>
+                        <Button onClick={nextStep} disabled={
+                            active === 0 ? email === "" || error[0] === true : 
+                            (active === 1 ? name === "" || surname === "" || error[1] || error[2] : 
+                                active === 2 ? password === "" || passwordRep === "" || error[3] || error[4] : false)
+                        }>Next step</Button>
                     </>
                     :
                     <>
