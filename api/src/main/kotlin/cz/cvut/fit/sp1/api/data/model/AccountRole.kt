@@ -1,6 +1,12 @@
 package cz.cvut.fit.sp1.api.data.model
 
-enum class AccountRole {
-    ADMIN,
-    USER,
+import org.springframework.security.core.GrantedAuthority
+
+enum class AccountRole : GrantedAuthority {
+
+    ADMIN, USER;
+
+    override fun getAuthority(): String {
+        return name
+    }
 }

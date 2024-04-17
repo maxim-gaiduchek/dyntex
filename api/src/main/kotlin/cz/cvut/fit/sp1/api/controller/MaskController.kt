@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.controller
 
-import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
+import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.PostMapping
@@ -11,15 +11,16 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @CrossOrigin(origins = ["*"])
-@RequestMapping("/videos")
-class VideoController(
-    private val videoService: VideoService,
+@RequestMapping("/masks")
+class MaskController(
+    private val maskService: MaskService
 ) {
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun upload(
-        @RequestParam("video") video: MultipartFile,
+        // TODO Get DTO with Media file
+        @RequestParam("mask") mask: MultipartFile,
     ) {
         // TODO implement input validation
-        videoService.create(video)
+        maskService.create(mask) // TODO return DTO
     }
 }

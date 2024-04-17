@@ -15,8 +15,8 @@ open class Media(
     open var size: Long = 0
     open var description: String? = ""
     open var aspectRatio: Double = 0.0
-    open var quality: String = "" // TODO: maybe should create enum type
-
+    open var width: Int = 0
+    open var height: Int = 0
     @ManyToMany(mappedBy = "likedMedia")
     open var likedBy: MutableList<UserAccount> = mutableListOf()
 
