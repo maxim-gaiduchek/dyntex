@@ -98,7 +98,7 @@ class UserAccountServiceImpl(
     override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
         val user =
             userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
-        user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+                .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
     }
 }
