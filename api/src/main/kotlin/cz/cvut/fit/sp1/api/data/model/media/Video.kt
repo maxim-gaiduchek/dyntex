@@ -9,6 +9,6 @@ class Video(
     format: String,
 ) : Media(name, path, format) {
     var duration: Long = 0
-    var fps: Long = 0
+    var fps: Double = 0.0
     var cameraMotion: Boolean = false
 }

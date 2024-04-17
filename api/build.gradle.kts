@@ -55,6 +55,8 @@ dependencies {
      * */
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
+
+    api("org.apache.httpcomponents.client5:httpclient5:5.2.1")
 }
 
 tasks.withType<KotlinCompile> {

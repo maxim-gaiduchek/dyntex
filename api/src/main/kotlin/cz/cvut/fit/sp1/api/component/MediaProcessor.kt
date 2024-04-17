@@ -1,10 +1,20 @@
 package cz.cvut.fit.sp1.api.component
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import cz.cvut.fit.sp1.api.data.dto.VideoInfoResponse
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.exception.MediaException
+import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,9 +24,11 @@ import kotlin.io.path.Path
 class MediaProcessor(
     private val media: MultipartFile,
     private val fileStorage: FileStorage,
+    private val restTemplate: RestTemplate,
 ) {
     companion object {
-        val basePath = Path(System.getProperty("user.home"),"sp1", "storage").toString() // TODO need to create configuration with setters on path
+        val basePath = Path(System.getProperty("user.home"), "sp1", "storage").toString() // TODO need to create configuration with setters on path
+        val objectMapper = ObjectMapper()
     }
 
     fun extractVideoInfo(): Video {
@@ -29,21 +41,58 @@ class MediaProcessor(
 
         saveFile(filePath)
 
-        // nado poprosit vanu ctoby on na pythone napisal script kotory by dostal ese info iz file
+        val videoInfo = getVideoInfo(filePath)
 
-        return Video(
-            name = name,
-            path = filePath,
-            format = extension,
-        )
+        val videoEntity =
+            Video(
+                name = name,
+                path = videoInfo.output_file,
+                format = ".mp4",
+            )
+        videoEntity.fps = videoInfo.fps.toDouble()
+
+        return videoEntity
     }
 
-    private fun buildMask(name: String, extension: String, filePath: String) : Mask {
-        val mask = Mask(
-            name = name,
-            path = filePath,
-            format = extension,
-        )
+    private fun getVideoInfo(path: String): VideoInfoResponse {
+        val headers = HttpHeaders()
+        // val encodedPath = URLEncoder.encode(path, StandardCharsets.UTF_8.toString())
+
+        headers.accept = listOf(MediaType.APPLICATION_JSON)
+
+        val request = HttpEntity(LinkedMultiValueMap<String, String>(), headers)
+        val response =
+            restTemplate.exchange(
+                "http://127.0.0.1:5000/prepare?path=$path",
+                HttpMethod.GET,
+                request,
+                String::class.java,
+            )
+        val connectToSlackResponseString =
+            response.body ?: let {
+                val exception = ValidationException(VideoExceptionCodes.PYTHON_INFO_ERROR)
+                throw exception
+            }
+
+        val parsed = objectMapper.readValue<VideoInfoResponse>(connectToSlackResponseString)
+        if (!parsed.success) {
+            throw ValidationException(VideoExceptionCodes.PYTHON_INFO_ERROR)
+        }
+
+        return parsed
+    }
+
+    private fun buildMask(
+        name: String,
+        extension: String,
+        filePath: String,
+    ): Mask {
+        val mask =
+            Mask(
+                name = name,
+                path = filePath,
+                format = extension,
+            )
         val inputStream = media.inputStream
         val image = ImageIO.read(inputStream)
 
@@ -54,7 +103,8 @@ class MediaProcessor(
 
         return mask
     }
-    fun extractMaskInfo() : Mask {
+
+    fun extractMaskInfo(): Mask {
         // need to check if it's mask (png format image) before saving
         if (!isMask(media)) throw MediaException(MaskExceptionCodes.INVALID_MASK_FILE)
 
@@ -69,22 +119,22 @@ class MediaProcessor(
         return mask
     }
 
-    private fun generateFileName(type : String): String {
+    private fun generateFileName(type: String): String {
         val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
         val date = dateFormat.format(Date())
         val random = (1000..9999).random()
-        return "${type}_${date}_${random}"
+        return "${type}_${date}_$random"
     }
 
     private fun determineFileType(mediaSource: MultipartFile): String {
         return mediaSource.contentType?.split("/")?.last() ?: ""
     }
 
-    fun isVideo(videoSource: MultipartFile) : Boolean {
+    fun isVideo(videoSource: MultipartFile): Boolean {
         return videoSource.contentType?.split("/")?.first() == "video"
     }
 
-    fun isMask(maskSource: MultipartFile) : Boolean {
+    fun isMask(maskSource: MultipartFile): Boolean {
         return maskSource.contentType?.split("/")?.last() == "png"
     }
 
