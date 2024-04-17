@@ -11,4 +11,7 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
     fun getByEmailAndPassword(email: String, password: String): UserAccount?
 
     fun existsByEmail(email: String): Boolean
+
+    fun findByAuthToken(authToken: String): Optional<UserAccount>
+
 }

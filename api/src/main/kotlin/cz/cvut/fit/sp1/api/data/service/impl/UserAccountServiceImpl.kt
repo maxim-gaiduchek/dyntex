@@ -19,8 +19,9 @@ import java.util.*
 
 @Service
 class UserAccountServiceImpl(
-    private val userAccountRepository: UserAccountRepository,
-    private val avatarService: AvatarService
+        private val userAccountRepository: UserAccountRepository,
+        private val avatarService: AvatarService,
+        private val verificationServiceImpl: VerificationServiceImpl
 ) : UserAccountService {
 
     companion object {
@@ -62,13 +63,13 @@ class UserAccountServiceImpl(
     }
 
     override fun findByIdOrThrow(id: Long): UserAccount {
-        return getById(id)
-            .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
+        return getById(id).orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
     }
 
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
         checkUserAccountCreationPossibility(userCredentialsDto)
         val user = buildNewUser(userCredentialsDto)
+        verificationServiceImpl.sendVerificationEmail(user.email, user.authToken)
         return userAccountRepository.save(user)
     }
 
@@ -85,11 +86,13 @@ class UserAccountServiceImpl(
 
     private fun buildNewUser(userCredentialsDto: UserCredentialsDto): UserAccount {
         val token = RandomStringUtils.random(TOKEN_SIZE, true, false)
+        val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
         return UserAccount(
-            name = userCredentialsDto.name,
-            email = userCredentialsDto.email,
-            password = userCredentialsDto.password,
-            token = token
+                name = userCredentialsDto.name,
+                email = userCredentialsDto.email,
+                password = userCredentialsDto.password,
+                token = token,
+                authToken = authToken,
         )
     }
 
@@ -97,5 +100,15 @@ class UserAccountServiceImpl(
         val user = userAccountRepository.getByEmailAndPassword(userCredentialsDto.email, userCredentialsDto.password)
         user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
         return user!!
+    }
+
+    fun delete(id: Long) {
+        val user = userAccountRepository.findById(id)
+                .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
+        userAccountRepository.delete(user)
+    }
+
+    fun findByAuthToken(token: String): UserAccount {
+        return userAccountRepository.findByAuthToken(token).orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_WITH_AUTH_TOKEN_NOT_FOUND, token) }
     }
 }
