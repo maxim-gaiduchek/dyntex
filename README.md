@@ -49,7 +49,7 @@ The client application is developed using React.js. It provides a user-friendly 
 
 #### Docker Container with Spring Boot
 
-The backend services are implemented using Spring Boot, deployed within a Docker container. Spring Boot provides a robust framework for building and deploying Java-based applications. It serves as the intermediary between the client-side application and the image processing microservice.
+The backend services are implemented using Spring Boot, deployed within a Docker container. Spring Boot provides a robust framework for building and deploying Java-based applications. It serves as the intermediary between the client-side application and the image processing microservice. The API documentation can be found on [Swagger-generated page](http://localhost:8080/api/swagger-ui/index.html). 
 
 #### Python Microservice for Image Processing
 

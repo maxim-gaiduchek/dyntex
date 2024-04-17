@@ -14,7 +14,14 @@ class FileStorage {
         try {
             file.writeBytes(bytes)
         } catch (e: Exception) {
-            println("MAMA ${e.message}")
+            // throw FileStorageException(FileStorageExceptionCodes.FILE_STORE_ERROR)
+        }
+    }
+
+    fun delete(path: String) {
+        val file = getFile(path)
+        if (file.exists()) {
+            file.delete()
         }
     }
 

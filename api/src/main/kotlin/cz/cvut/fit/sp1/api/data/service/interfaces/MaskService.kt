@@ -1,14 +1,18 @@
 package cz.cvut.fit.sp1.api.data.service.interfaces
 
+import cz.cvut.fit.sp1.api.data.dto.search.SearchMaskDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 interface MaskService {
 
-    fun getById(id: Long): Optional<Mask>
+    fun findById(id: Long): Optional<Mask>
 
-    fun findByIdOrThrow(id: Long): Mask
+    fun getByIdOrThrow(id: Long): Mask
+
+    fun findAll(paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto?
 
     fun create(mask: MultipartFile): Mask
 }
