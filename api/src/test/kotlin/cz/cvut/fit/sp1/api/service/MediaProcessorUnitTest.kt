@@ -2,6 +2,7 @@ package cz.cvut.fit.sp1.api.service
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
+import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.exception.MediaException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
@@ -27,6 +28,9 @@ class MediaProcessorUnitTest {
     @MockBean
     lateinit var fileStorage: FileStorage
 
+    @Autowired
+    lateinit var storagePathProperties: StoragePathProperties
+
     @MockBean
     @Autowired
     lateinit var restTemplate: RestTemplate
@@ -34,7 +38,7 @@ class MediaProcessorUnitTest {
 
     @BeforeEach
     fun setUp() {
-        mediaProcessor = MediaProcessor(media, fileStorage, restTemplate)
+        mediaProcessor = MediaProcessor(media, fileStorage, restTemplate, storagePathProperties)
     }
 
     @Test

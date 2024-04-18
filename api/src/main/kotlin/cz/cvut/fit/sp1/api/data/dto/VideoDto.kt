@@ -6,6 +6,7 @@ data class VideoDto(
     override var id: Long?,
     override var name: String,
     override var path: String,
+    var previewPath: String,
     override var size: String,
     override var description: String,
     override var format: String,

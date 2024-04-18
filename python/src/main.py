@@ -77,13 +77,13 @@ def prepare_video():
             {
                 'success': True, 
                 'message': 'Video prepared successfully', 
-                'output_file': output_filepath,
+                'output_file': new_name,
                 'fps': round(resized_clip.fps, 0),
                 'size': str(round(sz, 2)) + "MB",
                 'width': resized_clip.size[0],
                 'height': resized_clip.size[1],
                 'duration': resized_clip.duration,
-                'preview': os.path.join(video_directory, new_preview_name)
+                'preview': new_preview_name
                 }
             )
 

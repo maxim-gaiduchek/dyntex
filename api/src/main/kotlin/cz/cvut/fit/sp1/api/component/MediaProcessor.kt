@@ -2,6 +2,7 @@ package cz.cvut.fit.sp1.api.component
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.data.dto.VideoInfoResponse
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -25,9 +26,9 @@ class MediaProcessor(
     private val media: MultipartFile,
     private val fileStorage: FileStorage,
     private val restTemplate: RestTemplate,
+    private val storagePathProperties: StoragePathProperties,
 ) {
     companion object {
-        val basePath = Path(System.getProperty("user.home"), "sp1", "storage").toString() // TODO need to create configuration with setters on path
         val objectMapper = ObjectMapper()
     }
 
@@ -37,7 +38,7 @@ class MediaProcessor(
 
         val name = generateFileName("video")
         val extension = determineFileType(media)
-        val filePath = Path(basePath, "$name.$extension").toString()
+        val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
 
         saveFile(filePath)
 
@@ -52,6 +53,7 @@ class MediaProcessor(
         videoEntity.fps = videoInfo.fps.toDouble()
         videoEntity.height = videoInfo.height
         videoEntity.width = videoInfo.width
+        videoEntity.previewPath = videoInfo.preview
         videoEntity.duration = videoInfo.duration
         videoEntity.previewPath = videoInfo.preview
         videoEntity.size = videoInfo.size
@@ -114,7 +116,7 @@ class MediaProcessor(
 
         val name = generateFileName("mask")
         val extension = determineFileType(media)
-        val filePath = Path(basePath, "$name.$extension").toString()
+        val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
 
         val mask = buildMask(name, extension, filePath)
 
@@ -142,11 +144,11 @@ class MediaProcessor(
         return maskSource.contentType?.split("/")?.last() == "png"
     }
 
-    private fun saveFile(path: String) {
+    private fun saveFile(fileName: String) {
         val inputStream = media.inputStream
         val bytes = inputStream.readBytes()
         inputStream.close()
 
-        fileStorage.store(path, bytes = bytes)
+        fileStorage.store(fileName, bytes = bytes)
     }
 }
