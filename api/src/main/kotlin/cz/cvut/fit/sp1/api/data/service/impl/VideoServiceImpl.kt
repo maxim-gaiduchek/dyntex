@@ -3,6 +3,7 @@ package cz.cvut.fit.sp1.api.data.service.impl
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
+import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.data.dto.VideoDtoRequest
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
@@ -25,6 +26,7 @@ class VideoServiceImpl(
     private val videoMapper: VideoMapper,
     private val restTemplate: RestTemplate,
     private val tagsService: TagsService,
+    private val storagePathProperties: StoragePathProperties,
 ) : VideoService {
     override fun findById(id: Long): Optional<Video> {
         return videoRepository.findById(id)
@@ -64,7 +66,7 @@ class VideoServiceImpl(
             attachTagToVideo(savedVideo, videoDtoRequest.tagId.toLongOrThrowInvalidId())
         }
 
-        videoInfo.description = videoDtoRequest.description
+        savedVideo.description = videoDtoRequest.description
         return savedVideo
     }
 
@@ -80,7 +82,7 @@ class VideoServiceImpl(
     }
 
     fun getVideoInfo(video: MultipartFile): Video {
-        val processor = MediaProcessor(video, fileStorage, restTemplate)
+        val processor = MediaProcessor(video, fileStorage, restTemplate, storagePathProperties = storagePathProperties)
         return processor.extractVideoInfo()
     }
 

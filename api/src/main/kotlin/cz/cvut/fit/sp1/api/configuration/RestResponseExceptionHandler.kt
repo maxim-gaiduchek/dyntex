@@ -30,6 +30,12 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
 //        return ResponseEntity(body, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
 //    }
 
+    @ExceptionHandler(FileStoreException::class)
+    protected fun exceptionHandler(exception: FileStoreException): ResponseEntity<Any> {
+        val body = getResponse(HttpStatus.BAD_REQUEST, exception)
+        return ResponseEntity(body, HttpHeaders(), HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(ValidationException::class)
     protected fun exceptionHandler(exception: ValidationException): ResponseEntity<Any> {
         val body = getResponse(HttpStatus.BAD_REQUEST, exception)
