@@ -2,6 +2,9 @@ package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.component.mapper.TagMapper
 import cz.cvut.fit.sp1.api.data.dto.TagDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchTagDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchTagParamsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.Tag
 import cz.cvut.fit.sp1.api.data.repository.TagRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
@@ -27,8 +30,23 @@ class TagServiceImpl(
             .orElseThrow { EntityNotFoundException(TagExceptionCodes.TAG_NOT_FOUND, id) }
     }
 
-    override fun findAll(): List<Tag> {
-        return tagRepository.findAll()
+    override fun findAll(paramsDto: SearchTagParamsDto?): SearchTagDto? {
+        if (paramsDto == null) {
+            return null
+        }
+        val specification = paramsDto.buildSpecification()
+        val pageable = paramsDto.buildPageable()
+        val page = tagRepository.findAll(specification, pageable)
+        val tags =
+            page.content.stream()
+                .map { tagMapper.toDto(it)!! }
+                .toList()
+        return SearchTagDto(
+            tags = tags,
+            currentPage = page.number + 1,
+            totalPages = page.totalPages,
+            totalMatches = page.totalElements,
+        )
     }
 
     override fun getAllByIds(ids: List<Long>): MutableList<Tag> {
