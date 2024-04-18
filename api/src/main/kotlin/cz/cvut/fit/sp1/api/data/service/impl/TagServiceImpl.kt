@@ -4,7 +4,6 @@ import cz.cvut.fit.sp1.api.component.mapper.TagMapper
 import cz.cvut.fit.sp1.api.data.dto.TagDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchTagDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchTagParamsDto
-import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.Tag
 import cz.cvut.fit.sp1.api.data.repository.TagRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
