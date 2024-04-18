@@ -3,10 +3,15 @@ import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
-import { Loader } from '@mantine/core';
+import { Loader, Select, TextInput, Textarea } from '@mantine/core';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
+  const [value, setValue] = useState(null)
+  const [filled, setFilled] = useState(false);
+  const [tagId, setTagIg] = useState(null);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("")
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
 
@@ -29,6 +34,10 @@ export default function DropZone(props) {
     };
 
     formData.append("video", file_loc);
+    // formData.append("name", name);
+    formData.append("description", description);
+    console.log(description)
+    formData.append("tagId", tagId)
     axios.post('http://localhost:8080/api/videos', formData, options)
     .then((res) => {
       setFinished(true)
@@ -36,79 +45,110 @@ export default function DropZone(props) {
     });
   }
 
+  const getTagId = () => {
+    props.tags.forEach((tag) => {
+      if(tag.name == value.value){
+        setTagIg(tag.id)
+      }
+    })
+  }
+
   return (
     <>
-      { file === null ?
-        <Dropzone
-          onDrop={getFile}
-          onReject={(files) => console.log('rejected files', files)}
-          maxSize={5 * 1024 ** 2}
-          {...props}
-        >
-          <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
-            <Dropzone.Accept>
-              <IconUpload
-                style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
-                stroke={1.5}
-              />
-            </Dropzone.Accept>
-            <Dropzone.Reject>
-              <IconX
-                style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }}
-                stroke={1.5}
-              />
-            </Dropzone.Reject>
-            <Dropzone.Idle>
-              <IconPhoto
-                style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }}
-                stroke={1.5}
-              />
-            </Dropzone.Idle>
-    
-            <div>
-              <Text size="xl" inline>
-                Drag images here or click to select files
-              </Text>
-              <Text size="sm" c="dimmed" inline mt={7}>
-                Attach as many files as you like, each file should not exceed 5mb
-              </Text>
-            </div>
-          </Group>
-        </Dropzone>
-        :
+    {
+      filled ?
+      <>
         <>
-        <h2>Uploading file</h2>
-        <Group grow wrap='nowrap' preventGrowOverflow={false}>
-          <Box>
-          <IconPhoto size={50}/>
-          </Box>
-          <div style={{width: "100%"}}>
-            {file.name}
-            {!finished ? 
-              <>
-                {progress !== 100 ?
-                  <Progress.Root size="xl">
-                    <Progress.Section value={progress}>
-                      <Progress.Label>{progress}%</Progress.Label>
-                    </Progress.Section>
-                  </Progress.Root>
-                  :
+          { file === null ?
+            <Dropzone
+              onDrop={getFile}
+              onReject={(files) => console.log('rejected files', files)}
+              maxSize={5 * 1024 ** 2}
+              {...props}
+            >
+              <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
+                <Dropzone.Accept>
+                  <IconUpload
+                    style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
+                    stroke={1.5}
+                  />
+                </Dropzone.Accept>
+                <Dropzone.Reject>
+                  <IconX
+                    style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }}
+                    stroke={1.5}
+                  />
+                </Dropzone.Reject>
+                <Dropzone.Idle>
+                  <IconPhoto
+                    style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-dimmed)' }}
+                    stroke={1.5}
+                  />
+                </Dropzone.Idle>
+        
+                <div>
+                  <Text size="xl" inline>
+                    Drag images here or click to select files
+                  </Text>
+                  <Text size="sm" c="dimmed" inline mt={7}>
+                    Attach as many files as you like, each file should not exceed 5mb
+                  </Text>
+                </div>
+              </Group>
+            </Dropzone>
+            :
+            <>
+            <h2>Uploading file</h2>
+            <Group grow wrap='nowrap' preventGrowOverflow={false}>
+              <Box>
+              <IconPhoto size={50}/>
+              </Box>
+              <div style={{width: "100%"}}>
+                {file.name}
+                {!finished ? 
                   <>
-                    <Loader type='dots'/>
+                    {progress !== 100 ?
+                      <Progress.Root size="xl">
+                        <Progress.Section value={progress}>
+                          <Progress.Label>{progress}%</Progress.Label>
+                        </Progress.Section>
+                      </Progress.Root>
+                      :
+                      <>
+                        <Loader type='dots'/>
+                      </>
+                    }
                   </>
+                  :
+                  <></>
                 }
-              </>
-              :
-              <></>
-            }
-          </div>
-        </Group>
-        <br/>
-        <Group justify='center'>
-          <Button onClick={() => {props.close(); props.fetchData()}} disabled={!finished}>Save</Button>
-        </Group>
+              </div>
+            </Group>
+            <br/>
+            <Group justify='center'>
+              <Button onClick={() => {props.close(); props.fetchData()}} disabled={!finished}>Save</Button>
+            </Group>
+            </>
+          }
         </>
-      }
+      </>
+      :
+      <>
+      <TextInput placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
+      <br/>
+      <Select
+        data={props.tags}
+        value={value ? value.value : null}
+        onChange={(_value, option) => {setValue(option)}}
+      />
+      <br/>
+      <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
+      <br/>
+      <Group justify='center'>
+        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Save</Button>
+      </Group>
+      </>
+    }
     </>
   );
 }

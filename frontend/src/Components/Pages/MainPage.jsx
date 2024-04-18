@@ -3,7 +3,7 @@ import { Grid } from '@mantine/core'
 import { Pagination } from '@mantine/core';
 import { Center, Group } from '@mantine/core';
 import { SegmentedControl, Modal, Button } from '@mantine/core';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Skeleton } from '@mantine/core';
@@ -17,23 +17,32 @@ export default function MainPage(){
     const [value, setValue] = React.useState("All")
     const [textures, setTextures] = React.useState(null)
     const [opened, { open, close }] = useDisclosure(false);
+    const [tags, setTags] = React.useState([])
 
     const fetchData = async () => {
       setTextures(null)
       const response = await axios.get('http://localhost:8080/api/videos');
-      console.log(response)
       setTextures(response.data.videos)
+    }
+
+    const fetchTags = async () => {
+      const response = await axios.get('http://localhost:8080/api/tags')
+      response.data.forEach((d) => {
+        d.value = d.name
+      })
+      setTags(response.data)
     }
 
     useEffect(() => {
       fetchData()
+      fetchTags()
     },[])
 
     return (
         <>
           <h2>DYNTEX))</h2>
           <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-            <DropZone fetchData={fetchData} close={close}/>
+            <DropZone tags={tags} fetchData={fetchData} close={close}/>
           </Modal>
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>

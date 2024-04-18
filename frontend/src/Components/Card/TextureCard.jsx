@@ -9,7 +9,7 @@ export default function TextureCard(props) {
   const { id, path, name, tags, description, size, fps } = props.texture;
   const features = tags.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
-      {badge.label}
+      {badge.name}
     </Badge>
   ));
 
