@@ -1,5 +1,3 @@
-storage:
-  media-path: /Users/huglx/sp1/storage
 postgres-autostart:
   enabled: true
 spring:
