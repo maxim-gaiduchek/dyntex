@@ -39,15 +39,6 @@ class UserAccountController(
         return userAccountMapper.toDto(user)
     }
 
-    @PutMapping("/{id}")
-    fun update(
-        @PathVariable id: Long,
-        @Validated(UpdateGroup::class) @RequestBody userAccountDto: UserAccountDto
-    ): UserAccountDto {
-        val user = userAccountService.update(id, userAccountDto)
-        return userAccountMapper.toDto(user)
-    }
-
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Long,
@@ -72,6 +63,15 @@ class UserAccountController(
         val user = userAccountService.login(userCredentialsDto)
         val tokenCookie = createRefreshTokenCookie(user.token)
         response.addHeader(HttpHeaders.SET_COOKIE, tokenCookie.toString())
+        return userAccountMapper.toDto(user)
+    }
+
+    @PutMapping("/{id}")
+    fun update(
+        @PathVariable id: Long,
+        @Validated(UpdateGroup::class) @RequestBody userAccountDto: UserAccountDto
+    ): UserAccountDto {
+        val user = userAccountService.update(id, userAccountDto)
         return userAccountMapper.toDto(user)
     }
 
