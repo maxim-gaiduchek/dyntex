@@ -12,6 +12,7 @@ import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
+import jakarta.transaction.Transactional
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -78,6 +79,7 @@ class UserAccountServiceImpl(
         return userAccountRepository.save(user)
     }
 
+    @Transactional
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
         checkUserAccountCreationPossibility(userCredentialsDto)
         val user = buildNewUser(userCredentialsDto)

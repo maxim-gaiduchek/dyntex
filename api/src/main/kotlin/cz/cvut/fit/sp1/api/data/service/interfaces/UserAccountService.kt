@@ -9,6 +9,7 @@ import java.util.*
 interface UserAccountService {
 
     fun findById(id: Long): Optional<UserAccount>
+
     fun getByIdOrThrow(id: Long): UserAccount
 
     fun findByToken(token: String): Optional<UserAccount>
