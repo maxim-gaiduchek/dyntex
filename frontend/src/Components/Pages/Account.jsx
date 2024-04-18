@@ -1,7 +1,6 @@
 import { Grid } from '@mantine/core'
 import { Title, Text } from '@mantine/core'
 import TextureCard from '../Card/TextureCard'
-import { Button } from '@mantine/core';
 
 const textures = [
     {
@@ -54,7 +53,7 @@ export default function Account(){
     
     return (
         <>
-          <Grid>
+          <Grid style={{marginTop: 50}}>
               <Grid.Col span={3}>
                   <div className='avatar' style={{
                       aspectRatio: "1/1",
