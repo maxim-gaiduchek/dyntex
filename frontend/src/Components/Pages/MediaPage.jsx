@@ -34,7 +34,7 @@ export default function MediaPage(){
                             width: "100%",
                             maxWidth: 500
                         }}
-                        alt="texture" src={"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/1200px-Cat_August_2010-4.jpg"}/>
+                        alt="texture" src={"http://localhost:8080/api/videos/previews/" + texture.previewPath}/>
                 </Group>
                 <Group mt="xs">
                     <Link to={"/media/" + texture.id} style={{ flex: 1 }}>
