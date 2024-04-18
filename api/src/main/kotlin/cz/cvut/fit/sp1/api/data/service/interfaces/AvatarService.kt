@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile
 
 interface AvatarService {
 
-//    fun save(multipartFile: MultipartFile): Avatar
     fun save(userId: Long, multipartFile: MultipartFile): Avatar
 
     fun delete(id: Long): Avatar

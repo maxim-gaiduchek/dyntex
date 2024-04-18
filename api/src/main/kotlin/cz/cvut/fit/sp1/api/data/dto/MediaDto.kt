@@ -4,7 +4,7 @@ open class MediaDto(
     open var id: Long?,
     open var name: String,
     open var size: String,
-    open var description: String,
+    open var description: String?,
     open var path: String,
     open var format: String,
     open var createdById: Long,

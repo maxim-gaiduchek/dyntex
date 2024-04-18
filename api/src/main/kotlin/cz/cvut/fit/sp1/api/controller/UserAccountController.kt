@@ -42,7 +42,7 @@ class UserAccountController(
     @PutMapping("/{id}")
     fun update(
         @PathVariable id: Long,
-        @Validated(UpdateGroup::class) userAccountDto: UserAccountDto
+        @Validated(UpdateGroup::class) @RequestBody userAccountDto: UserAccountDto
     ): UserAccountDto {
         val user = userAccountService.update(id, userAccountDto)
         return userAccountMapper.toDto(user)

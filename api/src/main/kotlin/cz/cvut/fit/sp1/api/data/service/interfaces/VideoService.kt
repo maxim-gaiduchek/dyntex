@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api.data.service.interfaces
 
-import cz.cvut.fit.sp1.api.data.dto.VideoDtoRequest
+import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -16,6 +16,6 @@ interface VideoService {
 
     fun create(
         video: MultipartFile,
-        videoDtoRequest: VideoDtoRequest,
+        videoDto: VideoDto,
     ): Video
 }

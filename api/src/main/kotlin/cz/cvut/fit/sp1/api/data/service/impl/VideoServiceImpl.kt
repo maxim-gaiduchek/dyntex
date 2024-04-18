@@ -4,15 +4,14 @@ import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
-import cz.cvut.fit.sp1.api.data.dto.VideoDtoRequest
+import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.repository.VideoRepository
+import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
-import cz.cvut.fit.sp1.api.exception.ValidationException
-import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
@@ -25,7 +24,7 @@ class VideoServiceImpl(
     private val fileStorage: FileStorage,
     private val videoMapper: VideoMapper,
     private val restTemplate: RestTemplate,
-    private val tagsService: TagsService,
+    private val tagService: TagService,
     private val storagePathProperties: StoragePathProperties,
 ) : VideoService {
     override fun findById(id: Long): Optional<Video> {
@@ -58,38 +57,23 @@ class VideoServiceImpl(
 
     override fun create(
         video: MultipartFile,
-        videoDtoRequest: VideoDtoRequest,
+        videoDto: VideoDto,
     ): Video {
-        val videoInfo = getVideoInfo(video)
-        val savedVideo = videoRepository.save(videoInfo)
-        if (!videoDtoRequest.tagId.isNullOrEmpty()) {
-            attachTagToVideo(savedVideo, videoDtoRequest.tagId.toLongOrThrowInvalidId())
-        }
-
-        savedVideo.description = videoDtoRequest.description
-        return savedVideo
+        val videoEntity = fetchVideoInfo(video)
+        enrichWithTags(videoDto, videoEntity)
+        videoEntity.description = videoDto.description
+        return videoRepository.save(videoEntity)
     }
 
-    private fun attachTagToVideo(
-        video: Video,
-        tagId: Long,
-    ) {
-        val tag = tagsService.get(tagId)
-        video.tags.add(tag)
-        tag.media.add(video)
-
-        tagsService.save(tag)
-    }
-
-    fun getVideoInfo(video: MultipartFile): Video {
+    fun fetchVideoInfo(video: MultipartFile): Video {
         val processor = MediaProcessor(video, fileStorage, restTemplate, storagePathProperties = storagePathProperties)
         return processor.extractVideoInfo()
     }
 
-    private fun String?.toLongOrThrowInvalidId(): Long {
-        return this?.toLongOrNull() ?: throw ValidationException(
-            ValidationExceptionCodes.INVALID_TAG_ID,
-            this,
-        )
+    private fun enrichWithTags(videoDto: VideoDto, video: Video) {
+        val tagIds = videoDto.tags.map { it.id!! }
+        val tags = tagService.getAllByIds(tagIds)
+        video.tags = tags
+        tags.forEach { it.media.add(video) }
     }
 }
