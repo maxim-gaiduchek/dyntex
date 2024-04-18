@@ -14,6 +14,7 @@ import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
@@ -56,15 +57,18 @@ class UserAccountServiceImpl(
 
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
         val user = getByIdOrThrow(id)
-        user.name = userAccountDto.name
+        user.name = userAccountDto.name!!
         return userAccountRepository.save(user)
     }
 
     override fun updateAvatar(id: Long, file: MultipartFile): UserAccount {
         val user = getByIdOrThrow(id)
+        if (user.avatar != null) {
+            avatarService.delete(user.avatar!!)
+        }
         val avatar = avatarService.save(id, file)
         user.avatar = avatar
-        avatar.userAccount = user
+        avatar?.userAccount = user
         return userAccountRepository.save(user)
     }
 

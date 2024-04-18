@@ -6,10 +6,11 @@ import jakarta.validation.constraints.NotEmpty
 
 data class UserAccountDto(
     val id: Long?,
-    @NotEmpty(groups = [UpdateGroup::class], message = "User name must not be empty")
-    var name: String,
-    var email: String,
-    var role: AccountRole,
+    @field:NotEmpty(message = "User name must not be empty", groups = [UpdateGroup::class])
+    var name: String?,
+    var email: String?,
+    var role: AccountRole?,
     var likedMedia: MutableList<MediaDto> = mutableListOf(),
-    var createdMedia: MutableList<MediaDto> = mutableListOf()
+    var createdMedia: MutableList<MediaDto> = mutableListOf(),
+    var avatar: AvatarDto?
 )

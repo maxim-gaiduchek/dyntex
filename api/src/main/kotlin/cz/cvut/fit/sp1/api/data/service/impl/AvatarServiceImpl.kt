@@ -13,7 +13,10 @@ class AvatarServiceImpl(
     private val fileStorage: FileStorage
 ) : AvatarService {
 
-    override fun save(userId: Long, multipartFile: MultipartFile): Avatar {
+    override fun save(userId: Long, multipartFile: MultipartFile?): Avatar? {
+        if (multipartFile == null) {
+            return null
+        }
         val fileName = "user_avatar_${userId}_${System.currentTimeMillis()}_${multipartFile.originalFilename}"
         fileStorage.store(fileName, multipartFile.bytes)
         return Avatar(
@@ -24,15 +27,9 @@ class AvatarServiceImpl(
         )
     }
 
-    override fun delete(id: Long): Avatar {
-        val avatar = avatarRepository.findById(id)
-            .orElseThrow { jakarta.persistence.EntityNotFoundException("Avatar not found with id: $id") }
-
+    override fun delete(avatar: Avatar) {
         fileStorage.delete(avatar.path)
-
         avatarRepository.delete(avatar)
-
-        return avatar
     }
 }
 
