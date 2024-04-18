@@ -3,12 +3,15 @@ package cz.cvut.fit.sp1.api.data.service.impl
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
+import cz.cvut.fit.sp1.api.data.dto.VideoDtoRequest
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.repository.VideoRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
+import cz.cvut.fit.sp1.api.exception.ValidationException
+import cz.cvut.fit.sp1.api.exception.exceptioncodes.ValidationExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
@@ -21,6 +24,7 @@ class VideoServiceImpl(
     private val fileStorage: FileStorage,
     private val videoMapper: VideoMapper,
     private val restTemplate: RestTemplate,
+    private val tagsService: TagsService,
 ) : VideoService {
     override fun findById(id: Long): Optional<Video> {
         return videoRepository.findById(id)
@@ -50,11 +54,40 @@ class VideoServiceImpl(
         )
     }
 
-    override fun create(video: MultipartFile): Video {
-        val processor = MediaProcessor(video, fileStorage, restTemplate)
-        val videoEntity = processor.extractVideoInfo()
-        videoRepository.save(videoEntity)
+    override fun create(
+        video: MultipartFile,
+        videoDtoRequest: VideoDtoRequest,
+    ): Video {
+        val videoInfo = getVideoInfo(video)
+        val savedVideo = videoRepository.save(videoInfo)
+        if (!videoDtoRequest.tagId.isNullOrEmpty()) {
+            attachTagToVideo(savedVideo, videoDtoRequest.tagId.toLongOrThrowInvalidId())
+        }
 
-        return videoEntity
+        videoInfo.description = videoDtoRequest.description
+        return savedVideo
+    }
+
+    private fun attachTagToVideo(
+        video: Video,
+        tagId: Long,
+    ) {
+        val tag = tagsService.get(tagId)
+        video.tags.add(tag)
+        tag.media.add(video)
+
+        tagsService.save(tag)
+    }
+
+    fun getVideoInfo(video: MultipartFile): Video {
+        val processor = MediaProcessor(video, fileStorage, restTemplate)
+        return processor.extractVideoInfo()
+    }
+
+    private fun String?.toLongOrThrowInvalidId(): Long {
+        return this?.toLongOrNull() ?: throw ValidationException(
+            ValidationExceptionCodes.INVALID_TAG_ID,
+            this,
+        )
     }
 }

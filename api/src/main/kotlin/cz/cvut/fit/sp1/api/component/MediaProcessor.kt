@@ -52,6 +52,7 @@ class MediaProcessor(
         videoEntity.fps = videoInfo.fps.toDouble()
         videoEntity.height = videoInfo.height
         videoEntity.width = videoInfo.width
+        videoEntity.previewPath = videoInfo.preview
         videoEntity.duration = videoInfo.duration
         videoEntity.previewPath = videoInfo.preview
         videoEntity.size = videoInfo.size
