@@ -9,15 +9,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
 import org.springframework.web.bind.MethodArgumentNotValidException
-import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import java.util.*
 
-@ControllerAdvice
+@RestControllerAdvice
 class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
-
     companion object {
         private const val STATUS_KEY = "status"
         private const val TIMESTAMP_KEY = "timestamp"
@@ -25,11 +24,11 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
         private const val DESCRIPTION_KEY = "description"
     }
 
-    @ExceptionHandler(Exception::class)
-    protected fun exceptionHandler(exception: Exception): ResponseEntity<Any> {
-        val body = LinkedHashMap<Any, Any>()
-        return ResponseEntity(body, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
-    }
+//    @ExceptionHandler(Exception::class)
+//    protected fun exceptionHandler(exception: Exception): ResponseEntity<Any> {
+//        val body = LinkedHashMap<Any, Any>()
+//        return ResponseEntity(body, HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR)
+//    }
 
     @ExceptionHandler(ValidationException::class)
     protected fun exceptionHandler(exception: ValidationException): ResponseEntity<Any> {
@@ -61,24 +60,30 @@ class RestResponseExceptionHandler : ResponseEntityExceptionHandler() {
         return ResponseEntity(body, HttpHeaders(), HttpStatus.NOT_ACCEPTABLE)
     }
 
-    override fun handleMethodArgumentNotValid(ex: MethodArgumentNotValidException,
-                                              headers: HttpHeaders,
-                                              status: HttpStatusCode,
-                                              request: WebRequest): ResponseEntity<Any> {
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest,
+    ): ResponseEntity<Any> {
         val errors: MutableMap<String, String?> = HashMap()
         ex.bindingResult.allErrors.forEach { error: ObjectError ->
-            val fieldName = if (error is FieldError) {
-                error.field
-            } else {
-                error.objectName
-            }
+            val fieldName =
+                if (error is FieldError) {
+                    error.field
+                } else {
+                    error.objectName
+                }
             val errorMessage = error.defaultMessage
             errors[fieldName] = errorMessage
         }
         return ResponseEntity(getInvalidDtoResponse(errors), HttpHeaders(), HttpStatus.BAD_REQUEST)
     }
 
-    private fun getResponse(status: HttpStatus, exception: AbstractException): Map<String, Any> {
+    private fun getResponse(
+        status: HttpStatus,
+        exception: AbstractException,
+    ): Map<String, Any> {
         val body: MutableMap<String, Any> = LinkedHashMap()
         body[STATUS_KEY] = status.toString()
         body[TIMESTAMP_KEY] = Date()

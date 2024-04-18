@@ -4,7 +4,7 @@ data class MaskDto(
     override var id: Long?,
     override var name: String,
     override var path: String,
-    override var size: Long,
+    override var size: String,
     override var description: String,
     override var format: String,
     override var createdById: Long,

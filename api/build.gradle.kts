@@ -36,8 +36,11 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("io.vavr:vavr:0.10.4")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("org.postgresql:postgresql")
@@ -53,6 +56,8 @@ dependencies {
      * */
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
+
+    api("org.apache.httpcomponents.client5:httpclient5:5.2.1")
 }
 
 tasks.withType<KotlinCompile> {

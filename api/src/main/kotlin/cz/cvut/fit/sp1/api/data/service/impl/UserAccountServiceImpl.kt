@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
+import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserAccountServiceImpl(
@@ -29,23 +30,30 @@ class UserAccountServiceImpl(
         private const val TOKEN_SIZE = 128
     }
 
-    override fun getById(id: Long): Optional<UserAccount> {
+    override fun findById(id: Long): Optional<UserAccount> {
         return userAccountRepository.findById(id)
     }
 
-    override fun getByToken(token: String): Optional<UserAccount> {
+    override fun findByToken(token: String): Optional<UserAccount> {
         return userAccountRepository.getByToken(token)
     }
 
     override fun getAuthenticated(): UserAccount {
         val id = fetchUserIdFromAuthentication()
-        return findByIdOrThrow(id)
+        return getByIdOrThrow(id)
     }
 
     private fun fetchUserIdFromAuthentication(): Long {
         val auth = SecurityContextHolder.getContext().authentication as? TokenAuthentication
         auth ?: throw AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
         return auth.userId
+    }
+
+    override fun getByIdOrThrow(id: Long): UserAccount {
+        return findById(id)
+            .getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
+            }
     }
 
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
@@ -62,10 +70,6 @@ class UserAccountServiceImpl(
         return userAccountRepository.save(user)
     }
 
-    override fun findByIdOrThrow(id: Long): UserAccount {
-        return getById(id).orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
-    }
-
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
         checkUserAccountCreationPossibility(userCredentialsDto)
         val user = buildNewUser(userCredentialsDto)
@@ -78,7 +82,7 @@ class UserAccountServiceImpl(
         if (EMPTY_STRING_HASH == password) {
             throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
-        val email = userCredentialsDto.email
+        val email = userCredentialsDto.email!!
         if (userAccountRepository.existsByEmail(email)) {
             throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
         }
@@ -88,27 +92,28 @@ class UserAccountServiceImpl(
         val token = RandomStringUtils.random(TOKEN_SIZE, true, false)
         val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
         return UserAccount(
-                name = userCredentialsDto.name,
-                email = userCredentialsDto.email,
-                password = userCredentialsDto.password,
+                name = userCredentialsDto.name!!,
+                email = userCredentialsDto.email!!,
+                password = userCredentialsDto.password!!,
                 token = token,
                 authToken = authToken,
         )
     }
 
     override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
-        val user = userAccountRepository.getByEmailAndPassword(userCredentialsDto.email, userCredentialsDto.password)
-        user ?: AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+        val user =
+            userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
+                .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
     }
 
-    fun delete(id: Long) {
+    override fun delete(id: Long) {
         val user = userAccountRepository.findById(id)
                 .orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id) }
         userAccountRepository.delete(user)
     }
 
-    fun findByAuthToken(token: String): UserAccount {
+    override fun findByAuthToken(token: String): UserAccount {
         return userAccountRepository.findByAuthToken(token).orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_WITH_AUTH_TOKEN_NOT_FOUND, token) }
     }
 }

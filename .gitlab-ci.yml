@@ -21,6 +21,7 @@ backend-compile:
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
+    - chmod +x gradlew
     - ./gradlew assemble
 
 backend-test:
@@ -28,6 +29,7 @@ backend-test:
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
+    - chmod +x gradlew
     - ./gradlew test --stacktrace --info
   artifacts:
     paths:
@@ -39,6 +41,7 @@ backend-build:
   image: $IMAGE
   script:
     - cd $API_PROJECT_PATH
+    - chmod +x gradlew
     - ./gradlew jar
   artifacts:
     paths:
@@ -56,4 +59,3 @@ pytest:
   only:
     refs:
       - develop
-

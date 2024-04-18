@@ -5,5 +5,5 @@ enum class ValidationExceptionCodes(
         override val description: String
 ) : ExceptionCodes {
 
-    INVALID_DTO("DTEX-VLD-001", "Invalid DTO"),
+    INVALID_DTO("DTEX-VLD-001", "Invalid DTO")
 }
