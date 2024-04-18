@@ -5,6 +5,7 @@ import cz.cvut.fit.sp1.api.security.filter.TokenFilter
 import cz.cvut.fit.sp1.api.security.model.UnsecuredEndpoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -18,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(jsr250Enabled = true)
-// @Profile("local") // TODO spring profiles idk how to do it on gradle
+@Profile("!local")
 class SecurityConfiguration(
     private val userAccountService: UserAccountService,
 ) {

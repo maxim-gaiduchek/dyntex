@@ -9,7 +9,6 @@ import java.util.*
 enum class UnsecuredEndpoint(
     private val urlPattern: String,
     private val httpMethod: HttpMethod,
-    private val unsecured: Boolean = true,
 ) {
 
     GET_SWAGGER("/api/swagger-ui/.*", GET),
@@ -35,7 +34,6 @@ enum class UnsecuredEndpoint(
             val url = request.requestURI
             val method = HttpMethod.valueOf(request.method)
             return Arrays.stream(entries.toTypedArray())
-                .filter { it.unsecured }
                 .filter {
                     url.matches(
                         it.urlPattern.toRegex()
