@@ -5,7 +5,7 @@ data class MaskDto(
     override var name: String,
     override var path: String,
     override var size: String,
-    override var description: String,
+    override var description: String?,
     override var format: String,
     override var createdById: Long,
     override var likes: Int,
