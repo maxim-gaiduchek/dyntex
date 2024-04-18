@@ -23,7 +23,7 @@ import {
 
     const [active, setActive] = React.useState(0);
     const nextStep = async () => {
-        if(active == 2){
+        if(active === 2){
             try {
                 const response = await axios.post('http://localhost:8080/api/users', {
                   email,

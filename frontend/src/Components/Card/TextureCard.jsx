@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
 
 export default function TextureCard(props) {
-  const { path, name, tags, description, size, fps } = props.texture;
+  const { id, path, name, tags, description, size, fps } = props.texture;
   const features = tags.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
       {badge.label}
@@ -22,7 +22,7 @@ export default function TextureCard(props) {
       <Card.Section className={classes.section} mt="md">
         <Group justify="apart">
           <Text fz="lg" fw={500}>
-            <Link to="/media/dads">{name}</Link>
+            <Link to={"/media/"+id}>{name}</Link>
           </Text>
           <Badge size="sm" variant="light">
             {/* {country} */}
@@ -54,7 +54,7 @@ export default function TextureCard(props) {
       </Card.Section>
 
       <Group mt="xs">
-        <Link to="/media/asdsds" style={{ flex: 1 }}>
+        <Link to={"/media/" + id} style={{ flex: 1 }}>
           <Button radius="md" style={{width: "100%"}}>
             Show details
           </Button>
