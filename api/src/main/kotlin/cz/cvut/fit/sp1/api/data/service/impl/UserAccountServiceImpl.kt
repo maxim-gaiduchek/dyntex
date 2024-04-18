@@ -14,7 +14,6 @@ import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
@@ -37,7 +36,7 @@ class UserAccountServiceImpl(
         return userAccountRepository.getByToken(token)
     }
 
-    override fun getAuthenticated(): UserAccount {
+    override fun getByAuthentication(): UserAccount {
         val id = fetchUserIdFromAuthentication()
         return getByIdOrThrow(id)
     }

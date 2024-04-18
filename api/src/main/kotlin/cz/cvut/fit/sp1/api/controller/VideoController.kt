@@ -9,11 +9,11 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.validation.group.CreateGroup
-import jakarta.annotation.security.RolesAllowed
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
@@ -59,7 +59,7 @@ class VideoController(
     }
 
     @PostMapping
-    @RolesAllowed("USER", "ADMIN")
+    @Secured("USER", "ADMIN")
     fun upload(
         @RequestParam("video") videoFile: MultipartFile,
         @Validated(CreateGroup::class) @ModelAttribute videoDto: VideoDto,

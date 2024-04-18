@@ -8,11 +8,11 @@ import cz.cvut.fit.sp1.api.utils.CookieUtils
 import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
 import cz.cvut.fit.sp1.api.validation.group.UserRegistrationGroup
-import jakarta.annotation.security.RolesAllowed
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseCookie
+import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
@@ -33,13 +33,13 @@ class UserAccountController(
 ) {
     companion object {
         private const val TOKEN_COOKIE_NAME = "token"
-        private const val TOKEN_COOKIE_AGE = 259200L // 3 days
+        private const val TOKEN_COOKIE_AGE = 3 * 24 * 60 * 60L // 3 days
     }
 
     @GetMapping("/authenticated")
-    @RolesAllowed("USER", "ADMIN")
-    fun getAuthenticated(): UserAccountDto {
-        val user = userAccountService.getAuthenticated()
+    @Secured("USER", "ADMIN")
+    fun getByAuthentication(): UserAccountDto {
+        val user = userAccountService.getByAuthentication()
         return userAccountMapper.toDto(user)
     }
 

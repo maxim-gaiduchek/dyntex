@@ -8,13 +8,14 @@ import java.util.*
 
 enum class UnsecuredEndpoint(
     private val urlPattern: String,
-    private val httpMethod: HttpMethod
+    private val httpMethod: HttpMethod,
+    private val unsecured: Boolean = true,
 ) {
 
     GET_SWAGGER("/api/swagger-ui/.*", GET),
     GET_API_DOCS("/api/v3/api-docs.*", GET),
 
-    GET_USER("/api/users/.*", GET),
+    GET_USER("/api/users/[0-9]+", GET),
     GET_USER_LOGIN("/api/users/login", POST),
     POST_USER("/api/users", POST),
 
@@ -34,6 +35,7 @@ enum class UnsecuredEndpoint(
             val url = request.requestURI
             val method = HttpMethod.valueOf(request.method)
             return Arrays.stream(entries.toTypedArray())
+                .filter { it.unsecured }
                 .filter {
                     url.matches(
                         it.urlPattern.toRegex()
