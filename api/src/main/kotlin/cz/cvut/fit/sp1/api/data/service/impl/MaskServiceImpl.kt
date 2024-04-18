@@ -3,6 +3,7 @@ package cz.cvut.fit.sp1.api.data.service.impl
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.component.mapper.MaskMapper
+import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMaskDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
@@ -21,6 +22,7 @@ class MaskServiceImpl(
     private val fileStorage: FileStorage,
     private val maskMapper: MaskMapper,
     private val restTemplate: RestTemplate,
+    private val storagePathProperties: StoragePathProperties,
 ) : MaskService {
     override fun findById(id: Long): Optional<Mask> {
         return maskRepository.findById(id)
@@ -51,7 +53,7 @@ class MaskServiceImpl(
     }
 
     override fun create(mask: MultipartFile): Mask {
-        val processor = MediaProcessor(mask, fileStorage, restTemplate)
+        val processor = MediaProcessor(mask, fileStorage, restTemplate, storagePathProperties)
         val maskEntity = processor.extractMaskInfo()
         maskRepository.save(maskEntity)
         return maskEntity
