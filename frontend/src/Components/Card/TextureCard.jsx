@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
 
 export default function TextureCard(props) {
-  const { image, title, description, badges } = props.texture;
-  const features = badges.map((badge) => (
+  const { path, name, tags, description, size, fps } = props.texture;
+  const features = tags.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
       {badge.label}
     </Badge>
@@ -16,13 +16,13 @@ export default function TextureCard(props) {
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
-        <Image src={image} alt={title} height={180} />
+        <Image src={path} alt={name} height={180} />
       </Card.Section>
 
       <Card.Section className={classes.section} mt="md">
         <Group justify="apart">
           <Text fz="lg" fw={500}>
-            <Link to="/media/dads">{title}</Link>
+            <Link to="/media/dads">{name}</Link>
           </Text>
           <Badge size="sm" variant="light">
             {/* {country} */}
@@ -41,9 +41,9 @@ export default function TextureCard(props) {
           {description}
         </Text>
         <Text size={"xs"} c="dimmed" fz="sm" mt="xs">
-          Size: 12KB
+          Size: {size}
           <br/>
-          Framerate: 60fps
+          Framerate: {fps} fps
         </Text>
         <Text mt="md" className={classes.label}>
           This texture is part of these categories:

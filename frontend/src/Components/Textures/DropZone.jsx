@@ -10,10 +10,6 @@ export default function DropZone(props) {
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
 
-  const rejectFile = () => {
-    console.log("rejected file")
-  }
-
   const getFile = (files) => {
     var file_loc = files[0]
 
@@ -109,7 +105,7 @@ export default function DropZone(props) {
         </Group>
         <br/>
         <Group justify='center'>
-          <Button onClick={props.close} disabled={!finished}>Save</Button>
+          <Button onClick={() => {props.close(); props.fetchData()}} disabled={!finished}>Save</Button>
         </Group>
         </>
       }
