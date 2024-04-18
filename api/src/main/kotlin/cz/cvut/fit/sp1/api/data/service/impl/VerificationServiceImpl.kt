@@ -1,5 +1,7 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
+import cz.cvut.fit.sp1.api.data.service.interfaces.EmailService
+import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VerificationService
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
@@ -8,8 +10,8 @@ import java.util.*
 
 @Service
 class VerificationServiceImpl(
-        private val emailService: EmailServiceImpl,
-        private val userAccountServiceImpl: UserAccountServiceImpl
+        private val emailService: EmailService,
+        private val userAccountService: UserAccountService
 ) : VerificationService {
 
     companion object {
@@ -23,17 +25,17 @@ class VerificationServiceImpl(
 
     override fun verifyToken(authToken: String?) {
         checkVerifyPossibility(authToken)
-        val user = userAccountServiceImpl.findByAuthToken(authToken!!)
+        val user = userAccountService.findByAuthToken(authToken!!)
         if (Date().time <= user.createdAt!!.time + (MINUTES_TO_EXPIRE * 60 * 1000)) {
             user.authEnable = true
             return
         }
-        userAccountServiceImpl.delete(user.id)
+        userAccountService.delete(user.id)
     }
 
     private fun checkVerifyPossibility(authToken: String?) {
-        if(authToken.isNullOrBlank()){
-            throw ValidationException( UserAccountExceptionCodes.AUTH_TOKEN_IS_EMPTY )
+        if (authToken.isNullOrBlank()) {
+            throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EMPTY)
         }
     }
 }

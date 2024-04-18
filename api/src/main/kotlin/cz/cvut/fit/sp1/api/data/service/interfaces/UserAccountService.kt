@@ -9,6 +9,7 @@ import java.util.*
 interface UserAccountService {
 
     fun findById(id: Long): Optional<UserAccount>
+    fun getByIdOrThrow(id: Long): UserAccount
 
     fun findByToken(token: String): Optional<UserAccount>
 
@@ -18,9 +19,11 @@ interface UserAccountService {
 
     fun updateAvatar(id: Long, file: MultipartFile): UserAccount
 
-    fun getByIdOrThrow(id: Long): UserAccount
-
     fun register(userCredentialsDto: UserCredentialsDto): UserAccount
 
     fun login(userCredentialsDto: UserCredentialsDto): UserAccount
+
+    fun delete(id: Long)
+
+    fun findByAuthToken(token: String): UserAccount
 }

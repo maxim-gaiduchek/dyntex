@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class EmailServiceImpl(val mailSender : JavaMailSender) : EmailService {
-    override fun sendEmail(reciever: String, subject: String, text: String) {
+    override fun sendEmail(receiver: String, subject: String, text: String) {
         val message = SimpleMailMessage()
-        message.setTo(reciever)
+        message.setTo(receiver)
         message.setSubject(subject)
         message.setText(text)
         mailSender.send(message)

@@ -10,12 +10,12 @@ import org.springframework.mail.javamail.JavaMailSenderImpl
 class MailSenderConfiguration {
     @Bean
     fun mailSender(
-            @Value("\${mail.host}") mailHost: String,
-            @Value("\${mail.port}") mailPort: Int,
-            @Value("\${mail.username}") mailUsername: String,
-            @Value("\${mail.password}") mailPassword: String,
-            @Value("\${mail.properties.mail.smtp.auth}") mailAuth: Boolean,
-            @Value("\${mail.properties.mail.smtp.starttls.enable}") mailStartTLs: Boolean
+            @Value("\${spring.mail.host}") mailHost: String,
+            @Value("\${spring.mail.port}") mailPort: Int,
+            @Value("\${spring.mail.username}") mailUsername: String,
+            @Value("\${spring.mail.password}") mailPassword: String,
+            @Value("\${spring.mail.properties.mail.smtp.auth}") mailAuth: Boolean,
+            @Value("\${spring.mail.properties.mail.smtp.starttls.enable}") mailStartTLs: Boolean
     ): JavaMailSender {
         return JavaMailSenderImpl().apply {
             host = mailHost
