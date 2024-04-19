@@ -14,7 +14,7 @@ interface UserAccountService {
 
     fun findByToken(token: String): Optional<UserAccount>
 
-    fun getAuthenticated(): UserAccount
+    fun getByAuthentication(): UserAccount
 
     fun update(id: Long, userAccountDto: UserAccountDto): UserAccount
 

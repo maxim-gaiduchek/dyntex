@@ -6,16 +6,22 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchMaskDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
-import jakarta.annotation.security.RolesAllowed
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.*
+import org.springframework.security.access.annotation.Secured
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/masks")
 class MaskController(
-        private val maskService: MaskService,
-        private val maskMapper: MaskMapper
+    private val maskService: MaskService,
+    private val maskMapper: MaskMapper
 ) {
 
     @GetMapping("/{id}")
@@ -25,15 +31,15 @@ class MaskController(
     }
 
     @GetMapping
-    fun findAll(@RequestBody paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
+    fun findAll(@ModelAttribute paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
         return maskService.findAll(paramsDto)
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    @RolesAllowed("USER", "ADMIN")
+    @Secured("USER", "ADMIN")
     fun upload(
-            // TODO Get DTO with Media file
-            @RequestParam("mask") mask: MultipartFile,
+        // TODO Get DTO with Media file
+        @RequestParam("mask") mask: MultipartFile,
     ) {
         // TODO implement input validation
         maskService.create(mask) // TODO return DTO

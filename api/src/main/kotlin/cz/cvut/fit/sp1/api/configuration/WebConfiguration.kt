@@ -12,7 +12,12 @@ class WebConfiguration {
         return object : WebMvcConfigurer {
             override fun addCorsMappings(registry: CorsRegistry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:3000", "http://localhost:80", "http://localhost:443", "http://localhost:8080")
+                    .allowedOrigins(
+                        "http://localhost:3000",
+                        "http://localhost:80",
+                        "http://localhost:443",
+                        "http://localhost:8080"
+                    )
                     .allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders(
                         "Access-Control-Allow-Headers",
@@ -20,6 +25,7 @@ class WebConfiguration {
                         "X-HTTP-Method-Override",
                         "Content-Type",
                         "Accept",
+                        "Authorization",
                     )
                     .allowCredentials(true)
             }

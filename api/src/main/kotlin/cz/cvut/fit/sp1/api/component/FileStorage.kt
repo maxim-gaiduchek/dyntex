@@ -6,7 +6,8 @@ import org.springframework.stereotype.Component
 import java.io.File
 
 @Component
-class FileStorage() {
+class FileStorage {
+
     fun store(
         path: String,
         bytes: ByteArray,

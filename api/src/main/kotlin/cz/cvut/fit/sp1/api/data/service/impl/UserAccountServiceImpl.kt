@@ -13,6 +13,7 @@ import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
 import jakarta.transaction.Transactional
+import cz.cvut.fit.sp1.api.security.service.interfaces.SecurityProvider
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Lazy
@@ -24,8 +25,9 @@ import kotlin.jvm.optionals.getOrElse
 
 @Service
 class UserAccountServiceImpl(
-        private val userAccountRepository: UserAccountRepository,
-        private val avatarService: AvatarService,
+    private val userAccountRepository: UserAccountRepository,
+    private val avatarService: AvatarService,
+    private val securityProvider: SecurityProvider,
 ) : UserAccountService {
     @Autowired
     @Lazy
@@ -40,22 +42,22 @@ class UserAccountServiceImpl(
     }
 
     override fun findById(id: Long): Optional<UserAccount> {
-        return userAccountRepository.findByidAndAuthEnableTrue(id)
+        return userAccountRepository.findById(id)
     }
 
     override fun findByToken(token: String): Optional<UserAccount> {
         return userAccountRepository.getByTokenAndAuthEnableTrue(token)
     }
 
-    override fun getAuthenticated(): UserAccount {
+    override fun getByAuthentication(): UserAccount {
         val id = fetchUserIdFromAuthentication()
         return getByIdOrThrow(id)
     }
 
     private fun fetchUserIdFromAuthentication(): Long {
-        val auth = SecurityContextHolder.getContext().authentication as? TokenAuthentication
-        auth ?: throw AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
-        return auth.userId
+        val id = securityProvider.fetchAuthenticatedUserId()
+        id ?: throw AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+        return id
     }
 
     override fun getByIdOrThrow(id: Long): UserAccount {
@@ -67,15 +69,18 @@ class UserAccountServiceImpl(
 
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
         val user = getByIdOrThrow(id)
-        user.name = userAccountDto.name
+        user.name = userAccountDto.name!!
         return userAccountRepository.save(user)
     }
 
     override fun updateAvatar(id: Long, file: MultipartFile): UserAccount {
         val user = getByIdOrThrow(id)
+        if (user.avatar != null) {
+            avatarService.delete(user.avatar!!)
+        }
         val avatar = avatarService.save(id, file)
         user.avatar = avatar
-        avatar.userAccount = user
+        avatar?.userAccount = user
         return userAccountRepository.save(user)
     }
 

@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { PillsInput, Pill, Combobox, CheckIcon, Group, useCombobox } from '@mantine/core';
 
-const groceries = ['☀️ Nature', '🏙️ City', '🌊 Water', '🛋️ Textile', '⛰️ Stone'];
-
-export default function CategorySearch() {
+export default function CategorySearch(props) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex('active'),
@@ -13,28 +11,28 @@ export default function CategorySearch() {
   const [value, setValue] = useState([]);
 
   const handleValueSelect = (val) => {
-    setValue((current) =>
-      current.includes(val) ? current.filter((v) => v !== val) : [...current, val]
-    );
+    var a = value.includes(val) ? value.filter((v) => v.name !== val) : [...value, val]
+    setValue(a);
     setSearch("")
+    props.changeSearch(a)
   }
 
   const handleValueRemove = (val) =>
     setValue((current) => current.filter((v) => v !== val));
+    props.changeSearch(value)
 
   const values = value.map((item) => (
     <Pill key={item} withRemoveButton onRemove={() => handleValueRemove(item)}>
       {item}
     </Pill>
   ));
-
-  const options = groceries
-    .filter((item) => item.toLowerCase().includes(search.trim().toLowerCase()))
+  const options = props.tags
+    .filter((item) => item.name.toLowerCase().includes(search.trim().toLowerCase()))
     .map((item) => (
-      <Combobox.Option value={item} key={item} active={value.includes(item)}>
+      <Combobox.Option value={item.emoji + item.name} key={item.name} active={value.includes(item.name)}>
         <Group gap="sm">
-          {value.includes(item) ? <CheckIcon size={12} /> : null}
-          <span>{item}</span>
+          {value.includes(item.name) ? <CheckIcon size={12} /> : null}
+          <span>{item.emoji} {item.name}</span>
         </Group>
       </Combobox.Option>
     ));
