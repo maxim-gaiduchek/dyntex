@@ -7,6 +7,7 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchTagParamsDto
 import cz.cvut.fit.sp1.api.data.model.Tag
 import cz.cvut.fit.sp1.api.data.repository.TagRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
+import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.TagExceptionCodes
@@ -18,6 +19,7 @@ import java.util.*
 class TagServiceImpl(
     private val tagRepository: TagRepository,
     private val tagMapper: TagMapper,
+    private val userAccountService: UserAccountService,
 ) : TagService {
 
     override fun findById(id: Long): Optional<Tag> {
@@ -63,11 +65,18 @@ class TagServiceImpl(
         if (tagRepository.existsByName(tagDto.name!!)) {
             throw ValidationException(TagExceptionCodes.TAG_NAME_EXISTS, tagDto.name)
         }
-        val tagEntity =
+        val tag =
             tagMapper.toEntity(tagDto) ?: throw ValidationException(
                 ValidationExceptionCodes.INVALID_DTO,
             )
-        return tagRepository.save(tagEntity)
+        enrichWithModels(tag)
+        return tagRepository.save(tag)
+    }
+
+    private fun enrichWithModels(tag: Tag) {
+        val user = userAccountService.getByAuthentication()
+        tag.createdBy = user
+        user.createdTags.add(tag)
     }
 
     override fun delete(id: Long, forceDelete: Boolean) {

@@ -10,6 +10,7 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.repository.VideoRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
+import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
@@ -27,6 +28,7 @@ class VideoServiceImpl(
     private val restTemplate: RestTemplate,
     private val tagService: TagService,
     private val storagePathProperties: StoragePathProperties,
+    private val userAccountService: UserAccountService,
 ) : VideoService {
     override fun findById(id: Long): Optional<Video> {
         return videoRepository.findById(id)
@@ -62,7 +64,7 @@ class VideoServiceImpl(
         videoDto: VideoDto,
     ): Video {
         val videoEntity = fetchVideoInfo(video)
-        enrichWithTags(videoDto, videoEntity)
+        enrichWithModels(videoDto, videoEntity)
         videoEntity.name = videoDto.name!!
         videoEntity.description = videoDto.description
         return videoRepository.save(videoEntity)
@@ -73,8 +75,11 @@ class VideoServiceImpl(
         return processor.extractVideoInfo()
     }
 
-    private fun enrichWithTags(videoDto: VideoDto, video: Video) {
+    private fun enrichWithModels(videoDto: VideoDto, video: Video) {
+        val user = userAccountService.getByAuthentication()
         val tags = tagService.getAllByIds(videoDto.tagIds!!)
+        video.createdBy = user
+        user.createdMedia.add(video)
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }

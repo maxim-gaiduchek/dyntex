@@ -10,9 +10,8 @@ import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
-import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
+import cz.cvut.fit.sp1.api.security.service.interfaces.SecurityProvider
 import org.apache.commons.lang3.RandomStringUtils
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
@@ -21,7 +20,8 @@ import kotlin.jvm.optionals.getOrElse
 @Service
 class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
-    private val avatarService: AvatarService
+    private val avatarService: AvatarService,
+    private val securityProvider: SecurityProvider,
 ) : UserAccountService {
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -42,9 +42,9 @@ class UserAccountServiceImpl(
     }
 
     private fun fetchUserIdFromAuthentication(): Long {
-        val auth = SecurityContextHolder.getContext().authentication as? TokenAuthentication
-        auth ?: throw AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
-        return auth.userId
+        val id = securityProvider.fetchAuthenticatedUserId()
+        id ?: throw AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED)
+        return id
     }
 
     override fun getByIdOrThrow(id: Long): UserAccount {
