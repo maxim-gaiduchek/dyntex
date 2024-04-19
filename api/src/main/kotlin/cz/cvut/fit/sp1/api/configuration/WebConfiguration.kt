@@ -25,6 +25,7 @@ class WebConfiguration {
                         "X-HTTP-Method-Override",
                         "Content-Type",
                         "Accept",
+                        "Authorization",
                     )
                     .allowCredentials(true)
             }

@@ -30,12 +30,12 @@ spring:
   flyway:
     enabled: false
     baseline-on-migrate: true
-    validate-on-migrate: false
+    #validate-on-migrate: false
+    #out-of-order: true
     schemas: 'public'
     url: jdbc:postgresql://localhost:5432/dyntex-db
     user: postgres
     password: postgres
-    out-of-order: true
 
 server:
   error:

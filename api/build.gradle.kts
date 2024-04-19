@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
     kotlin("kapt") version "1.9.10"
-    /*id("org.flywaydb.flyway") version "10.11.1"*/
+    id("org.flywaydb.flyway") version "10.11.1"
 }
 
 group = "cz.cvut.fit.sp1"
@@ -48,7 +48,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     implementation("org.flywaydb:flyway-core:10.11.1")
+/*
     implementation("org.flywaydb:flyway-database-postgresql:10.11.1")
+*/
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
