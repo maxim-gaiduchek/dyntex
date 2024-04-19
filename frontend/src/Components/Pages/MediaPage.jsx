@@ -41,12 +41,14 @@ export default function MediaPage(){
                 </Group>
                 <Group mt="xs" justify="left">
                     <Link to={"/media/" + texture.id}>
-                    <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
-                        Download
-                    </Button>
-                    <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300, marginLeft: 20}}>
-                        Process
-                    </Button>
+                        <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
+                            Download
+                        </Button>
+                    </Link>
+                    <Link to={"/editor"}>
+                        <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
+                            Process
+                        </Button>
                     </Link>
                     <ActionIcon
                     onClick={() =>
@@ -64,7 +66,7 @@ export default function MediaPage(){
                 <Group>
                     {
                         texture.tags.map((cat) => (
-                            <Badge>{cat.emoji} {cat.name}</Badge>
+                            <Badge variant="light">{cat.emoji} {cat.name}</Badge>
                         ))
                     }
                 </Group>
