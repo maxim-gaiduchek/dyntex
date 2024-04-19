@@ -7,5 +7,3 @@ interface UserRegistrationGroup
 interface UpdateGroup
 
 interface CreateGroup
-
-interface UsedInOther

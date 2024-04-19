@@ -71,8 +71,7 @@ class VideoServiceImpl(
     }
 
     private fun enrichWithTags(videoDto: VideoDto, video: Video) {
-        val tagIds = videoDto.tags.map { it.id!! }
-        val tags = tagService.getAllByIds(tagIds)
+        val tags = tagService.getAllByIds(videoDto.tagIds)
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }
