@@ -9,9 +9,9 @@ import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import org.springframework.http.MediaType
 import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -31,7 +31,7 @@ class MaskController(
     }
 
     @GetMapping
-    fun findAll(@RequestBody paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
+    fun findAll(@ModelAttribute paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
         return maskService.findAll(paramsDto)
     }
 

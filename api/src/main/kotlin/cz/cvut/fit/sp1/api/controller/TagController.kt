@@ -9,6 +9,7 @@ import cz.cvut.fit.sp1.api.validation.group.CreateGroup
 import org.springframework.security.access.annotation.Secured
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -31,7 +32,7 @@ class TagController(
 
     @GetMapping
     fun findAll(
-        @RequestBody paramsDto: SearchTagParamsDto?,
+        @ModelAttribute paramsDto: SearchTagParamsDto?,
     ): SearchTagDto? {
         return tagsService.findAll(paramsDto)
     }
