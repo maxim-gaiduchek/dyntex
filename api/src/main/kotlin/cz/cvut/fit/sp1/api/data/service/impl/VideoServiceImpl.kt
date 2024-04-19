@@ -14,6 +14,7 @@ import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
@@ -55,6 +56,7 @@ class VideoServiceImpl(
         )
     }
 
+    @Transactional
     override fun create(
         video: MultipartFile,
         videoDto: VideoDto,
@@ -71,7 +73,7 @@ class VideoServiceImpl(
     }
 
     private fun enrichWithTags(videoDto: VideoDto, video: Video) {
-        val tags = tagService.getAllByIds(videoDto.tagIds)
+        val tags = tagService.getAllByIds(videoDto.tagIds!!)
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }
