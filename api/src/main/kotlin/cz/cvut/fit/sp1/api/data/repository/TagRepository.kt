@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface TagRepository : JpaRepository<Tag, Long> {
 
     fun findAll(specification: Specification<Tag>, pageable: Pageable): Page<Tag>
+
+    fun existsByName(name: String): Boolean
 }

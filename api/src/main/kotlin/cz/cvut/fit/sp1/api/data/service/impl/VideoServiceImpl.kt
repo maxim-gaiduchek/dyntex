@@ -77,4 +77,12 @@ class VideoServiceImpl(
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }
+
+    override fun delete(id: Long) {
+        val video = getByIdOrThrow(id)
+        fileStorage.delete(video.path)
+        video.tags.forEach { it.media.remove(video) }
+        video.likedBy.forEach { it.likedMedia.remove(video) }
+        videoRepository.delete(video)
+    }
 }

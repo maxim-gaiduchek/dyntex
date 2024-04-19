@@ -17,4 +17,6 @@ interface TagService {
     fun getAllByIds(ids: List<Long>): MutableList<Tag>
 
     fun create(tagDto: TagDto): Tag
+
+    fun delete(id: Long, forceDelete: Boolean)
 }

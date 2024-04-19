@@ -60,10 +60,21 @@ class TagServiceImpl(
     }
 
     override fun create(tagDto: TagDto): Tag {
+        if (tagRepository.existsByName(tagDto.name!!)) {
+            throw ValidationException(TagExceptionCodes.TAG_NAME_EXISTS, tagDto.name)
+        }
         val tagEntity =
             tagMapper.toEntity(tagDto) ?: throw ValidationException(
                 ValidationExceptionCodes.INVALID_DTO,
             )
         return tagRepository.save(tagEntity)
+    }
+
+    override fun delete(id: Long, forceDelete: Boolean) {
+        val tag = getByIdOrThrow(id)
+        if (!forceDelete && tag.media.isNotEmpty()) {
+            throw ValidationException(TagExceptionCodes.TAG_IS_USED, tag.id)
+        }
+        tagRepository.delete(tag)
     }
 }

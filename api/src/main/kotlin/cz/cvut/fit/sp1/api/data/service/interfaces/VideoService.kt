@@ -18,4 +18,6 @@ interface VideoService {
         video: MultipartFile,
         videoDto: VideoDto,
     ): Video
+
+    fun delete(id: Long)
 }
