@@ -47,7 +47,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
     implementation("org.flywaydb:flyway-core:9.15.0")
-    runtimeOnly("org.flywaydb:flyway-database-postgresql:9.15.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
