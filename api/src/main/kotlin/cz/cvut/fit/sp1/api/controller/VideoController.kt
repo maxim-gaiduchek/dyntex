@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
@@ -60,8 +60,8 @@ class VideoController(
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Secured("USER", "ADMIN")
     fun upload(
-        @RequestPart("video") videoFile: MultipartFile,
-        @Validated(CreateGroup::class) @RequestPart("dto") videoDto: VideoDto,
+        @RequestParam("video") videoFile: MultipartFile,
+        @Validated(CreateGroup::class) @ModelAttribute videoDto: VideoDto,
     ): VideoDto? {
         val video = videoService.create(videoFile, videoDto)
         return videoMapper.toDto(video)
