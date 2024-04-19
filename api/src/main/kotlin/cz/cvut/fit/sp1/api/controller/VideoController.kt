@@ -23,10 +23,8 @@ class VideoController(
 
     @PutMapping("/api/video/{id}")
     fun updateVideo(@PathVariable id: Long, @RequestBody videoDto: VideoDto): ResponseEntity<Any> {
-        // Call service layer to update the video
         videoService.updateVideo(id, videoDto)
-        // Return appropriate response entity
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build()
     }
 
 }

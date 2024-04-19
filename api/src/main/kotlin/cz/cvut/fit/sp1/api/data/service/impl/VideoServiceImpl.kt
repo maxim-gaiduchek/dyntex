@@ -8,6 +8,7 @@ import cz.cvut.fit.sp1.api.data.repository.VideoRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
@@ -35,9 +36,18 @@ class VideoServiceImpl(
         return videoEntity
     }
 
+    @Transactional
     override fun updateVideo(id: Long, videoDto: VideoDto): Video {
-        // Implementation of the update logic
-        return findByIdOrThrow(id);
+        val video = findByIdOrThrow(id)
+        video.name = videoDto.name
+        video.path = videoDto.path
+        video.format = videoDto.format
+        video.size = videoDto.size
+        video.description = videoDto.description
+        video.duration = videoDto.duration ?: video.duration
+        video.fps = videoDto.fps ?: video.fps
+
+        return videoRepository.save(video)
     }
 }
 
