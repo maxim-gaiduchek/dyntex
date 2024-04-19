@@ -18,6 +18,7 @@ export default function MainPage(){
     const [textures, setTextures] = React.useState(null)
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
+    const [lastTags, setLastTags] = React.useState([])
 
     const fetchData = async () => {
       setTextures(null)
@@ -27,10 +28,25 @@ export default function MainPage(){
 
     const fetchTags = async () => {
       const response = await axios.get('http://localhost:8080/api/tags')
-      response.data.forEach((d) => {
+      response.data.tags.forEach((d) => {
         d.value = d.name
       })
-      setTags(response.data)
+      setTags(response.data.tags)
+    }
+
+    const changeSearch = async (values) => {
+      if(lastTags.length === values.length && lastTags.every((value, index) => value === values[index])){
+        return
+      }
+      setLastTags(values)
+      setTextures(null)
+      var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
+      var url = "http://localhost:8080/api/videos"
+      if(ids.length != 0){
+        url += "?tags=" + ids.map((obj) => obj.id).join(",")
+      }
+      const response = await axios.get(url);
+      setTextures(response.data.videos)
     }
 
     useEffect(() => {
@@ -51,7 +67,7 @@ export default function MainPage(){
           </Group>
           <br/>
           <Group justify="space-between" grow>
-            <CategorySearch/>
+            <CategorySearch tags={tags} changeSearch={changeSearch} />
             <SegmentedControl onChange={setValue} value={value} data={['All', 'Texture', 'Mask']} />
           </Group>
           <div style={{marginBottom: 20}}>

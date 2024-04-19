@@ -37,7 +37,8 @@ export default function DropZone(props) {
     // formData.append("name", name);
     formData.append("description", description);
     console.log(description)
-    formData.append("tagId", tagId)
+    formData.append("tagIds", tagId)
+    formData.append("name", name);
     axios.post('http://localhost:8080/api/videos', formData, options)
     .then((res) => {
       setFinished(true)
