@@ -7,6 +7,7 @@ data class VideoDto(
     var fps: Long?,
     var duration: Double?,
     override var id: Long?,
+    @field:NotEmpty(message = "Video name must not be empty", groups = [CreateGroup::class])
     override var name: String?,
     override var path: String?,
     var previewPath: String?,
