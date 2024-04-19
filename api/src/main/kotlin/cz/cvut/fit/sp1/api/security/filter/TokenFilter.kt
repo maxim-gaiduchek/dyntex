@@ -3,10 +3,10 @@ package cz.cvut.fit.sp1.api.security.filter
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
-import cz.cvut.fit.sp1.api.utils.CookieUtils
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpHeaders
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -19,12 +19,7 @@ class TokenFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val cookie = CookieUtils.getCookie(request.cookies, "token")
-        if (cookie == null) {
-            filterChain.doFilter(request, response)
-            return
-        }
-        val token = cookie.value
+        val token = request.getHeader(HttpHeaders.AUTHORIZATION)
         if (token.isNullOrBlank()) {
             filterChain.doFilter(request, response)
             return

@@ -27,6 +27,15 @@ spring:
         ddl-auto: update
         dialect: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    validate-on-migrate: false
+    schemas: 'public'
+    url: jdbc:postgresql://localhost:5432/dyntex-db
+    user: postgres
+    password: postgres
+    out-of-order: true
 
 server:
   error:
