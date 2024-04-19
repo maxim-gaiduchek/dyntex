@@ -1,11 +1,11 @@
 import { Avatar, Text, Group } from '@mantine/core';
-import { IconPhoneCall, IconAt } from '@tabler/icons-react';
+import { IconAt } from '@tabler/icons-react';
 import classes from './MediaProfile.module.css';
 
 export default function MediaProfile(props) {
   return (
     <div>
-      <Group wrap="nowrap">
+      <Group wrap="nowrap" style={{position: "relative"}}>
         <Avatar
           src="https://avatars.githubusercontent.com/u/58140020?v=4"
           size={94}
@@ -27,6 +27,7 @@ export default function MediaProfile(props) {
             </Text>
           </Group>
         </div>
+        <Text size="sm" c='dimmed' style={{position: "absolute", top: 0, right: 20}}>Published: Mar 28, 2024</Text>
       </Group>
     </div>
   );

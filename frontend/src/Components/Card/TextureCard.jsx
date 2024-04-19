@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
 
 export default function TextureCard(props) {
-  const { id, path, name, tags, description, previewPath, size, fps } = props.texture;
+  const { id, name, tags, description, previewPath, size, fps } = props.texture;
   const features = tags.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
       {badge.name}
@@ -16,7 +16,9 @@ export default function TextureCard(props) {
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
-        <Image src={"http://localhost:8080/api/videos/previews/"+previewPath} alt={name} height={180} />
+        <Link to={"http://localhost:3000/media/"+id}>
+          <Image src={"http://localhost:8080/api/videos/previews/"+previewPath} alt={name} height={180} />
+        </Link>
       </Card.Section>
 
       <Card.Section className={classes.section} mt="md">

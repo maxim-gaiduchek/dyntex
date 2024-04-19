@@ -2,27 +2,28 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { Group, Title, Button, Text, Grid } from "@mantine/core";
 import { ActionIcon } from "@mantine/core";
-import { IconFile, IconHeart } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 import classes from '../Card/BadgeCard.module.css';
 import { Link } from "react-router-dom";
 import { notifications } from '@mantine/notifications';
 import MediaProfile from "../Textures/MediaProfile";
 import axios from "axios";
-import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo } from "@tabler/icons-react";
+import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
 
 export default function MediaPage(){
     let { id } = useParams();
     const [texture, setTexture] = useState(null)
 
-    const getTexture = async () => {
+    const getTextureInfo = async () => {
         const response = await axios.get('http://localhost:8080/api/videos/'+id);
         console.log(response.data)
         setTexture(response.data)
     }
     
     useEffect(() => {
-        getTexture()
+        getTextureInfo()
+        // eslint-disable-next-line
     }, [])
 
     return (
@@ -58,6 +59,9 @@ export default function MediaPage(){
                     variant="default" radius="md" size={36}>
                     <IconHeart className={classes.like} stroke={1.5} />
                     </ActionIcon>
+                </Group>
+                <br/>
+                <Group>
                     {
                         texture.tags.map((cat) => (
                             <Badge>{cat.emoji} {cat.name}</Badge>
@@ -67,10 +71,13 @@ export default function MediaPage(){
                 <br/>
                 {/* <Title order={2}>{texture.name}</Title> */}
                 <MediaProfile texture={texture}/>
-                <br/>
+                <Group style={{marginTop: 10, marginBottom: 25}}>
+                    <IconStar size={12}/>
+                    <Text size={"sm"}>Favourites: 96</Text>
+                </Group>
                 <Grid>
-                    <Grid.Col span={{xs: 12, md: 6}}>
-                        <Group grow style={{maxWidth: 500}}>
+                    <Grid.Col span={{xs: 12, md: 8}}>
+                        <Group grow >
                             <div>
                                 <Title order={3}>Description:</Title>
                                 <br/>
@@ -80,7 +87,7 @@ export default function MediaPage(){
                             </div>
                         </Group>
                     </Grid.Col>
-                    <Grid.Col span={{xs: 12, md: 6}}>
+                    <Grid.Col span={{xs: 12, md: 4}}>
                         <Title order={3}>Attributes:</Title>
                         <br/>
                         <Group>
