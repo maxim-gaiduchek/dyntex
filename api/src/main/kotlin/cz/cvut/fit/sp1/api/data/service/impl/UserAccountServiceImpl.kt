@@ -40,11 +40,11 @@ class UserAccountServiceImpl(
     }
 
     override fun findById(id: Long): Optional<UserAccount> {
-        return userAccountRepository.findById(id)
+        return userAccountRepository.findByidAndAuthEnableTrue(id)
     }
 
     override fun findByToken(token: String): Optional<UserAccount> {
-        return userAccountRepository.getByToken(token)
+        return userAccountRepository.getByTokenAndAuthEnableTrue(token)
     }
 
     override fun getAuthenticated(): UserAccount {
@@ -112,7 +112,7 @@ class UserAccountServiceImpl(
 
     override fun login(userCredentialsDto: UserCredentialsDto): UserAccount {
         val user =
-                userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
+                userAccountRepository.getByEmailAndPasswordAndAuthEnableTrue(userCredentialsDto.email!!, userCredentialsDto.password!!)
                         .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
     }
@@ -125,5 +125,9 @@ class UserAccountServiceImpl(
 
     override fun findByAuthToken(token: String): UserAccount {
         return userAccountRepository.findByAuthToken(token).orElseThrow { EntityNotFoundException(UserAccountExceptionCodes.USER_WITH_AUTH_TOKEN_NOT_FOUND, token) }
+    }
+
+    override fun save(user: UserAccount):UserAccount{
+        return userAccountRepository.save(user)
     }
 }

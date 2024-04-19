@@ -6,9 +6,11 @@ import java.util.Optional
 
 interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
-    fun getByToken(token: String): Optional<UserAccount>
+    fun findByidAndAuthEnableTrue(id:Long):Optional<UserAccount>
 
-    fun getByEmailAndPassword(email: String, password: String): Optional<UserAccount>
+    fun getByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
+
+    fun getByEmailAndPasswordAndAuthEnableTrue(email: String, password: String): Optional<UserAccount>
 
     fun existsByEmail(email: String): Boolean
 

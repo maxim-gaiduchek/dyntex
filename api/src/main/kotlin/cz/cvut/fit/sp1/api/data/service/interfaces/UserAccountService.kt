@@ -27,4 +27,6 @@ interface UserAccountService {
     fun delete(id: Long)
 
     fun findByAuthToken(token: String): UserAccount
+
+    fun save(user:UserAccount):UserAccount
 }

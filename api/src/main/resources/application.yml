@@ -31,8 +31,10 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: dyntex.inc@gmail.com
-    password: parolparol123
+    username: dyntex.project@gmail.com
+    password: dntu shag fscu afdb
+
+
     properties:
       mail:
         smtp:
@@ -52,3 +54,7 @@ logging:
   level:
     cz: TRACE
 #    org.springframework: TRACE
+
+mail:
+  domain-url : 'localhost:8080'
+
