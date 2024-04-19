@@ -2,6 +2,7 @@ package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
+import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.repository.VideoRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
@@ -33,4 +34,12 @@ class VideoServiceImpl(
 
         return videoEntity
     }
+
+    override fun updateVideo(id: Long, videoDto: VideoDto): Video {
+        // Implementation of the update logic
+        return findByIdOrThrow(id);
+    }
 }
+
+
+

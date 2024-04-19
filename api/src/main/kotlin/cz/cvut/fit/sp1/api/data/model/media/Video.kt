@@ -1,5 +1,6 @@
 package cz.cvut.fit.sp1.api.data.model.media
 
+
 import jakarta.persistence.Entity
 
 @Entity
