@@ -1,13 +1,15 @@
 import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
-import { Group, Title, Button } from "@mantine/core";
+import { Group, Title, Button, Text, Grid } from "@mantine/core";
 import { ActionIcon } from "@mantine/core";
-import { IconHeart } from "@tabler/icons-react";
+import { IconFile, IconHeart } from "@tabler/icons-react";
 import classes from '../Card/BadgeCard.module.css';
 import { Link } from "react-router-dom";
 import { notifications } from '@mantine/notifications';
 import MediaProfile from "../Textures/MediaProfile";
 import axios from "axios";
+import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo } from "@tabler/icons-react";
+import { Badge } from '@mantine/core';
 
 export default function MediaPage(){
     let { id } = useParams();
@@ -28,7 +30,7 @@ export default function MediaPage(){
         {
             texture != null ?
             <>
-                <Group justify="center" grow>
+                <Group justify="center" style={{backgroundColor: "black", padding: "0"}} grow>
                     <img
                         style={{
                             width: "100%",
@@ -36,10 +38,13 @@ export default function MediaPage(){
                         }}
                         alt="texture" src={"http://localhost:8080/api/videos/previews/" + texture.previewPath}/>
                 </Group>
-                <Group mt="xs">
-                    <Link to={"/media/" + texture.id} style={{ flex: 1 }}>
-                    <Button radius="md" style={{width: 500}}>
-                        Show details
+                <Group mt="xs" justify="left">
+                    <Link to={"/media/" + texture.id}>
+                    <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
+                        Download
+                    </Button>
+                    <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300, marginLeft: 20}}>
+                        Process
                     </Button>
                     </Link>
                     <ActionIcon
@@ -53,10 +58,50 @@ export default function MediaPage(){
                     variant="default" radius="md" size={36}>
                     <IconHeart className={classes.like} stroke={1.5} />
                     </ActionIcon>
+                    {
+                        texture.tags.map((cat) => (
+                            <Badge>{cat.emoji} {cat.name}</Badge>
+                        ))
+                    }
                 </Group>
                 <br/>
                 {/* <Title order={2}>{texture.name}</Title> */}
                 <MediaProfile texture={texture}/>
+                <br/>
+                <Grid>
+                    <Grid.Col span={{xs: 12, md: 6}}>
+                        <Group grow style={{maxWidth: 500}}>
+                            <div>
+                                <Title order={3}>Description:</Title>
+                                <br/>
+                                <Text size="sm">
+                                    {texture.description}
+                                </Text>
+                            </div>
+                        </Group>
+                    </Grid.Col>
+                    <Grid.Col span={{xs: 12, md: 6}}>
+                        <Title order={3}>Attributes:</Title>
+                        <br/>
+                        <Group>
+                            <IconDeviceFloppy size={20}/> 
+                            <Text size="sm">Size: {texture.size}</Text>
+                        </Group>
+                        <Group>
+                            <IconKeyframes size={20}/>
+                            <Text size="sm">FPS: {texture.fps}</Text>
+                        </Group>
+                        <Group>
+                            <IconAlarm size={20}/>
+                            <Text size="sm">Duration: {texture.duration}</Text>
+                        </Group>
+                        <Group>
+                            <IconFileInfo size={20}/>
+                            <Text size="sm">Format: {texture.format}</Text>
+                        </Group>
+                    </Grid.Col>
+                </Grid>
+                <br/>
             </>
             :
             <>Loading</>

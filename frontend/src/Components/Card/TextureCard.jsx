@@ -38,7 +38,7 @@ export default function TextureCard(props) {
           </HoverCard.Dropdown>
         </HoverCard>
         <Text fz="sm" mt="xs">
-          {description}
+          {description.slice(0, 30)}{description.length > 30 ? "..." : ""}
         </Text>
         <Text size={"xs"} c="dimmed" fz="sm" mt="xs">
           Size: {size}
