@@ -63,6 +63,7 @@ class VideoServiceImpl(
     ): Video {
         val videoEntity = fetchVideoInfo(video)
         enrichWithTags(videoDto, videoEntity)
+        videoEntity.name = videoDto.name!!
         videoEntity.description = videoDto.description
         return videoRepository.save(videoEntity)
     }
