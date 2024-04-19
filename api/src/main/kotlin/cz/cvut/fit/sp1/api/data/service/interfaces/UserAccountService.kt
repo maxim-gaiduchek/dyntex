@@ -10,7 +10,12 @@ interface UserAccountService {
 
     fun findById(id: Long): Optional<UserAccount>
 
+    fun findByIdAuthEnableTrue(id : Long): Optional<UserAccount>
+
     fun getByIdOrThrow(id: Long): UserAccount
+
+    fun getByIdAndAuthEnableTrue(id: Long): UserAccount
+
 
     fun findByToken(token: String): Optional<UserAccount>
 

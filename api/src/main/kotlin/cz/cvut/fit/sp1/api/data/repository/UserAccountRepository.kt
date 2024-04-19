@@ -6,7 +6,7 @@ import java.util.Optional
 
 interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
-    fun findByidAndAuthEnableTrue(id:Long):Optional<UserAccount>
+    fun findByIdAndAuthEnableTrue(id: Long): Optional<UserAccount>
 
     fun getByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
 
