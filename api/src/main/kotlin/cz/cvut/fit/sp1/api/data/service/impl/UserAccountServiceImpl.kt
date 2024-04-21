@@ -1,7 +1,11 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
+import cz.cvut.fit.sp1.api.component.mapper.UserAccountMapper
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchTagDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
@@ -20,12 +24,32 @@ import kotlin.jvm.optionals.getOrElse
 @Service
 class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
+    private val userAccountMapper: UserAccountMapper,
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
 ) : UserAccountService {
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         private const val TOKEN_SIZE = 128
+    }
+
+    override fun findAll(paramsDto: SearchUserAccountParamsDto?): SearchUserAccountDto? {
+        if (paramsDto == null) {
+            return null
+        }
+        val specification = paramsDto.buildSpecification()
+        val pageable = paramsDto.buildPageable()
+        val page = userAccountRepository.findAll(specification, pageable)
+        val userAccounts =
+            page.content.stream()
+                .map { userAccountMapper.toDto(it)!! }
+                .toList()
+        return SearchUserAccountDto(
+            userAccounts = userAccounts,
+            currentPage = page.number + 1,
+            totalPages = page.totalPages,
+            totalMatches = page.totalElements,
+        )
     }
 
     override fun findById(id: Long): Optional<UserAccount> {
