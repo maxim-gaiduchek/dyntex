@@ -17,7 +17,7 @@ abstract class StandardAuditModel : Serializable, EntityWithId {
         name = "sequenceGenerator",
         sequenceName = "hibernate_sequence",
         allocationSize = 1000,
-        initialValue = 2,
+        initialValue = 5,
     )
     @GeneratedValue(
         strategy = GenerationType.IDENTITY,
