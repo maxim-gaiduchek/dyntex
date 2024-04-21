@@ -3,6 +3,12 @@ package cz.cvut.fit.sp1.api.controller
 import cz.cvut.fit.sp1.api.component.mapper.UserAccountMapper
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchTagParamsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
+import cz.cvut.fit.sp1.api.data.model.UserAccount
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
@@ -21,6 +27,12 @@ class UserAccountController(
     private var userAccountService: UserAccountService,
     private var userAccountMapper: UserAccountMapper,
 ) {
+    @GetMapping
+    fun getAll(
+        @ModelAttribute paramsDto: SearchUserAccountParamsDto?,
+    ): SearchUserAccountDto? {
+        return userAccountService.findAll(paramsDto)
+    }
     @GetMapping("/authenticated")
     @Secured("USER", "ADMIN")
     fun getByAuthentication(): UserAccountDto {

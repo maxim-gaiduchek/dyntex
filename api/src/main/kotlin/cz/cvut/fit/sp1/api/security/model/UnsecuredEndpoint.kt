@@ -15,6 +15,7 @@ enum class UnsecuredEndpoint(
     GET_API_DOCS("/api/v3/api-docs.*", GET),
 
     GET_USER("/api/users/[0-9]+", GET),
+    GET_USERS("/api/users", GET),
     GET_USER_LOGIN("/api/users/login", POST),
     POST_USER("/api/users", POST),
 
