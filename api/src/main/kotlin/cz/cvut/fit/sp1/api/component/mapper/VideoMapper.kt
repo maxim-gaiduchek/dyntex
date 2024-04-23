@@ -11,7 +11,7 @@ import org.mapstruct.ReportingPolicy
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = [UserAccountMapper::class, TagMapper::class]
+    uses = [UserAccountMapper::class, TagMapper::class] // Ensure TagMapper is used
 )
 abstract class VideoMapper {
 
