@@ -1,6 +1,5 @@
 package cz.cvut.fit.sp1.api.data.model.media
 
-
 import jakarta.persistence.Entity
 
 @Entity
@@ -9,7 +8,8 @@ class Video(
     path: String,
     format: String,
 ) : Media(name, path, format) {
-    var duration: Long = 0
-    var fps: Long = 0
+    var duration: Double = 0.0
+    var fps: Double = 0.0
     var cameraMotion: Boolean = false
+    var previewPath: String = ""
 }

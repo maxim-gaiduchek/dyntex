@@ -1,6 +1,7 @@
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.reflect.KClass
 
 class DockerContainerRunner(
     private val image: String,
@@ -15,6 +16,7 @@ class DockerContainerRunner(
     private val command: String = "",
     private val timeout: Long = 10000,
 ) {
+
     var containerExisted: Boolean = false
         private set
 
@@ -104,7 +106,7 @@ class DockerContainerRunner(
         }
 
         return process.inputStream.bufferedReader().use { it.readText() } +
-            process.errorStream.bufferedReader().readText()
+                process.errorStream.bufferedReader().readText()
     }
 
     private fun String.startProcess(
@@ -127,6 +129,7 @@ class DockerContainerRunner(
 
     class CommandRunFailedException(val output: String) :
         RuntimeException("Command execution failed\n\nOutput:\n$output")
+
 }
 
 fun waitFor(

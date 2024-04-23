@@ -1,11 +1,15 @@
 package cz.cvut.fit.sp1.api.data.model
 
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
+import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import cz.cvut.fit.sp1.api.data.model.media.Media
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.ColumnDefault
 
 @Entity
@@ -26,4 +30,7 @@ class UserAccount(
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     var createdTags: MutableList<Tag> = mutableListOf()
+
+    @OneToOne(mappedBy = "userAccount", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var avatar: Avatar? = null
 }

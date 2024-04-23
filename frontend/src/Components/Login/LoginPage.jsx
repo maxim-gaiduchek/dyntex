@@ -10,11 +10,13 @@ import {
     Group,
     Button,
   } from '@mantine/core';
-  import { IconExclamationCircle } from '@tabler/icons-react';
+  import { IconExclamationCircle, IconCheck } from '@tabler/icons-react';
   import classes from './LoginPage.module.css';
   import { Link } from 'react-router-dom';
   import React from 'react';
   import { notifications } from '@mantine/notifications';
+  import axios from 'axios';
+
 
   export default function LoginPage() {
     const [email, setEmail] = React.useState("");
@@ -36,27 +38,42 @@ import {
         setPassword(event.target.value)
     }
 
-    const login = () => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        if(password.trim() === "" || !emailRegex.test(email)){
-            notifications.show({
-                title: 'Invalid input',
-                color: 'red',
-                icon: <IconExclamationCircle/>,
-                autoClose: 2000,
-                message: 'Please fill out all the required data. 🤥',
-            })
+    const hashPasswd = async () => {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    const login = async () => {
+        if(!error[0] && !error[1]){
+            try {
+              const response = await axios.post('http://localhost:8080/api/users/login', {
+                email,
+                "password": await hashPasswd(),
+              });
+              
+              notifications.show({
+                  title: 'Logged in',
+                  color: 'green',
+                  icon: <IconCheck/>,
+                  autoClose: 4000,
+                  message: 'User logged in ' + response.data.name,
+              })
+            } catch (error) {
+              console.log(error)
+              notifications.show({
+                  title: 'Server error',
+                  color: 'red',
+                  icon: <IconExclamationCircle/>,
+                  autoClose: 4000,
+                  message: error.response.data.description
+              })
+            }
             return;
         }
 
-        notifications.show({
-            title: 'Account not found',
-            color: 'red',
-            icon: <IconExclamationCircle/>,
-            autoClose: 4000,
-            message: 'Authentication Failed: Please ensure that the email and password provided are correct. Make sure there are no typos and try again. 😅',
-        })
     }
 
     return (

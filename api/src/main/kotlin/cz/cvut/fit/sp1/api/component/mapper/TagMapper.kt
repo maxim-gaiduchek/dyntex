@@ -12,5 +12,7 @@ abstract class TagMapper {
 
     abstract fun toDto(tag: Tag?): TagDto?
 
+    abstract fun toDtos(tags: List<Tag?>): List<TagDto?>
+
     abstract fun toEntity(tagDto: TagDto?): Tag?
 }

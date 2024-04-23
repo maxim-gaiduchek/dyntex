@@ -1,7 +1,16 @@
 postgres-autostart:
   enabled: true
-
 spring:
+  autoconfigure:
+    exclude:
+      - 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    dispatch-options-request: true
+  batch:
+    job:
+      enabled: false
   servlet:
     multipart:
       max-file-size: 128MB
@@ -17,6 +26,9 @@ spring:
         ddl-auto: update
         dialect: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 
 server:
   error:
@@ -25,3 +37,8 @@ server:
   port: 8080
   servlet:
     context-path: '/api'
+
+logging:
+  level:
+    cz: TRACE
+#    org.springframework: TRACE
