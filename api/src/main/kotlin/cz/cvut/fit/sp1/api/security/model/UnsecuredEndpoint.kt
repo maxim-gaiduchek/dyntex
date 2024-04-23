@@ -24,7 +24,6 @@ enum class UnsecuredEndpoint(
 
     GET_VIDEO("/api/videos/.*", GET),
     GET_VIDEOS("/api/videos", GET),
-    POST_VIDEOS("/api/videos", POST),
     GET_VIDEO_PREVIEW("/api/videos/previews/.*", GET),
 
     GET_MASK("/api/masks/.*", GET),

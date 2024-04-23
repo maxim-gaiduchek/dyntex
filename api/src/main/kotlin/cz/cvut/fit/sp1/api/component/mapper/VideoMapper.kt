@@ -24,9 +24,4 @@ abstract class VideoMapper {
     fun enrichWithLikes(@MappingTarget videoDto: VideoDto, video: Video?) {
         videoDto.likes = video?.likedBy?.size ?: 0
     }
-
-    @AfterMapping
-    fun enrichWithTagIds(@MappingTarget videoDto: VideoDto, video: Video?) {
-        videoDto.tagIds = video?.tags?.map { it.id }?.toList() ?: emptyList()
-    }
 }

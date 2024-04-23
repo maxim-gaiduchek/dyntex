@@ -4,7 +4,6 @@ import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -80,10 +78,9 @@ class VideoController(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PutMapping("/api/video/{id}")
-    fun updateVideo(@PathVariable id: Long, @RequestBody videoDto: VideoDto): ResponseEntity<Any> {
-        videoService.updateVideo(id, videoDto)
-        return ResponseEntity.ok().build()
+    @PutMapping("/{id}")
+    fun updateVideo(@PathVariable id: Long, @RequestBody videoDto: VideoDto): VideoDto? {
+        val video = videoService.update(id, videoDto)
+        return videoMapper.toDto(video)
     }
-
 }

@@ -1,7 +1,6 @@
 package cz.cvut.fit.sp1.api.data.service.interfaces
 
 import cz.cvut.fit.sp1.api.data.dto.VideoDto
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
@@ -20,8 +19,7 @@ interface VideoService {
         videoDto: VideoDto,
     ): Video
 
-    fun create(video: MultipartFile): Video
+    fun update(id: Long, videoDto: VideoDto): Video
 
-    fun updateVideo(id: Long, videoDto: VideoDto): Video
     fun delete(id: Long)
 }

@@ -2,7 +2,6 @@ package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.data.dto.VideoDto
@@ -15,7 +14,6 @@ import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.client.RestTemplate
@@ -94,20 +92,11 @@ class VideoServiceImpl(
         videoRepository.delete(video)
     }
 
-    @Transactional
-    override fun updateVideo(id: Long, videoDto: VideoDto): Video {
-        val video = findByIdOrThrow(id)
-        video.name = videoDto.name
-        video.path = videoDto.path
-        video.format = videoDto.format
-        video.size = videoDto.size
+    override fun update(id: Long, videoDto: VideoDto): Video {
+        val video = getByIdOrThrow(id)
+        video.name = videoDto.name!!
         video.description = videoDto.description
-        video.duration = videoDto.duration ?: video.duration
-        video.fps = videoDto.fps ?: video.fps
-
+        enrichWithModels(videoDto, video)
         return videoRepository.save(video)
     }
 }
-
-
-
