@@ -62,8 +62,6 @@ class MediaProcessor(
 
     private fun getVideoInfo(path: String): VideoInfoResponse {
         val headers = HttpHeaders()
-        // val encodedPath = URLEncoder.encode(path, StandardCharsets.UTF_8.toString())
-
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
         val request = HttpEntity(LinkedMultiValueMap<String, String>(), headers)
