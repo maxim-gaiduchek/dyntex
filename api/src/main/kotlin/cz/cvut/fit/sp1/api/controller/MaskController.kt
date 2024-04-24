@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -39,18 +38,11 @@ class MaskController(
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @Secured("USER", "ADMIN")
     fun upload(
-        // TODO Get DTO with Media file
         @RequestParam("mask") mask: MultipartFile,
     ) {
-        // TODO implement input validation
-        maskService.create(mask) // TODO return DTO
+        maskService.create(mask)
     }
-    //TODO new feature that will realeas likes to the pliactiona, each user can
+    //TODO new feature that will realeas likes to the aplication, each user can
     // like each video once if he does it twice the likes will be removed
 
-    @PutMapping ("/{id}/like")
-    @Secured("USER", "ADMIN")
-    fun like(@PathVariable id: Long) {
-        maskService.like(id)
-    }
 }

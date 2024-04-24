@@ -3,11 +3,11 @@ package cz.cvut.fit.sp1.api.data.model
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import cz.cvut.fit.sp1.api.data.model.media.Media
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.ColumnDefault
@@ -33,4 +33,7 @@ class UserAccount(
 
     @OneToOne(mappedBy = "userAccount", cascade = [CascadeType.ALL], orphanRemoval = true)
     var avatar: Avatar? = null
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    var likedVideos: MutableList<Video> = mutableListOf()
 }

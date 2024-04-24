@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -82,5 +83,15 @@ class VideoController(
     fun updateVideo(@PathVariable id: Long, @RequestBody videoDto: VideoDto): VideoDto? {
         val video = videoService.update(id, videoDto)
         return videoMapper.toDto(video)
+    }
+
+    @PutMapping("/{videoId}/likes/{userId}")
+    @PreAuthorize("@accessService.hasUserAccessToUpdateUser(#id)")
+    fun toggleVideoLike(
+        @PathVariable videoId: Long,
+        @PathVariable userId: Long
+    ): VideoDto {
+        val updatedVideo = videoService.toggleLike(videoId, userId)
+        return videoMapper.toDto(updatedVideo)!!
     }
 }

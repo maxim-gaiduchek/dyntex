@@ -8,6 +8,7 @@ import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
+import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.repository.VideoRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
@@ -23,6 +24,7 @@ import java.util.*
 @Service
 class VideoServiceImpl(
     private val videoRepository: VideoRepository,
+    private val userAccountRepository: UserAccountRepository,
     private val fileStorage: FileStorage,
     private val videoMapper: VideoMapper,
     private val restTemplate: RestTemplate,
@@ -83,6 +85,23 @@ class VideoServiceImpl(
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }
+
+    override fun toggleLike(videoId: Long, userId: Long): Video {
+        val video = getByIdOrThrow(videoId)
+        val user = userAccountService.getByIdOrThrow(userId)
+
+        if(user.likedVideos.contains(video)) {
+            user.likedVideos.remove(video)
+            video.likedByUsers.remove(user)
+        } else {
+            user.likedVideos.add(video)
+            video.likedByUsers.add(user)
+        }
+
+        userAccountRepository.save(user)
+        return videoRepository.save(video)
+    }
+
 
     override fun delete(id: Long) {
         val video = getByIdOrThrow(id)

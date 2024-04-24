@@ -24,4 +24,10 @@ abstract class VideoMapper {
     fun enrichWithLikes(@MappingTarget videoDto: VideoDto, video: Video?) {
         videoDto.likes = video?.likedBy?.size ?: 0
     }
+
+    @AfterMapping
+    fun enrichWithLikedByUserIds(video: Video, @MappingTarget videoDto: VideoDto) {
+        videoDto.likedByUserIds = video.likedByUsers.map { it.id!! }.toMutableList()
+    }
+
 }
