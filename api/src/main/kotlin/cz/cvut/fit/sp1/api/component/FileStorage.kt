@@ -43,9 +43,9 @@ class FileStorage {
 
     fun getFile(path: String): File {
         val file = File(path)
-        if (!file.exists()) {
-            throw FileStoreException(FileStoreExceptionCodes.READ_FILE_ERROR, path)
-        }
+        /*if (!file.) {
+            //throw FileStoreException(FileStoreExceptionCodes.READ_FILE_ERROR, path)
+        }*/
         return file
     }
 
