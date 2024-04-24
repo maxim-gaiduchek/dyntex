@@ -151,7 +151,7 @@ export default function DropZone(props) {
       <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
       <br/>
       <Group justify='center'>
-        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Save</Button>
+        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Next</Button>
       </Group>
       </>
     }

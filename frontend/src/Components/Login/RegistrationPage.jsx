@@ -110,8 +110,9 @@ import { useNavigate } from 'react-router-dom';
     } 
 
     useEffect(() => {
-        if(cookies.token !== undefined){
-            navigate("/")
+        if(!(cookies.token === undefined)){
+            console.log("PENIS")
+            // navigate("/")
         }
     }, [])
 
