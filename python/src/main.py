@@ -53,7 +53,7 @@ def prepare_video():
     try:
         video_directory = os.path.dirname(video_path)
         video_filename = os.path.basename(video_path)
-        new_name = os.path.splitext(video_filename)[0] + '.mp4'
+        new_name = os.path.splitext(video_filename)[0] + '.webm'
         new_preview_name = os.path.splitext(video_filename)[0] + ".png"
 
         video_clip = VideoFileClip(video_path)
@@ -61,13 +61,15 @@ def prepare_video():
         resized_clip = video_clip.resize(width=1920)
 
         output_filepath = os.path.join(video_directory, new_name)
-        resized_clip.write_videofile(output_filepath, codec='h264_videotoolbox')
+        resized_clip.write_videofile(output_filepath, codec='libvpx', ffmpeg_params=["-deadline", "realtime"])
 
         file_stats = os.stat(output_filepath)
 
         sz = file_stats.st_size / (1024 * 1024)
 
-        preview_frame = resized_clip.get_frame(5)
+        new_clip = VideoFileClip(output_filepath)
+
+        preview_frame = new_clip.get_frame(5)
 
         preview_image = Image.fromarray(preview_frame)
 
@@ -88,6 +90,7 @@ def prepare_video():
             )
 
     except Exception as e:
+        print(e)
         return jsonify({'error': 'An error occurred: ' + str(e)})
 if __name__ == '__main__':
     app.run(debug=True)
