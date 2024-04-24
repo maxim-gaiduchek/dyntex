@@ -9,6 +9,7 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.validation.group.CreateGroup
+import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -27,26 +28,35 @@ class MaskController(
     private val storagePathProperties: StoragePathProperties,
     private val storage: FileStorage,
 ) {
-
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Long): MaskDto? {
+    fun findById(
+        @PathVariable id: Long,
+    ): MaskDto? {
         val mask = maskService.getByIdOrThrow(id)
         return maskMapper.toDto(mask)
     }
 
     @GetMapping
-    fun findAll(@ModelAttribute paramsDto: SearchMediaParamsDto<Mask>?): SearchMaskDto? {
+    fun findAll(
+        @ModelAttribute paramsDto: SearchMediaParamsDto<Mask>?,
+    ): SearchMaskDto? {
         return maskService.findAll(paramsDto)
     }
 
     @GetMapping("/download/{maskName}")
     fun download(
         @PathVariable maskName: String,
-    ): ResponseEntity<ByteArray> {
-        val imageData = storage.readFileAsBytes(Path(storagePathProperties.mediaPath, maskName).toString())
-        val headers = HttpHeaders()
-        headers.contentType = MediaType.IMAGE_PNG
-        return ResponseEntity(imageData, headers, HttpStatus.OK)
+    ): ResponseEntity<Resource> {
+        val maskPath = Path(storagePathProperties.mediaPath, maskName).toString()
+        val headers =
+            HttpHeaders().apply {
+                contentType = MediaType.IMAGE_PNG
+                add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$maskName\"")
+            }
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(storage.readFileAsResource(maskPath))
     }
 
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -69,7 +79,10 @@ class MaskController(
     }
 
     @PutMapping("/{id}")
-    fun updateMask(@PathVariable id: Long, @RequestBody maskDto: MaskDto): MaskDto? {
+    fun updateMask(
+        @PathVariable id: Long,
+        @RequestBody maskDto: MaskDto,
+    ): MaskDto? {
         val mask = maskService.update(id, maskDto)
         return maskMapper.toDto(mask)
     }

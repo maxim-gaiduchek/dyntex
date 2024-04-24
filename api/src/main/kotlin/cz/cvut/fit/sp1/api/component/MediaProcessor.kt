@@ -85,14 +85,13 @@ class MediaProcessor(
     }
 
     private fun buildMask(
-        name: String,
+        subPath: String,
         extension: String,
-        filePath: String,
     ): Mask {
         val mask =
             Mask(
-                name = name,
-                path = filePath,
+                name = "",
+                path = subPath,
                 format = extension,
             )
         val inputStream = media.inputStream
@@ -112,9 +111,10 @@ class MediaProcessor(
 
         val name = generateFileName("mask")
         val extension = determineFileType(media)
-        val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
+        val subPath = "$name.$extension"
+        val filePath = Path(storagePathProperties.mediaPath, subPath).toString()
 
-        val mask = buildMask(name, extension, filePath)
+        val mask = buildMask(subPath, extension)
 
         saveFile(filePath)
 

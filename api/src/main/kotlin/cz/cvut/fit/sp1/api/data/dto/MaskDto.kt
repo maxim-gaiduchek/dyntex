@@ -16,7 +16,7 @@ data class MaskDto(
     override var createdBy: UserAccountDto?,
     override var createdById: Long?,
     override var likes: Int?,
-    @field:NotEmpty(message = "Video must have at least one tag", groups = [CreateGroup::class, UpdateGroup::class])
     override var tags: MutableList<TagDto> = mutableListOf(),
+    @field:NotEmpty(message = "Video must have at least one tag", groups = [CreateGroup::class, UpdateGroup::class])
     var tagIds: MutableList<Long>?,
 ) : MediaDto(id, name, size, description, path, format, createdBy, createdById, likes, tags)
