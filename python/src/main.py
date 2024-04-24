@@ -69,7 +69,7 @@ def prepare_video():
 
         new_clip = VideoFileClip(output_filepath)
 
-        preview_frame = new_clip.get_frame(5)
+        preview_frame = new_clip.get_frame(1)
 
         preview_image = Image.fromarray(preview_frame)
 
