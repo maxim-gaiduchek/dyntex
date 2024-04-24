@@ -21,6 +21,7 @@ export default function MainPage(){
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
     const [lastTags, setLastTags] = React.useState([])
+    const [totalPages, setPages] = React.useState(0)
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
     const [user, setUser] = React.useState(undefined)
     const navigate = useNavigate()
@@ -34,6 +35,7 @@ export default function MainPage(){
     const fetchData = async () => {
       setTextures(null)
       const response = await axios.get('http://localhost:8080/api/videos');
+      setPages(response.data.totalPages)
       setTextures(response.data.videos)
     }
 
@@ -72,6 +74,7 @@ export default function MainPage(){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
       const response = await axios.get(url);
+      setPages(response.data.totalPages)
       setTextures(response.data.videos)
     }
 
@@ -137,7 +140,7 @@ export default function MainPage(){
           }
           </Grid>
           <Center maw={"100vw"} h={100}>
-            <Pagination mt="sm" total={10} />
+            <Pagination mt="sm" total={totalPages} />
           </Center>
         </>
     )
