@@ -7,6 +7,7 @@ open class MediaDto(
     open var description: String,
     open var path: String?,
     open var format: String?,
+    open var createdBy: UserAccountDto?,
     open var createdById: Long?,
     open var likes: Int?,
     open var tags: MutableList<TagDto> = mutableListOf(),

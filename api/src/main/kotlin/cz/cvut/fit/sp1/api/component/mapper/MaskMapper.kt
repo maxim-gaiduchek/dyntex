@@ -15,7 +15,9 @@ import org.mapstruct.ReportingPolicy
 )
 abstract class MaskMapper {
 
-    @Mapping(target = "createdById", source = "createdBy.id")
+    @Mapping(target = "createdBy.likedMedia", ignore = true)
+    @Mapping(target = "createdBy.createdMedia", ignore = true)
+    @Mapping(target = "createdBy.token", ignore = true)
     abstract fun toDto(mask: Mask?): MaskDto?
 
     abstract fun toEntity(maskDto: MaskDto?): Mask?

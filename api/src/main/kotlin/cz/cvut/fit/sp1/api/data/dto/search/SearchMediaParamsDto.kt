@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Root
 
 class SearchMediaParamsDto<T : Media>(
     private var ids: MutableList<Long>? = mutableListOf(),
+    private var createdBy: MutableList<Long>? = mutableListOf(),
     private var tags: MutableList<Long>? = mutableListOf(),
     private var name: String? = null,
     override var page: Int = 1,
@@ -34,6 +35,10 @@ class SearchMediaParamsDto<T : Media>(
 
         if (!ids.isNullOrEmpty()) {
             predicates.add(root.get<Any>("id").`in`(ids))
+        }
+
+        if (!createdBy.isNullOrEmpty()) {
+            predicates.add(root.join<Any, Any>("createdBy").get<Any>("id").`in`(createdBy))
         }
 
         if (!tags.isNullOrEmpty()) {
