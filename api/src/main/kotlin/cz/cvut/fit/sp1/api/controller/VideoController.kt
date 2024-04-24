@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import kotlin.io.path.Path
 
 @RestController
 @RequestMapping("/videos")
@@ -63,7 +64,7 @@ class VideoController(
     fun download(
         @PathVariable videoName: String,
     ): ResponseEntity<Resource> {
-        val videoPath = storagePathProperties.mediaPath + "/$videoName"
+        val videoPath = Path(storagePathProperties.mediaPath, videoName).toString()
 
         val headers =
             HttpHeaders().apply {
@@ -80,7 +81,7 @@ class VideoController(
     fun getPreview(
         @PathVariable previewName: String,
     ): ResponseEntity<ByteArray> {
-        val imageData = storage.readFileAsBytes(storagePathProperties.mediaPath + "/$previewName")
+        val imageData = storage.readFileAsBytes(Path(storagePathProperties.mediaPath, previewName).toString())
         val headers = HttpHeaders()
         headers.contentType = MediaType.IMAGE_PNG
         return ResponseEntity(imageData, headers, HttpStatus.OK)
