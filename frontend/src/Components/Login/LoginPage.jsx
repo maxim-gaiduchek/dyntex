@@ -73,7 +73,9 @@ import { useNavigate } from 'react-router-dom';
                   autoClose: 4000,
                   message: 'User logged in ' + response.data.name,
               })
-              setCookie("token", response.data.token)
+              const expirationDate = new Date();
+              expirationDate.setDate(expirationDate.getDate() + 30);
+              setCookie("token", response.data.token, { expires: expirationDate })
               navigate("/")
             } catch (error) {
               console.log(error)
