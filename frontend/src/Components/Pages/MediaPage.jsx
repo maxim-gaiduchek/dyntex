@@ -45,7 +45,7 @@ export default function MediaPage(){
                             Download
                         </Button>
                     </Link>
-                    <Link to={"/editor"}>
+                    <Link to={"/editor"} target="_blank">
                         <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
                             Process
                         </Button>
@@ -102,7 +102,7 @@ export default function MediaPage(){
                         </Group>
                         <Group>
                             <IconAlarm size={20}/>
-                            <Text size="sm">Duration: {texture.duration}</Text>
+                            <Text size="sm">Duration: {texture.duration} seconds</Text>
                         </Group>
                         <Group>
                             <IconFileInfo size={20}/>

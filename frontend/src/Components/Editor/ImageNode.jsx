@@ -15,7 +15,7 @@ export default memo(({ data, isConnectable }) => {
       <div>
         {data.name}
       </div>
-      <img src={data.image} style={{width: "200px", margin: "0 auto"}} alt='image'/>
+      <img src={data.image} style={{width: "200px", margin: "0 auto"}} alt='video preview'/>
       <Handle
         type="source"
         position={Position.Right}
