@@ -8,7 +8,6 @@ import cz.cvut.fit.sp1.api.data.dto.MaskDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMaskDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
-import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.repository.MaskRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.data.service.interfaces.TagService
@@ -72,11 +71,11 @@ class MaskServiceImpl(
 
     private fun enrichWithModels(maskDto: MaskDto, mask: Mask) {
         val user = userAccountService.getByAuthentication()
-//        val tags = tagService.getAllByIds(maskDto.tagIds!!)
+        val tags = tagService.getAllByIds(maskDto.tagIds!!)
         mask.createdBy = user
         user.createdMedia.add(mask)
-//        mask.tags = tags
-//        tags.forEach { it.media.add(mask) }
+        mask.tags = tags
+        tags.forEach { it.media.add(mask) }
     }
 
     override fun delete(id: Long) {

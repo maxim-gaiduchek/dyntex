@@ -4,14 +4,11 @@ import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.mapper.MaskMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import cz.cvut.fit.sp1.api.data.dto.MaskDto
-import cz.cvut.fit.sp1.api.data.dto.MediaDto
-import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMaskDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.validation.group.CreateGroup
-import org.springframework.core.io.Resource
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
