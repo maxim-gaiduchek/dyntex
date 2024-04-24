@@ -3,11 +3,13 @@ import { Grid } from '@mantine/core'
 import { Pagination } from '@mantine/core';
 import { Center, Group } from '@mantine/core';
 import { SegmentedControl, Modal, Button } from '@mantine/core';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Skeleton } from '@mantine/core';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
@@ -19,6 +21,15 @@ export default function MainPage(){
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
     const [lastTags, setLastTags] = React.useState([])
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const [user, setUser] = React.useState(undefined)
+    const navigate = useNavigate()
+
+    const options = {
+      headers: {
+        'Authorization': cookies.token
+      }
+    };
 
     const fetchData = async () => {
       setTextures(null)
@@ -34,6 +45,21 @@ export default function MainPage(){
       setTags(response.data.tags)
     }
 
+    const checkLogged = async () => {
+      if(cookies.token === undefined){
+        navigate("/login")
+      }
+
+      try{
+        const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
+        setUser(response.data)
+      }catch{
+        //very very bad and stupid =)
+        removeCookie("token")
+        navigate("/login")
+      }
+
+    }
     const changeSearch = async (values) => {
       if(lastTags.length === values.length && lastTags.every((value, index) => value === values[index])){
         return
@@ -42,7 +68,7 @@ export default function MainPage(){
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
       var url = "http://localhost:8080/api/videos"
-      if(ids.length != 0){
+      if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
       const response = await axios.get(url);
@@ -50,8 +76,9 @@ export default function MainPage(){
     }
 
     useEffect(() => {
-      fetchData()
+      checkLogged()
       fetchTags()
+      fetchData()
     },[])
 
     return (

@@ -4,6 +4,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
 import { Loader, Select, TextInput, Textarea } from '@mantine/core';
+import { useCookies } from 'react-cookie';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
@@ -14,6 +15,7 @@ export default function DropZone(props) {
   const [description, setDescription] = useState("")
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
+  const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
 
   const getFile = (files) => {
     var file_loc = files[0]
@@ -24,7 +26,8 @@ export default function DropZone(props) {
 
     const options = {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'Authorization': cookies.token
       },
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
@@ -48,7 +51,7 @@ export default function DropZone(props) {
 
   const getTagId = () => {
     props.tags.forEach((tag) => {
-      if(tag.name == value.value){
+      if(tag.name === value.value){
         setTagIg(tag.id)
       }
     })
@@ -135,9 +138,11 @@ export default function DropZone(props) {
       </>
       :
       <>
-      <TextInput placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
+      <TextInput label={"Name"} placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
       <br/>
       <Select
+        label={"Category"}
+        placeholder={'Category'}
         data={props.tags}
         value={value ? value.value : null}
         onChange={(_value, option) => {setValue(option)}}
@@ -146,7 +151,7 @@ export default function DropZone(props) {
       <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
       <br/>
       <Group justify='center'>
-        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Save</Button>
+        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Next</Button>
       </Group>
       </>
     }

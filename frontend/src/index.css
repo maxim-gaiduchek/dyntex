@@ -25,3 +25,11 @@ a{
 .mantine-Grid-root{
   --grid-margin: calc(var(--grid-gutter) / -2) calc(var(--grid-gutter) / -2) 0 calc(var(--grid-gutter) / -2) !important;
 }
+.react-flow__node-imageNode {
+  font-size: 12px;
+  background: #eee;
+  border: 1px solid #555;
+  border-radius: 5px;
+  color: black;
+  text-align: center;
+}

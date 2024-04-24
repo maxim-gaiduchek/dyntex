@@ -3,12 +3,8 @@ package cz.cvut.fit.sp1.api.controller
 import cz.cvut.fit.sp1.api.component.mapper.UserAccountMapper
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
-import cz.cvut.fit.sp1.api.data.dto.search.SearchMediaParamsDto
-import cz.cvut.fit.sp1.api.data.dto.search.SearchTagParamsDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
-import cz.cvut.fit.sp1.api.data.model.UserAccount
-import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
@@ -33,9 +29,10 @@ class UserAccountController(
     ): SearchUserAccountDto? {
         return userAccountService.findAll(paramsDto)
     }
+
     @GetMapping("/authenticated")
     @Secured("USER", "ADMIN")
-    fun getByAuthentication(): UserAccountDto {
+    fun getByAuthentication(): UserAccountDto? {
         val user = userAccountService.getByAuthentication()
         return userAccountMapper.toDto(user)
     }
@@ -43,7 +40,7 @@ class UserAccountController(
     @GetMapping("/{id}")
     fun getById(
         @PathVariable id: Long,
-    ): UserAccountDto {
+    ): UserAccountDto? {
         val user = userAccountService.getByIdOrThrow(id)
         return userAccountMapper.toDto(user)
     }
@@ -52,7 +49,7 @@ class UserAccountController(
     fun register(
         @Validated(UserRegistrationGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto,
         response: HttpServletResponse,
-    ): UserAccountDto {
+    ): UserAccountDto? {
         val user = userAccountService.register(userCredentialsDto)
         return userAccountMapper.toDtoWithToken(user)
     }
@@ -61,7 +58,7 @@ class UserAccountController(
     fun login(
         @Validated(UserLoginGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto,
         response: HttpServletResponse,
-    ): UserAccountDto {
+    ): UserAccountDto? {
         val user = userAccountService.login(userCredentialsDto)
         return userAccountMapper.toDtoWithToken(user)
     }
@@ -71,7 +68,7 @@ class UserAccountController(
     fun update(
         @PathVariable id: Long,
         @Validated(UpdateGroup::class) @RequestBody userAccountDto: UserAccountDto
-    ): UserAccountDto {
+    ): UserAccountDto? {
         val user = userAccountService.update(id, userAccountDto)
         return userAccountMapper.toDto(user)
     }
@@ -81,7 +78,7 @@ class UserAccountController(
     fun updateAvatar(
         @PathVariable id: Long,
         @RequestPart("avatar", required = false) avatarFile: MultipartFile
-    ): UserAccountDto {
+    ): UserAccountDto? {
         val user = userAccountService.updateAvatar(id, avatarFile)
         return userAccountMapper.toDto(user)
     }
