@@ -9,6 +9,8 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.validation.group.CreateGroup
+import org.springframework.core.io.Resource
+import org.springframework.core.io.support.ResourceRegion
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -42,11 +45,42 @@ class VideoController(
         return videoMapper.toDto(video)
     }
 
+    @GetMapping("/stream/{videoName}")
+    fun streamVideo(
+        @PathVariable videoName: String,
+        @RequestHeader headers: HttpHeaders,
+    ): ResponseEntity<ResourceRegion> {
+        val videoPath = "${storagePathProperties.mediaPath}/$videoName"
+        val headersRange = headers["Range"]?.firstOrNull()
+        val resourceRegion = storage.getResourceRegion(videoPath, headersRange)
+
+        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+            .contentType(MediaType.parseMediaType("video/mp4"))
+            .body(resourceRegion)
+    }
+
+    @GetMapping("/download/{videoName}")
+    fun download(
+        @PathVariable videoName: String,
+    ): ResponseEntity<Resource> {
+        val videoPath = storagePathProperties.mediaPath + "/$videoName"
+
+        val headers =
+            HttpHeaders().apply {
+                contentType = MediaType.parseMediaType("video/mp4")
+                add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"$videoName\"")
+            }
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(storage.readFileAsResource(videoPath))
+    }
+
     @GetMapping("/previews/{previewName}")
     fun getPreview(
         @PathVariable previewName: String,
     ): ResponseEntity<ByteArray> {
-        val imageData = storage.readFile(storagePathProperties.mediaPath + "/$previewName")
+        val imageData = storage.readFileAsBytes(storagePathProperties.mediaPath + "/$previewName")
         val headers = HttpHeaders()
         headers.contentType = MediaType.IMAGE_PNG
         return ResponseEntity(imageData, headers, HttpStatus.OK)
@@ -72,7 +106,7 @@ class VideoController(
     @DeleteMapping("/{id}")
     @Secured("USER", "ADMIN")
     fun delete(
-        @PathVariable id: Long
+        @PathVariable id: Long,
     ): ResponseEntity<Any> {
         videoService.delete(id)
         return ResponseEntity(HttpStatus.OK)
