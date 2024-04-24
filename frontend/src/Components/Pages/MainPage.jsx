@@ -22,8 +22,14 @@ export default function MainPage(){
     const [tags, setTags] = React.useState([])
     const [lastTags, setLastTags] = React.useState([])
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const [user, setUser] = React.useState(undefined)
     const navigate = useNavigate()
 
+    const options = {
+      headers: {
+        'Authorization': cookies.token
+      }
+    };
 
     const fetchData = async () => {
       setTextures(null)
@@ -40,10 +46,19 @@ export default function MainPage(){
     }
 
     const checkLogged = async () => {
-      console.log(cookies.token)
       if(cookies.token === undefined){
         navigate("/login")
       }
+
+      try{
+        const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
+        setUser(response.data)
+      }catch{
+        //very very bad and stupid =)
+        removeCookie("token")
+        navigate("/login")
+      }
+
     }
     const changeSearch = async (values) => {
       if(lastTags.length === values.length && lastTags.every((value, index) => value === values[index])){
@@ -62,8 +77,8 @@ export default function MainPage(){
 
     useEffect(() => {
       checkLogged()
-      fetchData()
       fetchTags()
+      fetchData()
     },[])
 
     return (

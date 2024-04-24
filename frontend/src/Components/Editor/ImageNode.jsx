@@ -2,12 +2,12 @@ import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 
 export default memo(({ data, isConnectable }) => {
-    console.log(data)
   return (
     <>
       <Handle
         type="target"
         position={Position.Left}
+        id="test"
         style={{ background: '#555' }}
         onConnect={(params) => console.log('handle onConnect', params)}
         isConnectable={isConnectable}
