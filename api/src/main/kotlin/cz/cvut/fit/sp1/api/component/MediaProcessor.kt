@@ -33,9 +33,6 @@ class MediaProcessor(
     }
 
     fun extractVideoInfo(): Video {
-        // need to check if it's video before conversion to one format
-        if (!isVideo(media)) throw MediaException(VideoExceptionCodes.INVALID_VIDEO_FILE)
-
         val name = generateFileName("video")
         val extension = determineFileType(media)
         val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
@@ -66,6 +63,7 @@ class MediaProcessor(
 
         val request = HttpEntity(LinkedMultiValueMap<String, String>(), headers)
         val response =
+
             restTemplate.exchange(
                 "http://127.0.0.1:5000/prepare?path=$path",
                 HttpMethod.GET,
