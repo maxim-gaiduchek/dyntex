@@ -7,7 +7,8 @@ data class MaskDto(
     override var size: String?,
     override var description: String = "",
     override var format: String?,
+    override var createdBy: UserAccountDto?,
     override var createdById: Long?,
     override var likes: Int?,
     override var tags: MutableList<TagDto> = mutableListOf(),
-) : MediaDto(id, name, size, description, path, format, createdById, likes, tags)
+) : MediaDto(id, name, size, description, path, format, createdBy, createdById, likes, tags)
