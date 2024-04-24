@@ -10,18 +10,23 @@ import {
     Group,
     Button,
   } from '@mantine/core';
-  import { IconExclamationCircle, IconCheck } from '@tabler/icons-react';
-  import classes from './LoginPage.module.css';
-  import { Link } from 'react-router-dom';
-  import React from 'react';
-  import { notifications } from '@mantine/notifications';
-  import axios from 'axios';
+import { IconExclamationCircle, IconCheck } from '@tabler/icons-react';
+import classes from './LoginPage.module.css';
+import { Link } from 'react-router-dom';
+import React from 'react';
+import { notifications } from '@mantine/notifications';
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
   export default function LoginPage() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [error, setError] = React.useState([false, false])
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const navigate = useNavigate()
 
     const checkEmail = (event) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -46,6 +51,13 @@ import {
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    useEffect(() => {
+      //TODO: probably should check authorized status when email releases =)
+      if(cookies.token !== undefined){
+        navigate("/")
+      }
+    },[])
+
     const login = async () => {
         if(!error[0] && !error[1]){
             try {
@@ -61,6 +73,8 @@ import {
                   autoClose: 4000,
                   message: 'User logged in ' + response.data.name,
               })
+              setCookie("token", response.data.token)
+              navigate("/")
             } catch (error) {
               console.log(error)
               notifications.show({

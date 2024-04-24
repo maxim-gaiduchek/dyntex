@@ -4,6 +4,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
 import { Loader, Select, TextInput, Textarea } from '@mantine/core';
+import { useCookies } from 'react-cookie';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
@@ -14,6 +15,7 @@ export default function DropZone(props) {
   const [description, setDescription] = useState("")
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
+  const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
 
   const getFile = (files) => {
     var file_loc = files[0]
@@ -24,7 +26,8 @@ export default function DropZone(props) {
 
     const options = {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'Authorization': cookies.token
       },
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;

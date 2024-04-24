@@ -8,6 +8,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Skeleton } from '@mantine/core';
 import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
@@ -19,6 +21,9 @@ export default function MainPage(){
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
     const [lastTags, setLastTags] = React.useState([])
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const navigate = useNavigate()
+
 
     const fetchData = async () => {
       setTextures(null)
@@ -34,6 +39,12 @@ export default function MainPage(){
       setTags(response.data.tags)
     }
 
+    const checkLogged = async () => {
+      console.log(cookies.token)
+      if(cookies.token === undefined){
+        navigate("/login")
+      }
+    }
     const changeSearch = async (values) => {
       if(lastTags.length === values.length && lastTags.every((value, index) => value === values[index])){
         return
@@ -50,6 +61,7 @@ export default function MainPage(){
     }
 
     useEffect(() => {
+      checkLogged()
       fetchData()
       fetchTags()
     },[])
