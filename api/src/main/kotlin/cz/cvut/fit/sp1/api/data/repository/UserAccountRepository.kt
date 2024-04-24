@@ -10,7 +10,7 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
     fun getByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
 
-    fun getByEmailAndPasswordAndAuthEnableTrue(email: String, password: String): Optional<UserAccount>
+    fun findByEmailAndPasswordAndAuthEnableTrue(email: String, password: String): Optional<UserAccount>
 
     fun existsByEmail(email: String): Boolean
 

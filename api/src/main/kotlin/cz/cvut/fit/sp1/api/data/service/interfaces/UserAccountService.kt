@@ -16,8 +16,7 @@ interface UserAccountService {
 
     fun getByIdAndAuthEnableTrue(id: Long): UserAccount
 
-
-    fun findByToken(token: String): Optional<UserAccount>
+    fun findByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
 
     fun getByAuthentication(): UserAccount
 
@@ -31,7 +30,8 @@ interface UserAccountService {
 
     fun delete(id: Long)
 
-    fun findByAuthToken(token: String): UserAccount
+    fun getByAuthToken(token: String): UserAccount
 
     fun save(user:UserAccount):UserAccount
+
 }

@@ -40,8 +40,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: dyntex.project@gmail.com
-    password: dntu shag fscu afdb
+    username: dyntex.inc@gmail.com
+    password: avti oxgj hgka fmeq
 
     properties:
       mail:
@@ -63,6 +63,8 @@ logging:
     cz: TRACE
 #    org.springframework: TRACE
 
-mail:
-  domain-url : 'localhost:8080'
-
+verification:
+  enable: true
+  token-expiring-time: 60
+  mail:
+    url: 'http://localhost:8080/api/auth'
