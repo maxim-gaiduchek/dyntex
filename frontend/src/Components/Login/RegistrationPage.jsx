@@ -36,7 +36,10 @@ import { useNavigate } from 'react-router-dom';
                   "password": await hashPasswd(),
                 });
           
-                console.log('User created:', response.data);
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 30);
+                setCookie("token", response.data.token, { expires: expirationDate })
+                navigate("/")
                 setActive((current) => (current < 3 ? current + 1 : current));
               } catch (error) {
                 notifications.show({
