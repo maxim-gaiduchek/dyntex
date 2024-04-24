@@ -5,6 +5,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { Loader, Select, TextInput, Textarea } from '@mantine/core';
 import { useCookies } from 'react-cookie';
+import { notifications } from '@mantine/notifications';
+import { IconExclamationCircle } from '@tabler/icons-react';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
@@ -66,7 +68,15 @@ export default function DropZone(props) {
           { file === null ?
             <Dropzone
               onDrop={getFile}
-              onReject={(files) => console.log('rejected files', files)}
+              onReject={(files) => {
+                notifications.show({
+                    title: 'Invalid file',
+                    color: 'red',
+                    icon: <IconExclamationCircle/>,
+                    autoClose: 4000,
+                    message: "File size not valid :("
+                })
+              }}
               maxSize={5 * 1024 ** 2}
               {...props}
             >
