@@ -3,7 +3,7 @@ import { Grid } from '@mantine/core'
 import { Pagination } from '@mantine/core';
 import { Center, Group } from '@mantine/core';
 import { SegmentedControl, Modal, Button } from '@mantine/core';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect } from 'react';
 import { Skeleton } from '@mantine/core';
@@ -42,7 +42,7 @@ export default function MainPage(){
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
       var url = "http://localhost:8080/api/videos"
-      if(ids.length != 0){
+      if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
       const response = await axios.get(url);

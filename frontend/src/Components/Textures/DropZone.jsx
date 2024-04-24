@@ -48,7 +48,7 @@ export default function DropZone(props) {
 
   const getTagId = () => {
     props.tags.forEach((tag) => {
-      if(tag.name == value.value){
+      if(tag.name === value.value){
         setTagIg(tag.id)
       }
     })
@@ -135,9 +135,11 @@ export default function DropZone(props) {
       </>
       :
       <>
-      <TextInput placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
+      <TextInput label={"Name"} placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
       <br/>
       <Select
+        label={"Category"}
+        placeholder={'Category'}
         data={props.tags}
         value={value ? value.value : null}
         onChange={(_value, option) => {setValue(option)}}
