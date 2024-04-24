@@ -40,7 +40,7 @@ export default function MediaPage(){
                         alt="texture" src={"http://localhost:8080/api/videos/previews/" + texture.previewPath}/>
                 </Group>
                 <Group mt="xs" justify="left">
-                    <Link to={"/media/" + texture.id}>
+                    <Link to={"http://localhost:8080/api/videos/stream/"+texture.path} target="_blank">
                         <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
                             Download
                         </Button>
