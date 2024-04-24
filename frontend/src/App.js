@@ -8,6 +8,7 @@ import LoginPage from './Components/Login/LoginPage';
 import MediaPage from './Components/Pages/MediaPage';
 import RegistrationPage from './Components/Login/RegistrationPage';
 import ResetPage from './Components/Login/ResetPage';
+import EditorPage from './Components/Pages/EditorPage'
 import '@mantine/dropzone/styles.css';
 
 import {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: "/reset",
     element: <ResetPage/>
+  },
+  {
+    path: "/editor",
+    element: <EditorPage/>
   },
   {
     path: "*",
