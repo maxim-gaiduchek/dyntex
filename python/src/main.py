@@ -61,7 +61,8 @@ def prepare_video():
         resized_clip = video_clip.resize(width=1920)
 
         output_filepath = os.path.join(video_directory, new_name)
-        resized_clip.write_videofile(output_filepath, codec='libvpx', ffmpeg_params=["-deadline", "realtime"])
+        resized_clip.write_videofile(output_filepath, codec='libvpx',
+        ffmpeg_params=["-deadline", "realtime", "-cpu-used", "0"])
 
         file_stats = os.stat(output_filepath)
 
