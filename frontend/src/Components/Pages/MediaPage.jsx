@@ -38,7 +38,8 @@ export default function MediaPage(){
                             maxWidth: 500
                         }}
                         alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.previewPath}/> */}
-                    <video controls className={classes.video}
+                    <video 
+                        className={classes.video}
                         loop
                         autoPlay 
                         style={{
