@@ -85,7 +85,7 @@ export default function MediaPage(){
                 <MediaProfile texture={texture}/>
                 <Group style={{marginTop: 10, marginBottom: 25}}>
                     <IconStar size={12}/>
-                    <Text size={"sm"}>Favourites: 96</Text>
+                    <Text size={"sm"}>Favourites: {texture.likes}</Text>
                 </Group>
                 <Grid>
                     <Grid.Col span={{xs: 12, md: 8}}>
