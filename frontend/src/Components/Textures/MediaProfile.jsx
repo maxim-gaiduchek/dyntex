@@ -17,13 +17,13 @@ export default function MediaProfile(props) {
           </Text>
 
           <Text fz="lg" fw={500} className={classes.name}>
-            Kvoza Onkay
+            {props.texture.createdBy.name}
           </Text>
 
           <Group wrap="nowrap" gap={10} mt={3}>
             <IconAt stroke={1.5} size="1rem" className={classes.icon} />
             <Text fz="xs" c="dimmed">
-              kvoza@gmail.com
+              {props.texture.createdBy.email}
             </Text>
           </Group>
         </div>

@@ -3,20 +3,30 @@ import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
-import { Loader, Select, TextInput, Textarea } from '@mantine/core';
+import { Loader, TextInput, Textarea } from '@mantine/core';
 import { useCookies } from 'react-cookie';
+import { notifications } from '@mantine/notifications';
+import { IconExclamationCircle } from '@tabler/icons-react';
+import CategorySearch from './CategorySearch';
 
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
-  const [value, setValue] = useState(null)
   const [filled, setFilled] = useState(false);
   const [tagId, setTagIg] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("")
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
-  const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+  const [cookies] = useCookies(['dyntex']);
 
+  const changeTags = (e) => {
+    var ids = props.tags.filter((tag) => {return e.includes(tag.emoji + tag.name)});
+    let ret = ""
+    if(ids.length !== 0){
+      ret += ids.map((obj) => obj.id).join(",")
+    }
+    setTagIg(ret)
+  }
   const getFile = (files) => {
     var file_loc = files[0]
 
@@ -49,13 +59,6 @@ export default function DropZone(props) {
     });
   }
 
-  const getTagId = () => {
-    props.tags.forEach((tag) => {
-      if(tag.name === value.value){
-        setTagIg(tag.id)
-      }
-    })
-  }
 
   return (
     <>
@@ -66,7 +69,17 @@ export default function DropZone(props) {
           { file === null ?
             <Dropzone
               onDrop={getFile}
-              onReject={(files) => console.log('rejected files', files)}
+              multiple={false}
+              accept={["video/*"]}
+              onReject={(files) => {
+                notifications.show({
+                    title: 'Invalid file',
+                    color: 'red',
+                    icon: <IconExclamationCircle/>,
+                    autoClose: 4000,
+                    message: "File size not valid :("
+                })
+              }}
               maxSize={5 * 102400 ** 2}
               {...props}
             >
@@ -140,18 +153,12 @@ export default function DropZone(props) {
       <>
       <TextInput label={"Name"} placeholder='Name' value={name} onChange={(e) => setName(e.target.value)}/>
       <br/>
-      <Select
-        label={"Category"}
-        placeholder={'Category'}
-        data={props.tags}
-        value={value ? value.value : null}
-        onChange={(_value, option) => {setValue(option)}}
-      />
+      <CategorySearch tags={props.tags} changeSearch={changeTags} />
       <br/>
       <Textarea label="Description" value={description} onChange={(e) => setDescription(e.target.value)}/>
       <br/>
       <Group justify='center'>
-        <Button onClick={() => {setFilled(true); getTagId()}} disabled={value === null || name === ""}>Next</Button>
+        <Button onClick={() => {setFilled(true)}} disabled={tagId === null || name === ""}>Next</Button>
       </Group>
       </>
     }

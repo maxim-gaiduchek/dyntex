@@ -79,6 +79,10 @@ import { useNavigate } from 'react-router-dom';
               navigate("/")
             } catch (error) {
               console.log(error)
+              if(error.code === "ERR_NETWORK"){
+                navigate("/serverdown")
+                return
+              }
               notifications.show({
                   title: 'Server error',
                   color: 'red',

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
 
 export default function TextureCard(props) {
-  const { id, name, tags, description, previewPath, size, fps } = props.texture;
+  const { id, name, tags, description, previewPath, size, fps, createdBy } = props.texture;
   const features = tags.map((badge) => (
     <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
       {badge.name}
@@ -17,7 +17,7 @@ export default function TextureCard(props) {
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
         <Link to={"http://localhost:3000/media/"+id}>
-          <Image src={"http://localhost:8080/api/videos/previews/"+previewPath} alt={name} height={180} />
+          <Image src={"http://localhost:8080/api/media/previews/"+previewPath} alt={name} height={180} />
         </Link>
       </Card.Section>
 
@@ -33,10 +33,10 @@ export default function TextureCard(props) {
         </Group>
         <HoverCard width={280} openDelay={300} shadow="md">
           <HoverCard.Target>
-            <span className={classes.accountLink}>Added by: <Link to="/account/asd">Kvoza Onkay</Link></span>
+            <span className={classes.accountLink}>Added by: <Link to="/account/asd">{createdBy.name}</Link></span>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <AccountPreview/>
+            <AccountPreview account={createdBy}/>
           </HoverCard.Dropdown>
         </HoverCard>
         <Text fz="sm" mt="xs">

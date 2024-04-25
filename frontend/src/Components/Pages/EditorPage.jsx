@@ -14,7 +14,7 @@ import 'reactflow/dist/style.css';
 const initialNodes = [
   { id: '1', position: { x: 150, y: 100 }, data: { label: '1' } },
   { id: '2', position: { x: 150, y: 200 }, data: { label: '2' } },
-  { id: '3', position: { x: 250, y: 300 }, data: { name: "Papich", label: '2', image: "http://localhost:8080/api/videos/previews/video_20240419_132126_1295.png" }, type: 'imageNode'}
+  { id: '3', position: { x: 250, y: 300 }, data: { name: "Papich", label: '2', image: "http://localhost:8080/api/media/previews/video_20240419_132126_1295.png" }, type: 'imageNode'}
 ];
 
 const nodeTypes = {

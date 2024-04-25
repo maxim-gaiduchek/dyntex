@@ -32,15 +32,26 @@ export default function MediaPage(){
             texture != null ?
             <>
                 <Group justify="center" style={{backgroundColor: "black", padding: "0"}} grow>
-                    <img
+                    {/* <img
                         style={{
                             width: "100%",
                             maxWidth: 500
                         }}
-                        alt="texture" src={"http://localhost:8080/api/videos/previews/" + texture.previewPath}/>
+                        alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.previewPath}/> */}
+                    <video 
+                        className={classes.video}
+                        loop
+                        autoPlay 
+                        style={{
+                            width: "100%",
+                            maxWidth: 600
+                        }}>
+                        <source src={"http://localhost:8080/api/media/stream/" + texture.path} type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
                 </Group>
                 <Group mt="xs" justify="left">
-                    <Link to={"http://localhost:8080/api/videos/stream/"+texture.path} target="_blank">
+                    <Link to={"http://localhost:8080/api/videos/download/"+texture.path} target="_blank">
                         <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
                             Download
                         </Button>
@@ -75,7 +86,7 @@ export default function MediaPage(){
                 <MediaProfile texture={texture}/>
                 <Group style={{marginTop: 10, marginBottom: 25}}>
                     <IconStar size={12}/>
-                    <Text size={"sm"}>Favourites: 96</Text>
+                    <Text size={"sm"}>Favourites: {texture.likes}</Text>
                 </Group>
                 <Grid>
                     <Grid.Col span={{xs: 12, md: 8}}>
