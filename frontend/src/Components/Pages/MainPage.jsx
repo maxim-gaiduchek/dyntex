@@ -90,8 +90,8 @@ export default function MainPage(){
       }catch(e){
         //very very bad and stupid =)
         console.log(e)
-        // removeCookie("token")
-        // navigate("/login")
+        removeCookie("token")
+        navigate("/login")
       }
 
     }
