@@ -32,19 +32,25 @@ export default function MainPage(){
       }
     };
 
-    const fetchData = async () => {
+    const fetchData = async (page = 1) => {
       setTextures(null)
-      const response = await axios.get('http://localhost:8080/api/videos');
-      setPages(response.data.totalPages)
-      setTextures(response.data.videos)
+      try{
+        const response = await axios.get('http://localhost:8080/api/videos?page='+page);
+        setPages(response.data.totalPages)
+        setTextures(response.data.videos)
+      } catch{
+      }
     }
 
     const fetchTags = async () => {
-      const response = await axios.get('http://localhost:8080/api/tags')
-      response.data.tags.forEach((d) => {
-        d.value = d.name
-      })
-      setTags(response.data.tags)
+      try{
+        const response = await axios.get('http://localhost:8080/api/tags')
+        response.data.tags.forEach((d) => {
+          d.value = d.name
+        })
+        setTags(response.data.tags)
+      } catch(e){
+      }
     }
 
     const checkLogged = async () => {
@@ -55,10 +61,11 @@ export default function MainPage(){
       try{
         const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
         setUser(response.data)
-      }catch{
+      }catch(e){
         //very very bad and stupid =)
-        removeCookie("token")
-        navigate("/login")
+        console.log(e)
+        // removeCookie("token")
+        // navigate("/login")
       }
 
     }
@@ -140,7 +147,9 @@ export default function MainPage(){
           }
           </Grid>
           <Center maw={"100vw"} h={100}>
-            <Pagination mt="sm" total={totalPages} />
+            <Pagination mt="sm" total={totalPages} onChange={(e) => {
+              fetchData(e)
+            }}/>
           </Center>
         </>
     )

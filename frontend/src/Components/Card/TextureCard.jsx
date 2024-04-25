@@ -17,7 +17,7 @@ export default function TextureCard(props) {
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
         <Link to={"http://localhost:3000/media/"+id}>
-          <Image src={"http://localhost:8080/api/videos/previews/"+previewPath} alt={name} height={180} />
+          <Image src={"http://localhost:8080/api/media/previews/"+previewPath} alt={name} height={180} />
         </Link>
       </Card.Section>
 

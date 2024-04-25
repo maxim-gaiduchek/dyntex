@@ -28,6 +28,9 @@ enum class UnsecuredEndpoint(
 
     GET_MASK("/api/masks/.*", GET),
     GET_MASKS("/api/masks", GET),
+
+    GET_MEDIA_PREVIEW("/api/media/previews/.*", GET),
+    GET_MEDIA_STREAM("/api/media/stream/.*", GET)
     ;
 
     companion object {

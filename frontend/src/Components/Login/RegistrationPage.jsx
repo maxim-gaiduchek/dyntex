@@ -42,6 +42,10 @@ import { useNavigate } from 'react-router-dom';
                 navigate("/")
                 setActive((current) => (current < 3 ? current + 1 : current));
               } catch (error) {
+                if(error.code === "ERR_NETWORK"){
+                    navigate("/serverdown")
+                    return
+                  }
                 notifications.show({
                     title: 'Invalid input',
                     color: 'red',

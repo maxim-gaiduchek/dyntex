@@ -15,6 +15,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import ServerDown from './Components/Pages/ServerDown';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
   {
     path: "/editor",
     element: <EditorPage/>
+  },
+  {
+    path: "/serverdown",
+    element: <ServerDown/>
   },
   {
     path: "*",
