@@ -77,7 +77,7 @@ export default function DropZone(props) {
                     message: "File size not valid :("
                 })
               }}
-              maxSize={5 * 1024 ** 2}
+              maxSize={5 * 102400 ** 2}
               {...props}
             >
               <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>

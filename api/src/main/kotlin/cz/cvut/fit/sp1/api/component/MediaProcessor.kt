@@ -33,9 +33,6 @@ class MediaProcessor(
     }
 
     fun extractVideoInfo(): Video {
-        // need to check if it's video before conversion to one format
-        if (!isVideo(media)) throw MediaException(VideoExceptionCodes.INVALID_VIDEO_FILE)
-
         val name = generateFileName("video")
         val extension = determineFileType(media)
         val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
@@ -62,12 +59,11 @@ class MediaProcessor(
 
     private fun getVideoInfo(path: String): VideoInfoResponse {
         val headers = HttpHeaders()
-        // val encodedPath = URLEncoder.encode(path, StandardCharsets.UTF_8.toString())
-
         headers.accept = listOf(MediaType.APPLICATION_JSON)
 
         val request = HttpEntity(LinkedMultiValueMap<String, String>(), headers)
         val response =
+
             restTemplate.exchange(
                 "http://127.0.0.1:5000/prepare?path=$path",
                 HttpMethod.GET,
@@ -89,14 +85,13 @@ class MediaProcessor(
     }
 
     private fun buildMask(
-        name: String,
+        subPath: String,
         extension: String,
-        filePath: String,
     ): Mask {
         val mask =
             Mask(
-                name = name,
-                path = filePath,
+                name = "",
+                path = subPath,
                 format = extension,
             )
         val inputStream = media.inputStream
@@ -116,9 +111,10 @@ class MediaProcessor(
 
         val name = generateFileName("mask")
         val extension = determineFileType(media)
-        val filePath = Path(storagePathProperties.mediaPath, "$name.$extension").toString()
+        val subPath = "$name.$extension"
+        val filePath = Path(storagePathProperties.mediaPath, subPath).toString()
 
-        val mask = buildMask(name, extension, filePath)
+        val mask = buildMask(subPath, extension)
 
         saveFile(filePath)
 
