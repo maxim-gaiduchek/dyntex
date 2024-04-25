@@ -16,7 +16,7 @@ import DropZone from '../Textures/DropZone';
 
 export default function MainPage(){
 
-    const [value, setValue] = React.useState("All")
+    const [value, setValue] = React.useState("Textures")
     const [textures, setTextures] = React.useState(null)
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
@@ -24,6 +24,7 @@ export default function MainPage(){
     const [totalPages, setPages] = React.useState(0)
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
     const [user, setUser] = React.useState(undefined)
+    const [masks, setMasks] = React.useState(null)
     const navigate = useNavigate()
 
     const options = {
@@ -31,6 +32,31 @@ export default function MainPage(){
         'Authorization': cookies.token
       }
     };
+
+    const changeMode = (mode) => {
+      if(value === mode){
+        return
+      }
+
+      if(mode === "Textures"){
+        fetchData()
+      }
+
+      if(mode === "Masks"){
+        fetchMasks()
+      }
+
+      setValue(mode)
+    }
+
+    const fetchMasks = async (page = 1) => {
+      try{
+        const response = await axios.get('http://localhost:8080/api/masks?page='+page);
+        setPages(response.data.totalPages)
+        setMasks(response.data.masks)
+      } catch(e) {
+      }
+    }
 
     const fetchData = async (page = 1) => {
       setTextures(null)
@@ -105,44 +131,86 @@ export default function MainPage(){
           <br/>
           <Group justify="space-between" grow>
             <CategorySearch tags={tags} changeSearch={changeSearch} />
-            <SegmentedControl onChange={setValue} value={value} data={['All', 'Texture', 'Mask']} />
+            <SegmentedControl onChange={changeMode} value={value} data={['Textures', 'Masks']} />
           </Group>
           <div style={{marginBottom: 20}}>
           </div>
           <Grid style={{overflow: "hidden"}}>
           {
-            textures !== null ?
+            value === "Textures" 
+            ?
             <>
               {
-                textures.length === 0 ?
-                <Grid.Col span={12}>
-                  <Group justify='center' grow>
-                    <h2 style={{textAlign: "center"}}>No textures yet.</h2>
-                  </Group>
-                </Grid.Col>
-                :
-                <>
-                  {
-                      textures.map((texture) => (
-                          <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                              <TextureCard texture = {texture}/>
-                          </Grid.Col>
-                      ))
-                  }
-                </>
+               textures !== null ?
+               <>
+                 {
+                   textures.length === 0 ?
+                   <Grid.Col span={12}>
+                     <Group justify='center' grow>
+                       <h2 style={{textAlign: "center"}}>No textures yet.</h2>
+                     </Group>
+                   </Grid.Col>
+                   :
+                   <>
+                     {
+                         textures.map((texture) => (
+                             <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
+                                 <TextureCard texture = {texture}/>
+                             </Grid.Col>
+                         ))
+                     }
+                   </>
+                 }
+               </>
+               :
+               <>
+                 <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                     <Skeleton visible={true} width={"100%"} height={250}/>
+                 </Grid.Col>
+                 <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                     <Skeleton visible={true} width={"100%"} height={250}/>
+                 </Grid.Col>
+                 <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                     <Skeleton visible={true} width={"100%"} height={250}/>
+                 </Grid.Col>
+               </> 
               }
             </>
             :
             <>
-              <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                  <Skeleton visible={true} width={"100%"} height={250}/>
-              </Grid.Col>
-              <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                  <Skeleton visible={true} width={"100%"} height={250}/>
-              </Grid.Col>
-              <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                  <Skeleton visible={true} width={"100%"} height={250}/>
-              </Grid.Col>
+                {
+                  masks !== null ?
+                  <>
+                    {
+                      masks.map((mask) => (
+                      <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                          <div style={{
+                            width: "100%", 
+                            height: 300, 
+                            backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center"
+                            }
+                          }>
+
+                          </div>
+                      </Grid.Col>
+                      ))
+                    }
+                  </>
+                  :
+                  <>
+                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                        <Skeleton visible={true} width={"100%"} height={250}/>
+                    </Grid.Col>
+                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                        <Skeleton visible={true} width={"100%"} height={250}/>
+                    </Grid.Col>
+                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
+                        <Skeleton visible={true} width={"100%"} height={250}/>
+                    </Grid.Col>
+                  </>
+                }
             </>
           }
           </Grid>
