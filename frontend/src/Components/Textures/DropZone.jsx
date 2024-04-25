@@ -3,7 +3,7 @@ import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
-import { Loader, Select, TextInput, Textarea } from '@mantine/core';
+import { Loader, TextInput, Textarea } from '@mantine/core';
 import { useCookies } from 'react-cookie';
 import { notifications } from '@mantine/notifications';
 import { IconExclamationCircle } from '@tabler/icons-react';
@@ -17,7 +17,7 @@ export default function DropZone(props) {
   const [description, setDescription] = useState("")
   const [finished, setFinished] = useState(false)
   const [progress, setProgress] = useState(0);
-  const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+  const [cookies] = useCookies(['dyntex']);
 
   const changeTags = (e) => {
     var ids = props.tags.filter((tag) => {return e.includes(tag.emoji + tag.name)});
@@ -69,6 +69,8 @@ export default function DropZone(props) {
           { file === null ?
             <Dropzone
               onDrop={getFile}
+              multiple={false}
+              accept={["video/*"]}
               onReject={(files) => {
                 notifications.show({
                     title: 'Invalid file',
