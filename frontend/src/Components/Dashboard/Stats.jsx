@@ -8,15 +8,17 @@ import {
 import classes from './StatsGrid.module.css';
 
 
-const data = [
-  { title: 'Textures', icon: <IconCamera/>, value: '13,456', diff: 34 },
-  { title: 'Masks', icon: <IconPhoto/>, value: '4,145', diff: -13 },
-  { title: 'Tags', icon: <IconBookmark/>, value: '745', diff: 18 },
-  { title: 'New Users', icon: <IconUserPlus/>, value: '188', diff: -30 },
-];
 
-export default function Stats() {
+export default function Stats(props) {
+  const data = [
+    { title: 'Textures', icon: <IconCamera/>, value: props.stats.videosCount, diff: 34 },
+    { title: 'Masks', icon: <IconPhoto/>, value: props.stats.masksCount, diff: -13 },
+    { title: 'Tags', icon: <IconBookmark/>, value: props.stats.tagsCount, diff: 18 },
+    { title: 'New Users', icon: <IconUserPlus/>, value: props.stats.usersCount, diff: -30 },
+  ];
+
   const stats = data.map((stat) => {
+    
 
     return (
       <Paper withBorder p="md" radius="md" key={stat.title}>
