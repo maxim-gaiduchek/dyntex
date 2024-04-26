@@ -28,6 +28,8 @@ enum class UnsecuredEndpoint(
 
     GET_MASK("/api/masks/.*", GET),
     GET_MASKS("/api/masks", GET),
+
+    GET_VERIFY("/api/auth/verify", GET),
     ;
 
     companion object {

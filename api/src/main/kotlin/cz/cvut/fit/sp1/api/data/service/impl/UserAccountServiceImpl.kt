@@ -11,10 +11,11 @@ import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
-import jakarta.transaction.Transactional
 import cz.cvut.fit.sp1.api.security.service.interfaces.SecurityProvider
+import jakarta.transaction.Transactional
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -26,6 +27,7 @@ class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
+    @Value("\${verification.enable}") private val verificationEnable: Boolean,
 ) : UserAccountService {
     @Autowired
     @Lazy
@@ -90,6 +92,10 @@ class UserAccountServiceImpl(
     override fun register(userCredentialsDto: UserCredentialsDto): UserAccount {
         checkUserAccountCreationPossibility(userCredentialsDto)
         val user = buildNewUser(userCredentialsDto)
+        if (!verificationEnable) {
+            user.authEnable = true
+            return userAccountRepository.save(user)
+        }
         verificationService!!.sendVerificationEmail(user.email, user.authToken)
         return userAccountRepository.save(user)
     }

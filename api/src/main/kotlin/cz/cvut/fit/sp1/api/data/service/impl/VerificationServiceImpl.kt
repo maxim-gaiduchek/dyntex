@@ -23,14 +23,11 @@ class VerificationServiceImpl(
 
 
     override fun sendVerificationEmail(email: String, token: String) {
-
         val confirmationUrl = "$mailUrl/verify?authToken=$token"
         val context = Context().apply {
             setVariable("confirmationUrl", confirmationUrl)
         }
-        val emailContent = templateEngine.process(
-            "verification_email", context
-        )
+        val emailContent = templateEngine.process("verification_email", context)
         emailService.sendEmail(email, "Verify your account", emailContent)
     }
 

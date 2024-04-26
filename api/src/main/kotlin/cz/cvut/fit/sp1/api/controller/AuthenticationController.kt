@@ -1,6 +1,7 @@
 package cz.cvut.fit.sp1.api.controller
 
 import cz.cvut.fit.sp1.api.data.service.interfaces.VerificationService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -16,6 +17,6 @@ class AuthenticationController(
     @GetMapping("/verify")
     fun authentication(@RequestParam authToken: String):ResponseEntity<Any> {
         verificationService.verifyToken(authToken)
-        return ResponseEntity.ok().build()
+        return ResponseEntity(HttpStatus.OK)
     }
 }
