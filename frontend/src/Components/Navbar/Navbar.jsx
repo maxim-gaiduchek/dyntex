@@ -15,7 +15,7 @@ import ColorSwitch from './ColorSwitch';
 const mockdata = [
   { label: 'Dashboard', icon: IconGauge, link: "/" },
   { label: "All Media", icon: IconAlbum, link: "/media"},
-  { label: "Textures", icon: IconCamera, link: "/texutres"},
+  { label: "Textures", icon: IconCamera, link: "/textures"},
   { label: "Masks", icon: IconAlbum, link: "/masks"},
   { label: "Favourites", icon: IconBookmark, link: "/favourites"},
   { label: "Users", icon: IconUser, link: "/favourites"},

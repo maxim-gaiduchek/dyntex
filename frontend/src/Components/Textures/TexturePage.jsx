@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
 
-export default function MainPage(){
+export default function TexturePage(){
 
     const [value, setValue] = React.useState("Textures")
     const [textures, setTextures] = React.useState(null)
@@ -25,40 +25,12 @@ export default function MainPage(){
     const [lastTags, setLastTags] = React.useState([])
     const [totalPages, setPages] = React.useState(0)
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
-    const [user, setUser] = React.useState(undefined)
-    const [masks, setMasks] = React.useState(null)
-    const navigate = useNavigate()
 
     const options = {
       headers: {
         'Authorization': cookies.token
       }
     };
-
-    const changeMode = (mode) => {
-      if(value === mode){
-        return
-      }
-
-      if(mode === "Textures"){
-        fetchData()
-      }
-
-      if(mode === "Masks"){
-        fetchMasks()
-      }
-
-      setValue(mode)
-    }
-
-    const fetchMasks = async (page = 1) => {
-      try{
-        const response = await axios.get('http://localhost:8080/api/masks?page='+page);
-        setPages(response.data.totalPages)
-        setMasks(response.data.masks)
-      } catch(e) {
-      }
-    }
 
     const fetchData = async (page = 1) => {
       setTextures(null)
@@ -81,22 +53,6 @@ export default function MainPage(){
       }
     }
 
-    const checkLogged = async () => {
-      if(cookies.token === undefined){
-        navigate("/login")
-      }
-
-      try{
-        const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
-        setUser(response.data)
-      }catch(e){
-        //very very bad and stupid =)
-        console.log(e)
-        removeCookie("token")
-        navigate("/login")
-      }
-
-    }
     const changeSearch = async (values) => {
       if(lastTags.length === values.length && lastTags.every((value, index) => value === values[index])){
         return
@@ -114,24 +70,16 @@ export default function MainPage(){
     }
 
     useEffect(() => {
-      checkLogged()
       fetchTags()
       fetchData()
     },[])
 
     return (
         <>
-          <h2>DYNTEX))</h2>
-          {
-            value === "Textures" ?
-            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-                  <DropZone tags={tags} fetchData={fetchData} close={close}/>
-            </Modal>
-            :
-            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-                  <DropZoneMask tags={tags} fetchData={fetchMasks} close={close}/>
-            </Modal>
-          }
+          <h2>Textures</h2>
+          <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+            <DropZone tags={tags} fetchData={fetchData} close={close}/>
+          </Modal>
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>
               {
@@ -145,15 +93,11 @@ export default function MainPage(){
           <br/>
           <Group justify="space-between" grow>
             <CategorySearch tags={tags} changeSearch={changeSearch} />
-            <SegmentedControl onChange={changeMode} value={value} data={['Textures', 'Masks']} />
           </Group>
           <div style={{marginBottom: 20}}>
           </div>
           <Grid style={{overflow: "hidden"}}>
-          {
-            value === "Textures" 
-            ?
-            <>
+          <>
               {
                textures !== null ?
                <>
@@ -190,52 +134,11 @@ export default function MainPage(){
                </> 
               }
             </>
-            :
-            <>
-                {
-                  masks !== null ?
-                  <>
-                    {
-                      masks.map((mask) => (
-                      <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                          <Link to={"/mask/" + mask.id}>
-                            <div style={{
-                              width: "100%", 
-                              height: 300, 
-                              backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
-                              backgroundSize: "cover",
-                              backgroundPosition: "center"
-                              }
-                            }>
-                            </div>
-                          </Link>
-                      </Grid.Col>
-                      ))
-                    }
-                  </>
-                  :
-                  <>
-                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                        <Skeleton visible={true} width={"100%"} height={250}/>
-                    </Grid.Col>
-                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                        <Skeleton visible={true} width={"100%"} height={250}/>
-                    </Grid.Col>
-                    <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                        <Skeleton visible={true} width={"100%"} height={250}/>
-                    </Grid.Col>
-                  </>
-                }
-            </>
-          }
           </Grid>
           <Center maw={"100vw"} h={100}>
             <Pagination mt="sm" total={totalPages} onChange={(e) => {
-              if(value === "Textures"){
                 fetchData(e)
-              }else {
-                fetchMasks(e)
-              }
+              
             }}/>
           </Center>
         </>
