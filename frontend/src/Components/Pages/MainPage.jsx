@@ -231,7 +231,11 @@ export default function MainPage(){
           </Grid>
           <Center maw={"100vw"} h={100}>
             <Pagination mt="sm" total={totalPages} onChange={(e) => {
-              fetchData(e)
+              if(value === "Textures"){
+                fetchData(e)
+              }else {
+                fetchMasks(e)
+              }
             }}/>
           </Center>
         </>
