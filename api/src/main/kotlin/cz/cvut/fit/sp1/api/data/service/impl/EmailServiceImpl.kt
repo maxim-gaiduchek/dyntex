@@ -7,18 +7,15 @@ import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 
 @Service
-class EmailServiceImpl(val mailSender : JavaMailSender) : EmailService {
+class EmailServiceImpl(val mailSender: JavaMailSender) : EmailService {
 
     @Async
     override fun sendEmail(receiver: String, subject: String, text: String) {
         val message = mailSender.createMimeMessage()
         val helper = MimeMessageHelper(message, true)
-
         helper.setTo(receiver)
         helper.setSubject(subject)
         helper.setText(text, true)
-
         mailSender.send(message)
-        println("Email sent in Thread " + Thread.currentThread().name)
     }
 }

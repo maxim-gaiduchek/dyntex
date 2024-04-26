@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 interface UserAccountService {
+
     fun findAll(paramsDto: SearchUserAccountParamsDto?): SearchUserAccountDto?
 
     fun findById(id: Long): Optional<UserAccount>
@@ -17,7 +18,7 @@ interface UserAccountService {
 
     fun getByIdOrThrow(id: Long): UserAccount
 
-    fun getByIdAndAuthEnableTrue(id: Long): UserAccount
+    fun getByIdAndAuthEnableTrueOrThrow(id: Long): UserAccount
 
     fun findByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
 
@@ -38,5 +39,4 @@ interface UserAccountService {
     fun getByAuthToken(token: String): UserAccount
 
     fun save(user:UserAccount):UserAccount
-
 }

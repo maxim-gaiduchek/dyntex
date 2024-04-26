@@ -95,13 +95,13 @@ class UserAccountServiceImpl(
     }
 
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
-        val user = getByIdOrThrow(id)
+        val user = getByIdAndAuthEnableTrueOrThrow(id)
         user.name = userAccountDto.name!!
         return userAccountRepository.save(user)
     }
 
     override fun updateAvatar(id: Long, file: MultipartFile): UserAccount {
-        val user = getByIdOrThrow(id)
+        val user = getByIdAndAuthEnableTrueOrThrow(id)
         if (user.avatar != null) {
             avatarService.delete(user.avatar!!)
         }
@@ -174,7 +174,7 @@ class UserAccountServiceImpl(
         return userAccountRepository.save(user)
     }
 
-    override fun getByIdAndAuthEnableTrue(id: Long): UserAccount {
+    override fun getByIdAndAuthEnableTrueOrThrow(id: Long): UserAccount {
         return findByIdAuthEnableTrue(id)
             .getOrElse {
                 throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
