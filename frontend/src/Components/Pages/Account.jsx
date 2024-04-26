@@ -8,7 +8,7 @@ export default function Account(){
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-      
+      setUser(null)
     },[])
 
     return (

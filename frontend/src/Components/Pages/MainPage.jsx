@@ -10,6 +10,7 @@ import { Skeleton } from '@mantine/core';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import DropZoneMask from '../Textures/DropZoneMask';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
@@ -120,12 +121,24 @@ export default function MainPage(){
     return (
         <>
           <h2>DYNTEX))</h2>
-          <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-            <DropZone tags={tags} fetchData={fetchData} close={close}/>
-          </Modal>
+          {
+            value === "Textures" ?
+            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+                  <DropZone tags={tags} fetchData={fetchData} close={close}/>
+            </Modal>
+            :
+            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+                  <DropZoneMask tags={tags} fetchData={fetchMasks} close={close}/>
+            </Modal>
+          }
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>
-              <Button onClick={open}>Add Texture</Button>
+              {
+                value === "Textures" ?
+                <Button onClick={open}>Add Texture</Button>
+                :
+                <Button onClick={open}>Add Mask</Button>
+              }
             </Grid>
           </Group>
           <br/>
