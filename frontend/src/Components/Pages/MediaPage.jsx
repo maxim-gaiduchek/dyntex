@@ -11,12 +11,17 @@ import axios from "axios";
 import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
 
-export default function MediaPage(){
+export default function MediaPage(props){
     let { id } = useParams();
     const [texture, setTexture] = useState(null)
 
     const getTextureInfo = async () => {
-        const response = await axios.get('http://localhost:8080/api/videos/'+id);
+        let response;
+        if(props.type === "video"){
+            response = await axios.get('http://localhost:8080/api/videos/'+id);
+        }else {
+            response = await axios.get('http://localhost:8080/api/masks/'+id);
+        }
         console.log(response.data)
         setTexture(response.data)
     }
@@ -32,35 +37,42 @@ export default function MediaPage(){
             texture != null ?
             <>
                 <Group justify="center" style={{backgroundColor: "black", padding: "0"}} grow>
-                    {/* <img
+                    {
+                        props.type === "mask" ?
+                        <img
                         style={{
                             width: "100%",
                             maxWidth: 500
                         }}
-                        alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.previewPath}/> */}
-                    <video 
-                        className={classes.video}
-                        loop
-                        autoPlay 
-                        style={{
-                            width: "100%",
-                            maxWidth: 600
-                        }}>
-                        <source src={"http://localhost:8080/api/media/stream/" + texture.path} type="video/mp4" />
-                        Your browser does not support the video tag.
-                    </video>
+                        alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.path}/>
+                        :
+                        <video 
+                            className={classes.video}
+                            loop
+                            autoPlay 
+                            style={{
+                                width: "100%",
+                                maxWidth: 600
+                            }}>
+                            <source src={"http://localhost:8080/api/media/stream/" + texture.path} type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    }
                 </Group>
                 <Group mt="xs" justify="left">
-                    <Link to={"http://localhost:8080/api/videos/download/"+texture.path} target="_blank">
+                    <Link to={"http://localhost:8080/api/"+(props.type)+"s/download/"+texture.path} target="_blank">
                         <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
                             Download
                         </Button>
                     </Link>
-                    <Link to={"/editor"} target="_blank">
-                        <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
-                            Process
-                        </Button>
-                    </Link>
+                    {
+                        props.type === "video" && 
+                        <Link to={"/editor"} target="_blank">
+                            <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
+                                Process
+                            </Button>
+                        </Link>
+                    }
                     <ActionIcon
                     onClick={() =>
                     notifications.show({
@@ -101,7 +113,7 @@ export default function MediaPage(){
                         </Group>
                     </Grid.Col>
                     <Grid.Col span={{xs: 12, md: 4}}>
-                        <Title order={3}>Attributes:</Title>
+                        {/* <Title order={3}>Attributes:</Title>
                         <br/>
                         <Group>
                             <IconDeviceFloppy size={20}/> 
@@ -118,7 +130,7 @@ export default function MediaPage(){
                         <Group>
                             <IconFileInfo size={20}/>
                             <Text size="sm">Format: {texture.format}</Text>
-                        </Group>
+                        </Group> */}
                     </Grid.Col>
                 </Grid>
                 <br/>

@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import DropZoneMask from '../Textures/DropZoneMask';
+import { Link } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
@@ -168,7 +169,7 @@ export default function MainPage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                 <TextureCard texture = {texture}/>
+                                <TextureCard texture = {texture}/>
                              </Grid.Col>
                          ))
                      }
@@ -197,16 +198,17 @@ export default function MainPage(){
                     {
                       masks.map((mask) => (
                       <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                          <div style={{
-                            width: "100%", 
-                            height: 300, 
-                            backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center"
-                            }
-                          }>
-
-                          </div>
+                          <Link to={"/mask/" + mask.id}>
+                            <div style={{
+                              width: "100%", 
+                              height: 300, 
+                              backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center"
+                              }
+                            }>
+                            </div>
+                          </Link>
                       </Grid.Col>
                       ))
                     }
