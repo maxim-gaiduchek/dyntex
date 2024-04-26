@@ -22,6 +22,10 @@ import {
 import ServerDown from './Components/Pages/ServerDown';
 import Dashboard from './Components/Pages/Dashboard';
 import TexturePage from './Components/Textures/TexturePage';
+import Users from './Components/Pages/Users';
+import Favourites from './Components/Pages/Favourites';
+import Tags from './Components/Pages/Tags';
+import MaskPage from './Components/Textures/MaskPage';
 
 const router = createBrowserRouter([
   {
@@ -33,12 +37,24 @@ const router = createBrowserRouter([
     element: <MainLayout><TexturePage/></MainLayout>
   },
   {
+    path: "/users",
+    element: <MainLayout><Users/></MainLayout>
+  },
+  {
+    path: "/favourites",
+    element: <MainLayout><Favourites/></MainLayout>
+  },
+  {
     path: "/secondary",
     element: <MainLayout><SecondaryPage/></MainLayout>
   },
   {
-    path: "/account",
-    element: <MainLayout><Account/></MainLayout>
+    path: "/tags",
+    element: <MainLayout><Tags/></MainLayout>
+  },
+  {
+    path: "/masks",
+    element: <MainLayout><MaskPage/></MainLayout>
   },
   {
     path: "/account/:id",

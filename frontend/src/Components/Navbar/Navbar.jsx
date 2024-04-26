@@ -5,6 +5,7 @@ import {
   IconGauge,
   IconUser,
   IconBookmark,
+  IconHash
 } from '@tabler/icons-react';
 import { LinksGroup } from './NavbarLinksGroup';
 import classes from './NavbarNested.module.css';
@@ -17,8 +18,9 @@ const mockdata = [
   { label: "All Media", icon: IconAlbum, link: "/media"},
   { label: "Textures", icon: IconCamera, link: "/textures"},
   { label: "Masks", icon: IconAlbum, link: "/masks"},
+  { label: "Users", icon: IconUser, link: "/users"},
+  { label: "Tags", icon: IconHash, link: "/tags"},
   { label: "Favourites", icon: IconBookmark, link: "/favourites"},
-  { label: "Users", icon: IconUser, link: "/favourites"},
 ];
 
 export function NavbarNested() {
