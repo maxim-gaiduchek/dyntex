@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotEmpty
 data class VideoDto(
     var fps: Long?,
     var duration: Double?,
-    @field:NotEmpty(message = "Video ID must not be empty", groups = [UpdateGroup::class])
     override var id: Long?,
     @field:NotEmpty(message = "Video name must not be empty", groups = [CreateGroup::class, UpdateGroup::class])
     override var name: String?,
@@ -20,7 +19,6 @@ data class VideoDto(
     override var createdById: Long?,
     override var likes: Int?,
     override var tags: MutableList<TagDto> = mutableListOf(),
-    var likedByUserIds: MutableList<Long> = mutableListOf(),
     @field:NotEmpty(message = "Video must have at least one tag", groups = [CreateGroup::class, UpdateGroup::class])
     override var tagIds: MutableList<Long>?,
 ) : MediaDto(id, name, size, description, path, format, createdBy, createdById, likes, tags, tagIds)

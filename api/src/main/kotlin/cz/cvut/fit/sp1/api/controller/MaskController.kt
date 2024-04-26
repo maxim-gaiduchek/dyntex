@@ -76,9 +76,6 @@ class MaskController(
     ): ResponseEntity<Any> {
         maskService.delete(id)
         return ResponseEntity(HttpStatus.OK)
-        @RequestParam("mask") mask: MultipartFile,
-    ) {
-        maskService.create(mask)
     }
 
     @PutMapping("/{id}")
