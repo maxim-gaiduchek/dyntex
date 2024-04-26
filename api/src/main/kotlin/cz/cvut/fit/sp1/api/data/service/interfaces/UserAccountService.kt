@@ -26,4 +26,6 @@ interface UserAccountService {
     fun register(userCredentialsDto: UserCredentialsDto): UserAccount
 
     fun login(userCredentialsDto: UserCredentialsDto): UserAccount
+
+    fun countAll(): Long
 }
