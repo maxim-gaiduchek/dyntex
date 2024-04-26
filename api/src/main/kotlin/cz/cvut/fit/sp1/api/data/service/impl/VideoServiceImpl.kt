@@ -118,4 +118,8 @@ class VideoServiceImpl(
         enrichWithModels(videoDto, video)
         return videoRepository.save(video)
     }
+
+    override fun countAll(): Long {
+        return videoRepository.count()
+    }
 }

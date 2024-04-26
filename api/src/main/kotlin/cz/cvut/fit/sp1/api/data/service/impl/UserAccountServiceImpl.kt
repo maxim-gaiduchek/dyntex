@@ -3,7 +3,6 @@ package cz.cvut.fit.sp1.api.data.service.impl
 import cz.cvut.fit.sp1.api.component.mapper.UserAccountMapper
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
-import cz.cvut.fit.sp1.api.data.dto.search.SearchTagDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
@@ -127,5 +126,9 @@ class UserAccountServiceImpl(
             userAccountRepository.getByEmailAndPassword(userCredentialsDto.email!!, userCredentialsDto.password!!)
                 .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
+    }
+
+    override fun countAll(): Long {
+        return userAccountRepository.count()
     }
 }

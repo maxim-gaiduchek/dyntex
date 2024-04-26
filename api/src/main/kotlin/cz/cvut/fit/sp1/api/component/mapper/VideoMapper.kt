@@ -11,11 +11,13 @@ import org.mapstruct.ReportingPolicy
 @Mapper(
     componentModel = "spring",
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = [UserAccountMapper::class, TagMapper::class] // Ensure TagMapper is used
+    uses = [UserAccountMapper::class, TagMapper::class]
 )
 abstract class VideoMapper {
 
-    @Mapping(target = "createdById", source = "createdBy.id")
+    @Mapping(target = "createdBy.likedMedia", ignore = true)
+    @Mapping(target = "createdBy.createdMedia", ignore = true)
+    @Mapping(target = "createdBy.token", ignore = true)
     abstract fun toDto(video: Video?): VideoDto?
 
     abstract fun toEntity(videoDto: VideoDto?): Video?

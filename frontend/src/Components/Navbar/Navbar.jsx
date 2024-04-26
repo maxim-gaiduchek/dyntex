@@ -1,12 +1,11 @@
 import { Group, ScrollArea } from '@mantine/core';
 import {
-  IconNotes,
-  IconCalendarStats,
+  IconAlbum,
+  IconCamera,
   IconGauge,
-  IconPresentationAnalytics,
-  IconFileAnalytics,
-  IconAdjustments,
-  IconLock,
+  IconUser,
+  IconBookmark,
+  IconHash
 } from '@tabler/icons-react';
 import { LinksGroup } from './NavbarLinksGroup';
 import classes from './NavbarNested.module.css';
@@ -16,41 +15,12 @@ import ColorSwitch from './ColorSwitch';
 
 const mockdata = [
   { label: 'Dashboard', icon: IconGauge, link: "/" },
-  {
-    label: 'Market news',
-    icon: IconNotes,
-    link: "/secondary",
-    initiallyOpened: false,
-    links: [
-      { label: 'Overview', link: '/secondary' },
-      { label: 'Forecasts', link: '/secondary' },
-      { label: 'Outlook', link: '/secondary' },
-      { label: 'Real time', link: '/secondary' },
-    ],
-  },
-  {
-    label: 'Releases',
-    link: "/secondary",
-    icon: IconCalendarStats,
-    links: [
-      { label: 'Upcoming releases', link: '/secondary' },
-      { label: 'Previous releases', link: '/secondary' },
-      { label: 'Releases schedule', link: '/secondary' },
-    ],
-  },
-  { label: 'Analytics', icon: IconPresentationAnalytics, link:"/secondary" },
-  { label: 'Contracts', icon: IconFileAnalytics, link:"/secondary" },
-  { label: 'Settings', icon: IconAdjustments, link:"/secondary" },
-  {
-    label: 'Security',
-    icon: IconLock,
-    link: "/",
-    links: [
-      { label: 'Enable 2FA', link: '/' },
-      { label: 'Change password', link: '/' },
-      { label: 'Recovery codes', link: '/' },
-    ],
-  },
+  { label: "All Media", icon: IconAlbum, link: "/media"},
+  { label: "Textures", icon: IconCamera, link: "/textures"},
+  { label: "Masks", icon: IconAlbum, link: "/masks"},
+  { label: "Users", icon: IconUser, link: "/users"},
+  { label: "Tags", icon: IconHash, link: "/tags"},
+  { label: "Favourites", icon: IconBookmark, link: "/favourites"},
 ];
 
 export function NavbarNested() {

@@ -11,17 +11,22 @@ import {
     rem,
     Stepper
   } from '@mantine/core';
-  import { IconMail, IconUser, IconKey } from '@tabler/icons-react';
-  import classes from './LoginPage.module.css';
-  import { Link } from 'react-router-dom';
-  import React from 'react';
-  import { notifications } from '@mantine/notifications';
-  import { IconExclamationCircle } from '@tabler/icons-react';
-  import axios from 'axios';
+import { IconMail, IconUser, IconKey } from '@tabler/icons-react';
+import classes from './LoginPage.module.css';
+import { Link } from 'react-router-dom';
+import React from 'react';
+import { notifications } from '@mantine/notifications';
+import { IconExclamationCircle } from '@tabler/icons-react';
+import axios from 'axios';
+import { useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom';
 
   export default function LoginPage() {
 
     const [active, setActive] = React.useState(0);
+    const navigate = useNavigate()
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
     const nextStep = async () => {
         if(active === 2){
             try {
@@ -31,9 +36,16 @@ import {
                   "password": await hashPasswd(),
                 });
           
-                console.log('User created:', response.data);
+                const expirationDate = new Date();
+                expirationDate.setDate(expirationDate.getDate() + 30);
+                setCookie("token", response.data.token, { expires: expirationDate })
+                navigate("/")
                 setActive((current) => (current < 3 ? current + 1 : current));
               } catch (error) {
+                if(error.code === "ERR_NETWORK"){
+                    navigate("/serverdown")
+                    return
+                  }
                 notifications.show({
                     title: 'Invalid input',
                     color: 'red',
@@ -100,6 +112,13 @@ import {
     const checkSurname = (event) => {
         setSurname(event.target.value)
     } 
+
+    useEffect(() => {
+        if(!(cookies.token === undefined)){
+            console.log("PENIS")
+            // navigate("/")
+        }
+    }, [])
 
     return (
       <Container size={750} my={40}>
