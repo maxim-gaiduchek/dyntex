@@ -10,6 +10,8 @@ import { Skeleton } from '@mantine/core';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import DropZoneMask from '../Textures/DropZoneMask';
+import { Link } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
@@ -120,12 +122,24 @@ export default function MainPage(){
     return (
         <>
           <h2>DYNTEX))</h2>
-          <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
-            <DropZone tags={tags} fetchData={fetchData} close={close}/>
-          </Modal>
+          {
+            value === "Textures" ?
+            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+                  <DropZone tags={tags} fetchData={fetchData} close={close}/>
+            </Modal>
+            :
+            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+                  <DropZoneMask tags={tags} fetchData={fetchMasks} close={close}/>
+            </Modal>
+          }
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>
-              <Button onClick={open}>Add Texture</Button>
+              {
+                value === "Textures" ?
+                <Button onClick={open}>Add Texture</Button>
+                :
+                <Button onClick={open}>Add Mask</Button>
+              }
             </Grid>
           </Group>
           <br/>
@@ -155,7 +169,7 @@ export default function MainPage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                 <TextureCard texture = {texture}/>
+                                <TextureCard texture = {texture}/>
                              </Grid.Col>
                          ))
                      }
@@ -184,16 +198,17 @@ export default function MainPage(){
                     {
                       masks.map((mask) => (
                       <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                          <div style={{
-                            width: "100%", 
-                            height: 300, 
-                            backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center"
-                            }
-                          }>
-
-                          </div>
+                          <Link to={"/mask/" + mask.id}>
+                            <div style={{
+                              width: "100%", 
+                              height: 300, 
+                              backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
+                              backgroundSize: "cover",
+                              backgroundPosition: "center"
+                              }
+                            }>
+                            </div>
+                          </Link>
                       </Grid.Col>
                       ))
                     }
