@@ -1,5 +1,5 @@
 import TextureCard from '../Card/TextureCard'
-import { Grid } from '@mantine/core'
+import { Grid, TextInput } from '@mantine/core'
 import { Pagination } from '@mantine/core';
 import { Center, Group } from '@mantine/core';
 import { SegmentedControl, Modal, Button } from '@mantine/core';
@@ -24,6 +24,7 @@ export default function TexturePage(){
     const [tags, setTags] = React.useState([])
     const [lastTags, setLastTags] = React.useState([])
     const [totalPages, setPages] = React.useState(0)
+    const [search, setSearch] = React.useState("")
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
 
     const options = {
@@ -32,10 +33,43 @@ export default function TexturePage(){
       }
     };
 
+    const debounce = (func, delay) => {
+        let timer;
+        return function (...args) {
+          const context = this;
+          clearTimeout(timer);
+          timer = setTimeout(() => func.apply(context, args), delay);
+        };
+      };
+
+    const changeSearchText = async (str) => {
+        setPages(1)
+        try{
+            let url = 'http://localhost:8080/api/videos?name='+str+''
+            var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
+            if(ids.length !== 0){
+                url += "&tags=" + ids.map((obj) => obj.id).join(",")
+            }
+            const response = await axios.get(url)
+
+            setTextures(response.data.videos)
+        } catch(e){
+            console.log(e)
+        }
+    }
+
+    const debouncedChangeSearchText = debounce(changeSearchText, 200);
+
     const fetchData = async (page = 1) => {
+      console.log(search)
       setTextures(null)
       try{
-        const response = await axios.get('http://localhost:8080/api/videos?page='+page);
+        let url = 'http://localhost:8080/api/videos?page='+page
+        var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
+        if(ids.length !== 0){
+            url += "&tags=" + ids.map((obj) => obj.id).join(",")
+        }
+        const response = await axios.get(url);
         setPages(response.data.totalPages)
         setTextures(response.data.videos)
       } catch{
@@ -93,6 +127,7 @@ export default function TexturePage(){
           <br/>
           <Group justify="space-between" grow>
             <CategorySearch tags={tags} changeSearch={changeSearch} />
+            <TextInput placeholder='name' value={search} onChange={(e) => {setSearch(e.target.value); debouncedChangeSearchText(e.target.value)}}/>
           </Group>
           <div style={{marginBottom: 20}}>
           </div>
