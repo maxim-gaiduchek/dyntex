@@ -7,7 +7,6 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import org.hibernate.annotations.ColumnDefault
@@ -18,6 +17,7 @@ class UserAccount(
     var email: String,
     var password: String,
     var token: String,
+    var authToken: String
 ) : StandardAuditModel() {
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER
@@ -33,4 +33,6 @@ class UserAccount(
 
     @OneToOne(mappedBy = "userAccount", cascade = [CascadeType.ALL], orphanRemoval = true)
     var avatar: Avatar? = null
+
+    var authEnable: Boolean? = false
 }

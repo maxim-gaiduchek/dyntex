@@ -29,6 +29,7 @@ repositories {
 }
 
 dependencies {
+    implementation ("org.springframework.boot:spring-boot-starter-mail")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -46,6 +47,13 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
 
+    implementation("org.flywaydb:flyway-core:10.11.1")
+
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
+
+    /*
+        implementation("org.flywaydb:flyway-database-postgresql:10.11.1")
+    */
     implementation("org.flywaydb:flyway-core:9.15.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
