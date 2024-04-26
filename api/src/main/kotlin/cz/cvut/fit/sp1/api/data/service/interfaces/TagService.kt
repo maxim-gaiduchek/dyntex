@@ -19,4 +19,6 @@ interface TagService {
     fun create(tagDto: TagDto): Tag
 
     fun delete(id: Long, forceDelete: Boolean)
+
+    fun countAll(): Long
 }

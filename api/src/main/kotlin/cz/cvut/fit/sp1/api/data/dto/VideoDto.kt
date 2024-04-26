@@ -21,5 +21,5 @@ data class VideoDto(
     override var likes: Int?,
     override var tags: MutableList<TagDto> = mutableListOf(),
     @field:NotEmpty(message = "Video must have at least one tag", groups = [CreateGroup::class, UpdateGroup::class])
-    var tagIds: MutableList<Long>?,
-) : MediaDto(id, name, size, description, path, format, createdBy, createdById, likes, tags)
+    override var tagIds: MutableList<Long>?,
+) : MediaDto(id, name, size, description, path, format, createdBy, createdById, likes, tags, tagIds)

@@ -20,4 +20,6 @@ interface MaskService {
     fun update(id: Long, maskDto: MaskDto): Mask
 
     fun delete(id: Long)
+
+    fun countAll(): Long
 }

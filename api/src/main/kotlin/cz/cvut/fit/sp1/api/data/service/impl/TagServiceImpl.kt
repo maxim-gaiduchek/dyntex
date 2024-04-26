@@ -86,4 +86,8 @@ class TagServiceImpl(
         }
         tagRepository.delete(tag)
     }
+
+    override fun countAll(): Long {
+        return tagRepository.count()
+    }
 }

@@ -51,7 +51,7 @@ class MaskServiceImpl(
                 .toList()
         return SearchMaskDto(
             masks = masks,
-            currentPage = page.number - 1,
+            currentPage = page.number + 1,
             totalPages = page.totalPages,
             totalMatches = page.totalElements,
         )
@@ -92,5 +92,9 @@ class MaskServiceImpl(
         mask.description = maskDto.description
         enrichWithModels(maskDto, mask)
         return maskRepository.save(mask)
+    }
+
+    override fun countAll(): Long {
+        return maskRepository.count()
     }
 }
