@@ -1,7 +1,10 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
+import cz.cvut.fit.sp1.api.component.mapper.UserAccountMapper
 import cz.cvut.fit.sp1.api.data.dto.UserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
+import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
@@ -25,6 +28,7 @@ import kotlin.jvm.optionals.getOrElse
 @Service
 class UserAccountServiceImpl(
     private val userAccountRepository: UserAccountRepository,
+    private val userAccountMapper: UserAccountMapper,
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
     @Value("\${verification.enable}") private val verificationEnable: Boolean,
@@ -39,6 +43,25 @@ class UserAccountServiceImpl(
         private const val TOKEN_SIZE = 128
         private const val AUTH_TOKEN_SIZE = 128
 
+    }
+
+    override fun findAll(paramsDto: SearchUserAccountParamsDto?): SearchUserAccountDto? {
+        if (paramsDto == null) {
+            return null
+        }
+        val specification = paramsDto.buildSpecification()
+        val pageable = paramsDto.buildPageable()
+        val page = userAccountRepository.findAll(specification, pageable)
+        val userAccounts =
+            page.content.stream()
+                .map { userAccountMapper.toDto(it)!! }
+                .toList()
+        return SearchUserAccountDto(
+            userAccounts = userAccounts,
+            currentPage = page.number + 1,
+            totalPages = page.totalPages,
+            totalMatches = page.totalElements,
+        )
     }
 
     override fun findById(id: Long): Optional<UserAccount> {
@@ -131,6 +154,10 @@ class UserAccountServiceImpl(
             )
                 .orElseThrow { AccessDeniedException(UserAccountExceptionCodes.USER_ACCESS_DENIED) }
         return user!!
+    }
+
+    override fun countAll(): Long {
+        return userAccountRepository.count()
     }
 
     override fun delete(id: Long) {

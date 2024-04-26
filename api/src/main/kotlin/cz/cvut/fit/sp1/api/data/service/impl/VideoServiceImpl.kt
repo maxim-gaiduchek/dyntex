@@ -91,4 +91,16 @@ class VideoServiceImpl(
         video.likedBy.forEach { it.likedMedia.remove(video) }
         videoRepository.delete(video)
     }
+
+    override fun update(id: Long, videoDto: VideoDto): Video {
+        val video = getByIdOrThrow(id)
+        video.name = videoDto.name!!
+        video.description = videoDto.description
+        enrichWithModels(videoDto, video)
+        return videoRepository.save(video)
+    }
+
+    override fun countAll(): Long {
+        return videoRepository.count()
+    }
 }

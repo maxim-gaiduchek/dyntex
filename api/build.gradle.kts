@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.22"
     kotlin("plugin.jpa") version "1.9.22"
     kotlin("kapt") version "1.9.10"
-    id("org.flywaydb.flyway") version "10.11.1"
+    id("org.flywaydb.flyway") version "9.15.0"
 }
 
 group = "cz.cvut.fit.sp1"
@@ -36,7 +36,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     implementation("org.apache.commons:commons-lang3:3.14.0")
@@ -55,6 +54,7 @@ dependencies {
     /*
         implementation("org.flywaydb:flyway-database-postgresql:10.11.1")
     */
+    implementation("org.flywaydb:flyway-core:9.15.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

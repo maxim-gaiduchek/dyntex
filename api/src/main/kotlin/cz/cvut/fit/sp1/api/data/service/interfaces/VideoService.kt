@@ -19,5 +19,9 @@ interface VideoService {
         videoDto: VideoDto,
     ): Video
 
+    fun update(id: Long, videoDto: VideoDto): Video
+
     fun delete(id: Long)
+
+    fun countAll(): Long
 }

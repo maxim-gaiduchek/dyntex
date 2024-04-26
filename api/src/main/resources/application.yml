@@ -5,7 +5,6 @@ spring:
   autoconfigure:
     exclude:
       - 'org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration'
-      #- 'org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration'
   main:
     allow-bean-definition-overriding: true
   mvc:
@@ -29,7 +28,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
       show-sql: true
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: true
     #validate-on-migrate: false
     #out-of-order: true
