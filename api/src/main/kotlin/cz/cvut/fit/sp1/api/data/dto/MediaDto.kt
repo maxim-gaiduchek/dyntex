@@ -11,4 +11,5 @@ open class MediaDto(
     open var createdById: Long?,
     open var likes: Int?,
     open var tags: MutableList<TagDto> = mutableListOf(),
+    open var tagIds: MutableList<Long>?,
 )

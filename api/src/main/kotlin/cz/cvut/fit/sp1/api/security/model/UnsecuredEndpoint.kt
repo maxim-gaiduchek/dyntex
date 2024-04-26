@@ -30,7 +30,9 @@ enum class UnsecuredEndpoint(
     GET_MASKS("/api/masks", GET),
 
     GET_MEDIA_PREVIEW("/api/media/previews/.*", GET),
-    GET_MEDIA_STREAM("/api/media/stream/.*", GET)
+    GET_MEDIA_STREAM("/api/media/stream/.*", GET),
+
+    GET_STATISTIC("/api/statistics", GET),
     ;
 
     companion object {

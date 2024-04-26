@@ -93,4 +93,8 @@ class MaskServiceImpl(
         enrichWithModels(maskDto, mask)
         return maskRepository.save(mask)
     }
+
+    override fun countAll(): Long {
+        return maskRepository.count()
+    }
 }
