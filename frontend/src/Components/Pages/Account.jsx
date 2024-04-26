@@ -3,12 +3,40 @@ import { Title, Text } from '@mantine/core'
 import TextureCard from '../Card/TextureCard'
 import { useState, useEffect } from 'react'
 import { LoadingOverlay } from '@mantine/core'
+import axios from 'axios'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useCookies } from 'react-cookie'
 
 export default function Account(){
     const [user, setUser] = useState(null)
+    let { id } = useParams();
+    const navigate = useNavigate()
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+
+    const options = {
+      headers: {
+        'Authorization': cookies.token
+      }
+    };
+
+    const fetchData = async () => {
+      try{
+        let url;
+        if(id === "me"){
+          url = "http://localhost:8080/api/users/authenticated"
+        }else{
+          url = "http://localhost:8080/api/users/"+id
+        }
+        const response = await axios.get(url, options)
+        setUser(response.data)
+      }catch(e){
+        console.log(e)
+        navigate("/notfound")
+      }
+    }
 
     useEffect(() => {
-      setUser(null)
+      fetchData()
     },[])
 
     return (
@@ -28,23 +56,18 @@ export default function Account(){
                         marginBottom: 20
                     }}>
                     </div>
-                    <Title order={3}>Kvoza Onkay</Title>
-                    <Text c="dimmed" size="xs">stojkiva@fit.cvut.cz</Text>
-                    Role: Admin <br/>
-                    Textures: 5
-                    <br/>
                 </Grid.Col>
                 <Grid.Col span={9}>
-                    <Title order={3}>Kvoza Onkay</Title>
-                    <Text c="dimmed" size="xs">stojkiva@fit.cvut.cz</Text>
-                    Role: Admin <br/>
-                    Textures: 5
+                    <Title order={3}>{user.name}</Title>
+                    <Text c="dimmed" size="xs">{user.email}</Text>
+                    Role: {user.role} <br/>
+                    Media Uploaded: {user.createdMedia.length}
                     <br/>
                 </Grid.Col>
             </Grid>
             <br/>
             <Title order={3}>Uploaded Textures:</Title>
-            <Grid className='textureGrid'>
+            {/* <Grid className='textureGrid'>
                 {
                     user.textures.map((texture) => (
                         <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
@@ -52,7 +75,7 @@ export default function Account(){
                         </Grid.Col>
                     ))
                 }
-            </Grid>
+            </Grid> */}
             </>
             :
             <div style={{width: "100%", height: "calc(100vh - 20px)", marginTop: 5}}>
