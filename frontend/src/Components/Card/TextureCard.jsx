@@ -33,7 +33,7 @@ export default function TextureCard(props) {
         </Group>
         <HoverCard width={280} openDelay={300} shadow="md">
           <HoverCard.Target>
-            <span className={classes.accountLink}>Added by: <Link to="/account/asd">{createdBy.name}</Link></span>
+            <span className={classes.accountLink}>Added by: <Link to={"/account/" + createdBy.id}>{createdBy.name}</Link></span>
           </HoverCard.Target>
           <HoverCard.Dropdown>
             <AccountPreview account={createdBy}/>

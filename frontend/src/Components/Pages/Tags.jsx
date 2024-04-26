@@ -3,7 +3,7 @@ import axios from "axios"
 import { Card, Grid } from "@mantine/core"
 import { UnstyledButton, Text } from "@mantine/core"
 import classes from "./Tags.module.css"
-import { SimpleGrid } from "@mantine/core"
+import { SimpleGrid, Button } from "@mantine/core"
 
 export default function Tags() {
     const [tags, setTags] = useState([])
@@ -23,6 +23,7 @@ export default function Tags() {
     return (
         <>
             <h2>Tags</h2>
+            <Button>Add Tag</Button>
             <Card withBorder radius="md" className={classes.card}>
                 <Grid>
                     {
