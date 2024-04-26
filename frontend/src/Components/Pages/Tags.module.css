@@ -31,3 +31,7 @@
       transform: scale(1.05);
     }
   }
+  .mantineHoverCardDropdown{
+    border: none;
+    background: none !important;
+  }
