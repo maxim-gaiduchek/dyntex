@@ -24,6 +24,7 @@ import Dashboard from './Components/Pages/Dashboard';
 import TexturePage from './Components/Textures/TexturePage';
 import Users from './Components/Pages/Users';
 import Favourites from './Components/Pages/Favourites';
+import Tags from './Components/Pages/Tags';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
   {
     path: "/secondary",
     element: <MainLayout><SecondaryPage/></MainLayout>
+  },
+  {
+    path: "/tags",
+    element: <MainLayout><Tags/></MainLayout>
   },
   {
     path: "/account/:id",

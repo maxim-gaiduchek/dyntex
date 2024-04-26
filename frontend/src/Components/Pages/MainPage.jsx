@@ -121,7 +121,7 @@ export default function MainPage(){
 
     return (
         <>
-          <h2>DYNTEX))</h2>
+          <h2>All Medias</h2>
           {
             value === "Textures" ?
             <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
