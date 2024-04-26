@@ -21,11 +21,16 @@ import {
 } from "react-router-dom";
 import ServerDown from './Components/Pages/ServerDown';
 import Dashboard from './Components/Pages/Dashboard';
+import TexturePage from './Components/Textures/TexturePage';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout><Dashboard/></MainLayout>,
+  },
+  {
+    path: "/textures",
+    element: <MainLayout><TexturePage/></MainLayout>
   },
   {
     path: "/secondary",
