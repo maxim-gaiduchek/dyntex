@@ -98,3 +98,4 @@ class MaskController(
         return maskMapper.toDto(updatedMask)
     }
 }
+
