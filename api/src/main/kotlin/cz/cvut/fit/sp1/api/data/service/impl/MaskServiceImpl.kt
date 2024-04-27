@@ -97,4 +97,17 @@ class MaskServiceImpl(
     override fun countAll(): Long {
         return maskRepository.count()
     }
+
+    override fun toggleLike(maskId: Long, userId: Long): Mask {
+        val mask = getByIdOrThrow(maskId)
+        val user = userAccountService.getByIdOrThrow(userId)
+        if (user.likedMasks.contains(mask)) {
+            user.likedMasks.remove(mask)
+            mask.likedByUsers.remove(user)
+        } else {
+            user.likedMasks.add(mask)
+            mask.likedByUsers.add(user)
+        }
+        return maskRepository.save(mask)
+    }
 }

@@ -22,4 +22,6 @@ interface MaskService {
     fun delete(id: Long)
 
     fun countAll(): Long
+
+    fun toggleLike(maskId: Long, userId: Long): Mask
 }

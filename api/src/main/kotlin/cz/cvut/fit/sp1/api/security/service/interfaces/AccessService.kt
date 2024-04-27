@@ -4,4 +4,5 @@ interface AccessService {
 
     fun hasUserAccessToUpdateUser(userId: Long?): Boolean
     fun hasUserAccessToUpdateVideo(videoId: Long?): Boolean
+    fun hasUserAccessToUpdateMask(maskId: Long?): Boolean
 }

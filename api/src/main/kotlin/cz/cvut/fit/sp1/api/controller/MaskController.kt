@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -85,5 +86,15 @@ class MaskController(
     ): MaskDto? {
         val mask = maskService.update(id, maskDto)
         return maskMapper.toDto(mask)
+    }
+
+    @PutMapping("/{maskId}/likes/{userId}")
+    @PreAuthorize("@accessService.hasUserAccessToUpdateMask(#maskId)")
+    fun toggleMaskLike(
+        @PathVariable maskId: Long,
+        @PathVariable userId: Long,
+    ): MaskDto? {
+        val updatedMask = maskService.toggleLike(maskId, userId)
+        return maskMapper.toDto(updatedMask)
     }
 }
