@@ -59,6 +59,7 @@ export default function MediaPage(props){
                         <video 
                             className={classes.video}
                             loop
+                            muted
                             autoPlay 
                             style={{
                                 width: "100%",
