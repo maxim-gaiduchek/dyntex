@@ -90,10 +90,10 @@ class VideoServiceImpl(
         val user = userAccountService.getByIdOrThrow(userId)
         if (user.likedVideos.contains(video)) {
             user.likedVideos.remove(video)
-            video.likedByUsers.remove(user)
+            video.likedBy.remove(user)
         } else {
             user.likedVideos.add(video)
-            video.likedByUsers.add(user)
+            video.likedBy.add(user)
         }
         return videoRepository.save(video)
     }

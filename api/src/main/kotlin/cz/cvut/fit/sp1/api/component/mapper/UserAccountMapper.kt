@@ -7,7 +7,6 @@ import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Named
 import org.mapstruct.ReportingPolicy
-import org.mapstruct.*
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -29,8 +28,8 @@ abstract class UserAccountMapper {
         userAccount?.createdMedia?.sortBy { it.createdAt }
     }
 
-    @AfterMapping
-    fun enrichWithLikedVideosIds(user: UserAccount, @MappingTarget userAccountDto: UserAccountDto) {
-        userAccountDto.likedVideosIds = user.likedVideos.map { it.id!! }.toMutableList()
-    }
+//    @AfterMapping
+//    fun enrichWithLikedVideosIds(user: UserAccount, @MappingTarget userAccountDto: UserAccountDto) {
+//        userAccountDto.likedVideosIds = user.likedVideos.map { it.id!! }.toMutableList()
+//    }
 }
