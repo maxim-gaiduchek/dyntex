@@ -27,9 +27,4 @@ abstract class UserAccountMapper {
         userAccount?.likedMedia?.sortBy { it.createdAt }
         userAccount?.createdMedia?.sortBy { it.createdAt }
     }
-
-//    @AfterMapping
-//    fun enrichWithLikedVideosIds(user: UserAccount, @MappingTarget userAccountDto: UserAccountDto) {
-//        userAccountDto.likedVideosIds = user.likedVideos.map { it.id!! }.toMutableList()
-//    }
 }
