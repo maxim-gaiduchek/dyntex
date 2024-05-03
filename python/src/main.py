@@ -18,21 +18,72 @@ Dependencies:
 """
 
 import os
+import string
+import random
+import requests
 from flask import Flask, jsonify, request
 from moviepy.editor import VideoFileClip
 from PIL import Image
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/', methods=['GET'])
-def index():
+sessions = {
+    "test": {
+        "media_id": 5007 
+    }
+}
+
+def generate_random_string(length = 10):
     """
-    Handle GET requests to the root endpoint.
+    Generating id
+    """
+
+    # Define the characters you want to use in your random string
+    characters = string.ascii_letters + string.digits
+
+    # Generate a random string of specified length
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    
+    return random_string
+
+@app.route("/initial", methods=['GET'])
+def initial():
+    """
+    IDK)
+    """
+
+    session_id = request.args.get("sessionid")
+
+    if(session_id not in sessions):
+        return {"error": "no session with this id"}
+    
+    # print(sessions[session_id])
+
+    response = requests.get("http://localhost:8080/api/videos/"+str(sessions[session_id]['media_id']))
+
+    return response.json()
+
+
+@app.route("/start", methods=['GET'])
+def start():
+    """
+    Method for starting editor session
 
     Returns:
-        Response: A JSON response containing a greeting message.
+        Response: A JSON response containing sesion id
     """
-    return jsonify({"response": "hello 2"})
+
+    media_id = request.args.get('id')
+    id_session = generate_random_string() 
+
+    sessions[id_session] = {
+        "id": id_session,
+        "media_id": media_id
+    }
+
+    return sessions[id_session]
 
 @app.route('/prepare', methods=['GET'])
 def prepare_video():

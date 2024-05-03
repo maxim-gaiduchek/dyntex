@@ -3,3 +3,4 @@ pylint
 pytest
 Pillow==9.5.0
 moviepy
+flask-cors

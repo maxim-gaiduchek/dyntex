@@ -85,7 +85,7 @@ const router = createBrowserRouter([
     element: <ResetPage/>
   },
   {
-    path: "/editor",
+    path: "/editor/:id",
     element: <EditorPage/>
   },
   {

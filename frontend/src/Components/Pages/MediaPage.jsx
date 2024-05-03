@@ -10,10 +10,12 @@ import MediaProfile from "../Textures/MediaProfile";
 import axios from "axios";
 import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 
 export default function MediaPage(props){
     let { id } = useParams();
     const [texture, setTexture] = useState(null)
+    const navigate = useNavigate()
 
     const getTextureInfo = async () => {
         let response;
@@ -30,6 +32,14 @@ export default function MediaPage(props){
         getTextureInfo()
         // eslint-disable-next-line
     }, [])
+
+    const startEditor = async () =>{
+        try{
+            const response = await axios.get("http://localhost:5000/start?id="+texture.id)
+
+            window.open("/editor/" + response.data.id, '_blank').focus();
+        }catch(e){}
+    }
 
     return (
         <>
@@ -67,11 +77,9 @@ export default function MediaPage(props){
                     </Link>
                     {
                         props.type === "video" && 
-                        <Link to={"/editor"} target="_blank">
-                            <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
-                                Process
-                            </Button>
-                        </Link>
+                        <Button radius="md" onClick={startEditor} rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
+                            Process
+                        </Button>
                     }
                     <ActionIcon
                     onClick={() =>
