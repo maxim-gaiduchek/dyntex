@@ -1,5 +1,6 @@
 postgres-autostart:
   enabled: true
+
 spring:
   autoconfigure:
     exclude:
@@ -29,6 +30,24 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+    #validate-on-migrate: false
+    #out-of-order: true
+    schemas: 'public'
+    url: jdbc:postgresql://localhost:5432/dyntex-db
+    user: postgres
+    password: postgres
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dyntex.inc@gmail.com
+    password: avti oxgj hgka fmeq
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 server:
   error:
@@ -42,3 +61,9 @@ logging:
   level:
     cz: TRACE
 #    org.springframework: TRACE
+
+verification:
+  enable: true
+  token-expiring-time: 60
+  mail:
+    url: 'http://localhost:8080/api/auth'

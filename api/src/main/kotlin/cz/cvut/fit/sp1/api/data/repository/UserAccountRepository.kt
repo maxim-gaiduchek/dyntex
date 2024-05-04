@@ -13,8 +13,14 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
     fun findAll(specification: Specification<UserAccount>, pageable: Pageable): Page<UserAccount>
 
     fun getByToken(token: String): Optional<UserAccount>
+    fun findByIdAndAuthEnableTrue(id: Long): Optional<UserAccount>
 
-    fun getByEmailAndPassword(email: String, password: String): Optional<UserAccount>
+    fun getByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
+
+    fun findByEmailAndPasswordAndAuthEnableTrue(email: String, password: String): Optional<UserAccount>
 
     fun existsByEmail(email: String): Boolean
+
+    fun findByAuthToken(authToken: String): Optional<UserAccount>
+
 }

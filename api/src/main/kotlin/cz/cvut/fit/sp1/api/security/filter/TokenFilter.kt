@@ -24,7 +24,7 @@ class TokenFilter(
             filterChain.doFilter(request, response)
             return
         }
-        val user = userAccountService.findByToken(token)
+        val user = userAccountService.findByTokenAndAuthEnableTrue(token)
         if (!user.isPresent) {
             filterChain.doFilter(request, response)
             return

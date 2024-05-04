@@ -33,6 +33,8 @@ enum class UnsecuredEndpoint(
     GET_MEDIA_STREAM("/api/media/stream/.*", GET),
 
     GET_STATISTIC("/api/statistics", GET),
+
+    GET_VERIFY("/api/auth/verify", GET),
     ;
 
     companion object {

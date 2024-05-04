@@ -18,6 +18,7 @@ class UserAccount(
     var email: String,
     var password: String,
     var token: String,
+    var authToken: String
 ) : StandardAuditModel() {
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER
@@ -34,6 +35,5 @@ class UserAccount(
     @OneToOne(mappedBy = "userAccount", cascade = [CascadeType.ALL], orphanRemoval = true)
     var avatar: Avatar? = null
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    var likedVideos: MutableList<Video> = mutableListOf()
+    var authEnable: Boolean? = false
 }
