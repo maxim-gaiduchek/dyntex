@@ -84,6 +84,20 @@ class VideoServiceImpl(
         tags.forEach { it.media.add(video) }
     }
 
+    @Transactional
+    override fun toggleLike(videoId: Long, userId: Long): Video {
+        val video = getByIdOrThrow(videoId)
+        val user = userAccountService.getByIdOrThrow(userId)
+        if (user.likedMedia.contains(video)) {
+            user.likedMedia.remove(video)
+            video.likedBy.remove(user)
+        } else {
+            user.likedMedia.add(video)
+            video.likedBy.add(user)
+        }
+        return videoRepository.save(video)
+    }
+
     override fun delete(id: Long) {
         val video = getByIdOrThrow(id)
         fileStorage.delete(video.path)

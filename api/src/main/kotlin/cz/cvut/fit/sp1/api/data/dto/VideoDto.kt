@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotEmpty
 data class VideoDto(
     var fps: Long?,
     var duration: Double?,
-    @field:NotEmpty(message = "Video ID must not be empty", groups = [UpdateGroup::class])
     override var id: Long?,
     @field:NotEmpty(message = "Video name must not be empty", groups = [CreateGroup::class, UpdateGroup::class])
     override var name: String?,

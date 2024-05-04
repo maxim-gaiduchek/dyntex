@@ -25,7 +25,8 @@ class AccessServiceImpl(
             return true
         }
         val video = videoService.getByIdOrThrow(videoId)
-        return auth.userId == video.createdBy?.id
+        video.createdBy ?: return false
+        return auth.userId == video.createdBy!!.id
     }
 
     private fun fetchAuthentication(): TokenAuthentication? {

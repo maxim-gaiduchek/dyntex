@@ -13,3 +13,4 @@ class Video(
     var cameraMotion: Boolean = false
     var previewPath: String = ""
 }
+
