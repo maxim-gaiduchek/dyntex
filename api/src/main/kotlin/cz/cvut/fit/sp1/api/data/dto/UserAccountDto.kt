@@ -14,5 +14,4 @@ data class UserAccountDto(
     var createdMedia: MutableList<MediaDto>? = mutableListOf(),
     var avatar: AvatarDto?,
     var token: String?,
-//    var likedVideosIds: MutableList<Long> = mutableListOf()
 )
