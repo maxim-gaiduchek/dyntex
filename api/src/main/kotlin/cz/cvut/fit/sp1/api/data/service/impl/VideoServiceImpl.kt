@@ -88,11 +88,11 @@ class VideoServiceImpl(
     override fun toggleLike(videoId: Long, userId: Long): Video {
         val video = getByIdOrThrow(videoId)
         val user = userAccountService.getByIdOrThrow(userId)
-        if (user.likedVideos.contains(video)) {
-            user.likedVideos.remove(video)
+        if (user.likedMedia.contains(video)) {
+            user.likedMedia.remove(video)
             video.likedBy.remove(user)
         } else {
-            user.likedVideos.add(video)
+            user.likedMedia.add(video)
             video.likedBy.add(user)
         }
         return videoRepository.save(video)
