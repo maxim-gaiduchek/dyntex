@@ -1,6 +1,7 @@
 package cz.cvut.fit.sp1.api.security.service.impl
 
 import cz.cvut.fit.sp1.api.data.model.AccountRole
+import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
 import cz.cvut.fit.sp1.api.security.service.interfaces.AccessService
@@ -9,13 +10,24 @@ import org.springframework.stereotype.Service
 
 @Service("accessService")
 class AccessServiceImpl(
-    private val videoService: VideoService
+    private val videoService: VideoService,
+    private val maskService: MaskService
 ) : AccessService {
 
     override fun hasUserAccessToUpdateUser(userId: Long?): Boolean {
         userId ?: return false
         val auth = fetchAuthentication() ?: return false
         return auth.userId == userId
+    }
+
+    override fun hasUserAccessToUpdateMask(maskId: Long?): Boolean {
+        maskId ?: return false
+        val auth = fetchAuthentication() ?: return false
+        if (auth.role == AccountRole.ADMIN) {
+            return true
+        }
+        val mask = maskService.getByIdOrThrow(maskId)
+        return auth.userId == mask.createdBy?.id
     }
 
     override fun hasUserAccessToUpdateVideo(videoId: Long?): Boolean {
