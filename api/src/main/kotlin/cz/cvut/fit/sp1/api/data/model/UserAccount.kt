@@ -3,6 +3,7 @@ package cz.cvut.fit.sp1.api.data.model
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import cz.cvut.fit.sp1.api.data.model.media.Media
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
