@@ -3,7 +3,7 @@ package cz.cvut.fit.sp1.api.data.service.impl
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.service.interfaces.EmailService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
-import cz.cvut.fit.sp1.api.data.service.interfaces.VerificationService
+import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import org.springframework.beans.factory.annotation.Value
@@ -13,13 +13,13 @@ import org.thymeleaf.context.Context
 import java.util.*
 
 @Service
-class VerificationServiceImpl(
+class AuthServiceImpl(
     private val emailService: EmailService,
     private val userAccountService: UserAccountService,
     @Value("\${verification.mail.url}") private val mailUrl: String,
     @Value("\${verification.token-expiring-time}") private val tokenExpire: Int,
     private val templateEngine: TemplateEngine
-) : VerificationService {
+) : AuthService {
 
 
     override fun sendVerificationEmail(email: String, token: String) {

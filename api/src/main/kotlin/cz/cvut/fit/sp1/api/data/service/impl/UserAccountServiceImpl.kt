@@ -8,8 +8,9 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
+import cz.cvut.fit.sp1.api.data.service.interfaces.EmailService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
-import cz.cvut.fit.sp1.api.data.service.interfaces.VerificationService
+import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.thymeleaf.TemplateEngine
+import org.thymeleaf.context.Context
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
 
@@ -32,10 +35,14 @@ class UserAccountServiceImpl(
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
     @Value("\${verification.enable}") private val verificationEnable: Boolean,
+    private var emailService: EmailService,
+    @Value("\${verification.mail.url}") private val mailUrl: String,
+    private val templateEngine: TemplateEngine
+
 ) : UserAccountService {
     @Autowired
     @Lazy
-    private var verificationService: VerificationService? = null
+    private var authService: AuthService? = null
 
 
     companion object {
@@ -119,7 +126,7 @@ class UserAccountServiceImpl(
             user.authEnable = true
             return userAccountRepository.save(user)
         }
-        verificationService!!.sendVerificationEmail(user.email, user.authToken)
+        authService!!.sendVerificationEmail(user.email, user.authToken)
         return userAccountRepository.save(user)
     }
 
@@ -180,4 +187,36 @@ class UserAccountServiceImpl(
                 throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
             }
     }
+
+    override fun getByEmail(email: String): UserAccount {
+        return userAccountRepository.findByEmailAndAuthEnableTrue(email)
+            .getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, email)
+            }
+    }
+
+    override fun recoveryRequest(email: String) {
+        val user = getByEmail(email)
+        val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+        user.authToken = authToken
+        val confirmationUrl = "$mailUrl/recovery?t=$authToken"
+        val context = Context().apply {
+            setVariable("confirmationUrl", confirmationUrl)
+        }
+        val emailContent = templateEngine.process("verification_email", context)
+        emailService.sendEmail(email, "Verify your email", emailContent)
+        save(user)
+    }
+
+    override fun updatePassword(
+        authToken : String,
+        password : String
+    ) {
+        val user = getByAuthToken(authToken)
+        val token = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+        user.token = token
+        user.password = password
+        save(user)
+    }
+
 }

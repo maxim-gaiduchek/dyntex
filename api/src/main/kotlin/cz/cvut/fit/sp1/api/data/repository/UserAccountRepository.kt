@@ -1,12 +1,11 @@
 package cz.cvut.fit.sp1.api.data.repository
 
-import cz.cvut.fit.sp1.api.data.model.Tag
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaRepository
-import java.util.Optional
+import java.util.*
 
 interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
@@ -22,5 +21,9 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
     fun existsByEmail(email: String): Boolean
 
     fun findByAuthToken(authToken: String): Optional<UserAccount>
+
+    fun findByEmailAndAuthEnableTrue(email: String): Optional<UserAccount>
+
+
 
 }
