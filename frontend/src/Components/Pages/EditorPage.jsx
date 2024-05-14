@@ -10,6 +10,7 @@ import ReactFlow, {
 import { useState, useRef, useEffect } from 'react';
 import ImageNode from '../Editor/ImageNode'
 import MaskNode from '../Editor/MaskNode';
+import OutputNode from '../Editor/OutputNode';
 import 'reactflow/dist/style.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -22,10 +23,11 @@ import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
 
 const nodeTypes = {
     imageNode: ImageNode,
-    maskNode: MaskNode
+    maskNode: MaskNode,
+    outputNode: OutputNode 
   };
 
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+const initialEdges = [{ id: 'e1-2', source: '2', target: '1' }];
  
 export default function App() {
   // eslint-disable-next-line
@@ -37,9 +39,8 @@ export default function App() {
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
   const initialNodes = [
-    { id: '1', position: { x: 150, y: 100 }, data: { label: '1' } },
-    { id: '2', position: { x: 150, y: 200 }, data: { label: '2' } },
-    { id: '3', position: { x: 250, y: 300 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
+    { id: '1', position: { x: 450, y: 100 }, data: { label: '1', image: "" }, type: "outputNode"},
+    { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
   ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -61,7 +62,7 @@ export default function App() {
       
     setNodes((nds) =>
       initialNodes.map((node) => {
-        if (node.id === '3') {
+        if (node.id === '2' || node.id === "1") {
           // when you update a simple type you can just update the value
           node.data.image = "http://localhost:8080/api/media/previews/" + response.data.previewPath
           node.data.name = response.data.name
@@ -108,8 +109,12 @@ export default function App() {
       return
     }
     if(value === "Mask"){
+      var v = masks.filter((video) => video.path===path)
+      if(v.length !== 1){
+        return
+      }
       let nds =[...nodes]
-      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: "Cat", label: '2', image: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" }, type: 'maskNode'})
+      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: v[0].name, label: '2', image: "http://localhost:8080/api/media/previews/"+path }, type: 'maskNode'})
       setNodes(nds)
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})

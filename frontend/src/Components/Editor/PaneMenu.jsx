@@ -49,7 +49,9 @@ export default function PaneMenu(props) {
               renderOption={SelectOption}
             />
             <br/>
-            <Button onClick={addTexture} disabled={tValue.label===""}>Add {value}</Button>
+            <Button onClick={addTexture} disabled={
+              value === "Texture" ? tValue.label==="" : mValue.label===""
+            }>Add {value}</Button>
           </Modal>
           <Paper style={
               {
