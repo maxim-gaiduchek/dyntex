@@ -7,6 +7,7 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
 } from 'reactflow';
+import { useHotkeys } from 'react-hotkeys-hook'
 import { useState, useRef, useEffect } from 'react';
 import ImageNode from '../Editor/ImageNode'
 import MaskNode from '../Editor/MaskNode';
@@ -17,7 +18,9 @@ import axios from 'axios';
 import { Button, Group, Paper, Select, Text } from '@mantine/core';
 import PaneMenu from '../Editor/PaneMenu';
 import NodeMenu from '../Editor/NodeMenu';
+import { notifications } from '@mantine/notifications';
 import { useComputedColorScheme } from '@mantine/core';
+import { ControlButton } from 'reactflow';
 import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
 
 
@@ -38,6 +41,7 @@ export default function App() {
   const [nodeMenu, setNodeMenu] = useState({x: 0, y: 0, hidden: true})
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
+
   const initialNodes = [
     { id: '1', position: { x: 450, y: 100 }, data: { label: '1', image: "" }, type: "outputNode"},
     { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
@@ -49,6 +53,14 @@ export default function App() {
   const [videos, setVideos] = useState([])
   const [masks, setMasks] = useState([])
   const [nodeOpened, setNodeOpened] = useState(false)
+
+  const onClickElementDelete = (e) => {
+    console.log(e)
+  }
+
+  useHotkeys('delete', () => {
+    setEdges((eds) => eds.filter((e) => e.selected === undefined));
+  })
   
   let { id } = useParams();
  
@@ -88,6 +100,15 @@ export default function App() {
     //     }
     //   })
     // );
+    if(node.id === "1"){
+      notifications.show({
+        title: 'Error',
+        message: 'Can\' t delete output node. 🚫',
+        color: "red"
+      })
+      setNodeMenu({x: 0, y:0, hidden: true, node: {}})
+      return
+    }
     setEdges((edg) => edg.filter((ed) => ed.source !== node.id && ed.target !== node.id))
     setNodes((nds) => nds.filter((nd) => nd.id !== node.id))
 
@@ -195,6 +216,11 @@ export default function App() {
           masks.map((mask) => {return {value: mask.path, label: mask.name}})
         }
         opened={opened} setOpened={setOpened} addNodeProp={addNode}/>
+        {/* <Controls showInteractive={false}>
+          <ControlButton onClick={onClickElementDelete}>
+            dasdsads
+          </ControlButton>
+        </Controls> */}
         <NodeMenu color={computedColorScheme} menu={nodeMenu} opened={nodeOpened} deleteNodeP={deleteNode} setOpened={setNodeOpened}/>
       </ReactFlow>
     </div>
