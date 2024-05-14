@@ -189,6 +189,16 @@ export default function App() {
 
     setMenu({y: event.clientX, x: event.clientY, hidden: false})
   },setMenu)
+
+  const validate = (e) => {
+    if(e.target !== "1"){
+      return true
+    }
+
+    var incomers = getIncomers(nodes[0], nodes, edges)
+
+    return incomers.length === 0
+  }
  
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -202,6 +212,7 @@ export default function App() {
         nodeTypes={nodeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        isValidConnection={validate}
         onConnect={onConnect}
         onContextMenu={onContextMenu}
         onPaneClick={onPaneClick}

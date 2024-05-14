@@ -17,6 +17,7 @@ export default memo(({ data, isConnectable }) => {
         type="target"
         position={Position.Left}
         id="b"
+        onConnect={console.log}
         style={{padding: 4}}
         isConnectable={isConnectable}
       />
