@@ -122,7 +122,10 @@ export default function MediaPage(props){
                         </Group>
                     </Grid.Col>
                     <Grid.Col span={{xs: 12, md: 4}}>
-                        {/* <Title order={3}>Attributes:</Title>
+                        {
+                            props.type === "video" &&
+                            <>
+                                <Title order={3}>Attributes:</Title>
                         <br/>
                         <Group>
                             <IconDeviceFloppy size={20}/> 
@@ -139,7 +142,9 @@ export default function MediaPage(props){
                         <Group>
                             <IconFileInfo size={20}/>
                             <Text size="sm">Format: {texture.format}</Text>
-                        </Group> */}
+                        </Group>
+                            </>
+                        }
                     </Grid.Col>
                 </Grid>
                 <br/>

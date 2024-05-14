@@ -9,15 +9,20 @@ import ReactFlow, {
 } from 'reactflow';
 import { useState, useRef, useEffect } from 'react';
 import ImageNode from '../Editor/ImageNode'
+import MaskNode from '../Editor/MaskNode';
 import 'reactflow/dist/style.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Button, Group, Paper, Select, Text } from '@mantine/core';
 import PaneMenu from '../Editor/PaneMenu';
 import NodeMenu from '../Editor/NodeMenu';
+import { useComputedColorScheme } from '@mantine/core';
+import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
+
 
 const nodeTypes = {
     imageNode: ImageNode,
+    maskNode: MaskNode
   };
 
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
@@ -29,7 +34,7 @@ export default function App() {
   const [lastId, setId] = useState(4)
   const [menu, setMenu] = useState({x: 0, y: 0, hidden: true})
   const [nodeMenu, setNodeMenu] = useState({x: 0, y: 0, hidden: true})
-
+  const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
   const initialNodes = [
     { id: '1', position: { x: 150, y: 100 }, data: { label: '1' } },
@@ -40,6 +45,8 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [opened, setOpened] = useState(false)
+  const [videos, setVideos] = useState([])
+  const [masks, setMasks] = useState([])
   const [nodeOpened, setNodeOpened] = useState(false)
   
   let { id } = useParams();
@@ -72,10 +79,37 @@ export default function App() {
     setInfo(response.data)
   }
 
-  const addNode = (x, y, value) => {
+  const deleteNode = (node) => {
+    // setEdges(
+    //   edges.map((edge) => {
+    //     if(edge.source !== node.id && edge.target !== node.id){
+    //       return edge
+    //     }
+    //   })
+    // );
+    setEdges((edg) => edg.filter((ed) => ed.source !== node.id && ed.target !== node.id))
+    setNodes((nds) => nds.filter((nd) => nd.id !== node.id))
+
+    setNodeMenu({x:0, y:0, hidden: true, node: {}})
+  }
+
+  const addNode = (x, y, value, path="") => {
     if(value === "Texture"){
+      var v = videos.filter((video) => video.previewPath===path)
+      if(v.length !== 1){
+        return
+      }
+      var vNow = v[0]
       let nds = [...nodes]
-      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: info.name, label: '2', image: "http://localhost:8080/api/media/previews/"+info.previewPath }, type: 'imageNode'})
+      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: vNow.name, label: '2', image: "http://localhost:8080/api/media/previews/"+path }, type: 'imageNode'})
+      setNodes(nds)
+      setId(lastId+1)
+      setMenu({x: 0, y: 0, hidden: true})
+      return
+    }
+    if(value === "Mask"){
+      let nds =[...nodes]
+      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: "Cat", label: '2', image: "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" }, type: 'maskNode'})
       setNodes(nds)
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})
@@ -94,13 +128,31 @@ export default function App() {
     setMenu({x: 0, y: 0, hidden: true})
   }
 
+  const getVideos = async () => {
+    try{
+      const response = await axios.get("http://localhost:8080/api/videos?pageSize=200")
+
+      setVideos(response.data.videos)
+    }catch(e){}
+  }
+
+  const getMasks = async () => {
+    try{
+      const response = await axios.get("http://localhost:8080/api/masks?pageSize=200")
+      
+      setMasks(response.data.masks)
+    }catch(e){}
+  }
+
   useEffect(() => {
     getData()
+    getVideos()
+    getMasks()
   },[])
 
   const onNodeContextMenu = (event, node) => {
     console.log("dasdsd")
-    setNodeMenu({y: event.clientX, x: event.clientY, hidden: false, node: node.id})
+    setNodeMenu({y: event.clientX, x: event.clientY, hidden: false, node: node})
   }
 
   const onContextMenu = useCallback((event) => {
@@ -131,8 +183,14 @@ export default function App() {
       >
         <MiniMap />
         <Background onContextMenu={onNodeContextMenu} />
-        <PaneMenu menu={menu} opened={opened} setOpened={setOpened} addNodeProp={addNode}/>
-        <NodeMenu menu={nodeMenu} opened={nodeOpened} setOpened={setNodeOpened}/>
+        <PaneMenu color={computedColorScheme} menu={menu} videos={
+          videos.map((video) => {return {value: video.previewPath, label: video.name}})
+        } 
+        masks = {
+          masks.map((mask) => {return {value: mask.path, label: mask.name}})
+        }
+        opened={opened} setOpened={setOpened} addNodeProp={addNode}/>
+        <NodeMenu color={computedColorScheme} menu={nodeMenu} opened={nodeOpened} deleteNodeP={deleteNode} setOpened={setNodeOpened}/>
       </ReactFlow>
     </div>
   );

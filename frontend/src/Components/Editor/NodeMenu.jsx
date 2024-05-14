@@ -3,11 +3,11 @@ import { useState } from "react";
 import { IconTrashXFilled } from "@tabler/icons-react";
 
 export default function NodeMenu(props) {
-    const {menu, opened, setOpened} = props
+    const {menu, opened, setOpened, deleteNodeP} = props
     const [value, setValue] = useState("")
 
     const deleteNode = () => {
-        alert("deleting node " + menu.node)
+        deleteNodeP(menu.node)
         // addNodeProp(-x + menu.y, -y + menu.x, value)
     }
 
@@ -15,7 +15,7 @@ export default function NodeMenu(props) {
         <Group>
           <Paper style={
               {
-                backgroundColor: "var(--mantine-color-dark-4)",
+                backgroundColor: props.color === "dark" ? "var(--mantine-color-dark-4)" : "white",
                 zIndex: 500,
                 position: "absolute",
                 display: menu.hidden ? "none" : "block",
