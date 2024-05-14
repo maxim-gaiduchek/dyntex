@@ -12,6 +12,7 @@ import { useState, useRef, useEffect } from 'react';
 import ImageNode from '../Editor/ImageNode'
 import MaskNode from '../Editor/MaskNode';
 import OutputNode from '../Editor/OutputNode';
+import FilterNode from '../Editor/FilterNode';
 import 'reactflow/dist/style.css';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -27,7 +28,8 @@ import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
 const nodeTypes = {
     imageNode: ImageNode,
     maskNode: MaskNode,
-    outputNode: OutputNode 
+    outputNode: OutputNode,
+    filterNode: FilterNode
   };
 
 const initialEdges = [{ id: 'e1-2', source: '2', target: '1' }];
@@ -141,6 +143,17 @@ export default function App() {
       setMenu({x: 0, y: 0, hidden: true})
       return
     }
+
+    if(value === "Filter"){
+      // { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
+
+      let nds =[...nodes]
+      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { image: nodes[0].data.image }, type: 'filterNode', dragHandle: ".draggable"})
+      setNodes(nds)
+      setId(lastId+1)
+      setMenu({x: 0, y: 0, hidden: true})
+      return
+    }
     let nds = [...nodes]
     nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { label: (lastId+1).toString() } })
     setNodes(nds)
@@ -191,13 +204,10 @@ export default function App() {
   },setMenu)
 
   const validate = (e) => {
-    if(e.target !== "1"){
-      return true
-    }
-
-    var incomers = getIncomers(nodes[0], nodes, edges)
-
-    return incomers.length === 0
+    var a = nodes.findIndex((nd) => nd.id === e.target)
+    var incomers = getIncomers(nodes[a], nodes, edges)
+    console.log(incomers.length)
+    return incomers.length <= (e.target === 1 ? 0 : 1)
   }
  
   return (
