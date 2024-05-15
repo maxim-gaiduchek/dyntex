@@ -196,19 +196,41 @@ class UserAccountServiceImpl(
             }
     }
 
+//    override fun recoveryPassword(email: String) {
+//        val user = getByEmail(email)
+//        val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+//        user.authToken = authToken
+//        user.dateOfRecovery!!.time = Date().time
+//        save(user)
+//        val confirmationUrl = "$mailUrl/recovery?t=$authToken"
+//        val context = Context().apply {
+//            setVariable("confirmationUrl", confirmationUrl)
+//        }
+//        val emailContent = templateEngine.process("verification_email", context)
+//        emailService.sendEmail(email, "Verify your email", emailContent)
+//    }
+
     override fun recoveryPassword(email: String) {
         val user = getByEmail(email)
         val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+
+        val currentDate = Date()
+        user.dateOfRecovery = user.dateOfRecovery?.apply { time = currentDate.time } ?: currentDate
+//TODO NU UZNAI BLYAT
         user.authToken = authToken
-        user.dateOfRecovery!!.time = Date().time
         save(user)
         val confirmationUrl = "$mailUrl/recovery?t=$authToken"
+        val emailContent = getEmailContent(confirmationUrl)
+        emailService.sendEmail(email, "Verify your email", emailContent)
+    }
+
+    private fun getEmailContent(confirmationUrl: String): String {
         val context = Context().apply {
             setVariable("confirmationUrl", confirmationUrl)
         }
-        val emailContent = templateEngine.process("verification_email", context)
-        emailService.sendEmail(email, "Verify your email", emailContent)
+        return templateEngine.process("verification_email", context)
     }
+
 
     override fun updatePassword(
         authToken: String,
