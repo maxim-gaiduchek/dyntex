@@ -3,14 +3,9 @@ package cz.cvut.fit.sp1.api.data.model
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import cz.cvut.fit.sp1.api.data.model.media.Media
-import cz.cvut.fit.sp1.api.data.model.media.Video
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
+import jakarta.persistence.*
 import org.hibernate.annotations.ColumnDefault
+import java.util.*
 
 @Entity
 class UserAccount(
@@ -18,7 +13,8 @@ class UserAccount(
     var email: String,
     var password: String,
     var token: String,
-    var authToken: String
+    var authToken: String,
+    var dateOfRecovery: Date?
 ) : StandardAuditModel() {
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER
@@ -36,4 +32,6 @@ class UserAccount(
     var avatar: Avatar? = null
 
     var authEnable: Boolean? = false
+
+//    var dateOfRecovery: Date? = Date()
 }
