@@ -8,9 +8,12 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
+import cz.cvut.fit.sp1.api.validation.group.UserRecoveryGroup
 import cz.cvut.fit.sp1.api.validation.group.UserRegistrationGroup
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
@@ -81,5 +84,11 @@ class UserAccountController(
     ): UserAccountDto? {
         val user = userAccountService.updateAvatar(id, avatarFile)
         return userAccountMapper.toDto(user)
+    }
+
+    @PostMapping("/recovery")
+    fun recoveryRequest(@Validated(UserRecoveryGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto): ResponseEntity<Any> {
+        userAccountService.recoveryPassword(userCredentialsDto.email!!)
+        return ResponseEntity(HttpStatus.OK)
     }
 }

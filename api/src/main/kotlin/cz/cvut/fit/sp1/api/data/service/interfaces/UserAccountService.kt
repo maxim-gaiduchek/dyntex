@@ -14,7 +14,7 @@ interface UserAccountService {
 
     fun findById(id: Long): Optional<UserAccount>
 
-    fun findByIdAuthEnableTrue(id : Long): Optional<UserAccount>
+    fun findByIdAuthEnableTrue(id: Long): Optional<UserAccount>
 
     fun getByIdOrThrow(id: Long): UserAccount
 
@@ -38,5 +38,11 @@ interface UserAccountService {
 
     fun getByAuthToken(token: String): UserAccount
 
-    fun save(user:UserAccount):UserAccount
+    fun save(user: UserAccount): UserAccount
+
+    fun getByEmail(email: String): UserAccount
+
+    fun updatePassword(authToken: String, password :String)
+
+    fun recoveryPassword(email: String)
 }

@@ -9,5 +9,5 @@ enum class UserAccountExceptionCodes(
     USER_PASSWORD_IS_EMPTY("DTEX-USR-003", "User password is empty"),
     USER_ACCESS_DENIED("DTEX-USR-004", "User access denied"),
     AUTH_TOKEN_INVALID("DTEX-USR-005", "Invalid auth token"),
-    AUTH_TOKEN_IS_EXPIRED("DTEX-USR-006", "Auth token is empty")
+    AUTH_TOKEN_IS_EXPIRED("DTEX-USR-006", "Auth token is expired")
 }

@@ -7,3 +7,7 @@ interface UserRegistrationGroup
 interface UpdateGroup
 
 interface CreateGroup
+
+interface UserRecoveryGroup
+
+interface UserRecoveryUpdateGroup
