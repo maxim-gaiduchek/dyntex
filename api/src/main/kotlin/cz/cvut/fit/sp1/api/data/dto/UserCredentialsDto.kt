@@ -11,6 +11,10 @@ data class UserCredentialsDto(
     @field:NotEmpty(message = "Email must not be empty", groups = [UserRegistrationGroup::class, UserLoginGroup::class])
     @field:Email(message = "Invalid email format", groups = [UserRegistrationGroup::class, UserLoginGroup::class])
     var email: String?,
-    @field:NotEmpty(message = "Password must not be empty", groups = [UserRegistrationGroup::class, UserLoginGroup::class])
+    @field:NotEmpty(
+        message = "Password must not be empty",
+        groups = [UserRegistrationGroup::class, UserLoginGroup::class]
+    )
     var password: String?,
+    var authToken: String?
 )

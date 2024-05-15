@@ -86,16 +86,9 @@ class UserAccountController(
     }
 
     @PutMapping("/request")
-    fun recoveryRequest(email: String): ResponseEntity<Any> {
-        userAccountService.recoveryRequest(email)
+    fun recoveryRequest( @RequestBody userCredentialsDto: UserCredentialsDto): ResponseEntity<Any> {
+
+        userAccountService.recoveryPassword(userCredentialsDto.email!!)
         return ResponseEntity(HttpStatus.OK)
     }
-
-    @PutMapping("/password-recovery")
-    fun passwordRecovery(
-        @RequestBody userCredentialsDto: UserCredentialsDto
-    ) {
-
-    }
-
 }

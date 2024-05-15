@@ -44,5 +44,5 @@ interface UserAccountService {
 
     fun updatePassword(authToken: String, password :String)
 
-    fun recoveryRequest(email: String)
+    fun recoveryPassword(email: String)
 }
