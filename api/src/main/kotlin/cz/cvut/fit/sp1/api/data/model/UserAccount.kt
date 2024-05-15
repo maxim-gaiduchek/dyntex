@@ -14,7 +14,6 @@ class UserAccount(
     var password: String,
     var token: String,
     var authToken: String,
-    var dateOfRecovery: Date?
 ) : StandardAuditModel() {
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER
@@ -33,5 +32,5 @@ class UserAccount(
 
     var authEnable: Boolean? = false
 
-//    var dateOfRecovery: Date? = Date()
+    var dateOfRecovery: Date? = null
 }

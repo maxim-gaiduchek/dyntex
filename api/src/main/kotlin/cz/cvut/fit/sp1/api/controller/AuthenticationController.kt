@@ -3,8 +3,10 @@ package cz.cvut.fit.sp1.api.controller
 import cz.cvut.fit.sp1.api.data.dto.UserCredentialsDto
 import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
+import cz.cvut.fit.sp1.api.validation.group.UserRecoveryUpdateGroup
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -22,9 +24,9 @@ class AuthenticationController(
 
     @PostMapping("/recovery")
     fun recovery(
-        @RequestBody userCreditialsDto: UserCredentialsDto
+        @Validated(UserRecoveryUpdateGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto
     ): ResponseEntity<Any> {
-        userAccountService.updatePassword(userCreditialsDto.authToken!!, userCreditialsDto.password!!)
+        userAccountService.updatePassword(userCredentialsDto.authToken!!, userCredentialsDto.password!!)
         return ResponseEntity(HttpStatus.OK)
     }
 }

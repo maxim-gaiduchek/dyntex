@@ -9,7 +9,6 @@ import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
 import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
-import cz.cvut.fit.sp1.api.data.service.interfaces.EmailService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
@@ -18,13 +17,10 @@ import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import cz.cvut.fit.sp1.api.security.service.interfaces.SecurityProvider
 import jakarta.transaction.Transactional
 import org.apache.commons.lang3.RandomStringUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import org.thymeleaf.TemplateEngine
-import org.thymeleaf.context.Context
 import java.util.*
 import kotlin.jvm.optionals.getOrElse
 
@@ -35,15 +31,9 @@ class UserAccountServiceImpl(
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
     @Value("\${verification.enable}") private val verificationEnable: Boolean,
-    private var emailService: EmailService,
-    @Value("\${verification.mail.url}") private val mailUrl: String,
-    private val templateEngine: TemplateEngine,
     @Value("\${verification.token-expiring-time}") private val tokenExpire: Int,
+    @Lazy private var authService: AuthService,
 ) : UserAccountService {
-    @Autowired
-    @Lazy
-    private var authService: AuthService? = null
-
 
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -126,18 +116,22 @@ class UserAccountServiceImpl(
             user.authEnable = true
             return userAccountRepository.save(user)
         }
-        authService!!.sendVerificationEmail(user.email, user.authToken)
+        authService.sendVerificationEmail(user.email, user.authToken)
         return userAccountRepository.save(user)
     }
 
     private fun checkUserAccountCreationPossibility(userCredentialsDto: UserCredentialsDto) {
-        val password = userCredentialsDto.password
-        if (EMPTY_STRING_HASH == password) {
-            throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
-        }
+        val password = userCredentialsDto.password!!
+        checkPasswordValidity(password)
         val email = userCredentialsDto.email!!
         if (userAccountRepository.existsByEmail(email)) {
             throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
+        }
+    }
+
+    private fun checkPasswordValidity(password: String) {
+        if (EMPTY_STRING_HASH == password) {
+            throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
     }
 
@@ -150,7 +144,6 @@ class UserAccountServiceImpl(
             password = userCredentialsDto.password!!,
             token = token,
             authToken = authToken,
-            dateOfRecovery = null
         )
     }
 
@@ -199,41 +192,29 @@ class UserAccountServiceImpl(
     override fun recoveryPassword(email: String) {
         val user = getByEmail(email)
         val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
-
-        val currentDate = Date()
-        user.dateOfRecovery = user.dateOfRecovery?.apply { time = currentDate.time } ?: currentDate
         user.authToken = authToken
+        val currentDate = Date()
+        user.dateOfRecovery = currentDate
+        authService.sendRecoveryEmail(email, authToken)
         save(user)
-        val confirmationUrl = "$mailUrl/recovery?t=$authToken"
-        val emailContent = getEmailContent(confirmationUrl)
-        emailService.sendEmail(email, "Verify your email", emailContent)
     }
-
-    private fun getEmailContent(confirmationUrl: String): String {
-        val context = Context().apply {
-            setVariable("confirmationUrl", confirmationUrl)
-        }
-        return templateEngine.process("verification_email", context)
-    }
-
 
     override fun updatePassword(
         authToken: String,
         password: String
     ) {
+        checkPasswordValidity(password)
         val user = getByAuthToken(authToken)
-        if (expiringCheck(user)) {
-            val token = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
-            user.token = token
-            user.password = password
-            save(user)
-            return
+        if (!expiringCheck(user)) {
+            throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EXPIRED)
         }
-        throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EXPIRED)
+        val token = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+        user.password = password
+        user.token = token
+        save(user)
     }
 
     private fun expiringCheck(user: UserAccount): Boolean {
         return Date().time <= user.dateOfRecovery!!.time + (tokenExpire * 60 * 1000)
     }
-
 }

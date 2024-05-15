@@ -8,6 +8,7 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
 import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import cz.cvut.fit.sp1.api.validation.group.UserLoginGroup
+import cz.cvut.fit.sp1.api.validation.group.UserRecoveryGroup
 import cz.cvut.fit.sp1.api.validation.group.UserRegistrationGroup
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
@@ -85,9 +86,8 @@ class UserAccountController(
         return userAccountMapper.toDto(user)
     }
 
-    @PutMapping("/request")
-    fun recoveryRequest( @RequestBody userCredentialsDto: UserCredentialsDto): ResponseEntity<Any> {
-
+    @PostMapping("/recovery")
+    fun recoveryRequest(@Validated(UserRecoveryGroup::class) @RequestBody userCredentialsDto: UserCredentialsDto): ResponseEntity<Any> {
         userAccountService.recoveryPassword(userCredentialsDto.email!!)
         return ResponseEntity(HttpStatus.OK)
     }

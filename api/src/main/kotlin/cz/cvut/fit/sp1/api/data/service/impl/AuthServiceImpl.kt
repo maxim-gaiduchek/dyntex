@@ -1,9 +1,9 @@
 package cz.cvut.fit.sp1.api.data.service.impl
 
 import cz.cvut.fit.sp1.api.data.model.UserAccount
+import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.data.service.interfaces.EmailService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
-import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.exception.ValidationException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import org.springframework.beans.factory.annotation.Value
@@ -24,23 +24,32 @@ class AuthServiceImpl(
 
     override fun sendVerificationEmail(email: String, token: String) {
         val confirmationUrl = "$mailUrl/verify?authToken=$token"
+        val emailContent = getEmailContent(confirmationUrl, "verification_email")
+        emailService.sendEmail(email, "Verify your account", emailContent)
+    }
+
+    override fun sendRecoveryEmail(email: String, token: String) {
+        val confirmationUrl = "$mailUrl/recovery?t=$token"
+        val emailContent = getEmailContent(confirmationUrl, "received_email")
+        emailService.sendEmail(email, "Password recovery", emailContent)
+    }
+
+    private fun getEmailContent(confirmationUrl: String, emailTemplate: String): String {
         val context = Context().apply {
             setVariable("confirmationUrl", confirmationUrl)
         }
-        val emailContent = templateEngine.process("verification_email", context)
-        emailService.sendEmail(email, "Verify your account", emailContent)
+        return templateEngine.process(emailTemplate, context)
     }
 
     override fun verifyToken(authToken: String?) {
         checkVerifyPossibility(authToken)
         val user = userAccountService.getByAuthToken(authToken!!)
-        if (expireCheck(user)) {
-            user.authEnable = true
-            userAccountService.save(user)
-            return
+        if (!expireCheck(user)) {
+            userAccountService.delete(user.id)
+            throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EXPIRED)
         }
-        userAccountService.delete(user.id)
-        throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EXPIRED)
+        user.authEnable = true
+        userAccountService.save(user)
     }
 
     private fun expireCheck(user: UserAccount): Boolean {
