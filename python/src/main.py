@@ -25,6 +25,7 @@ from flask import Flask, jsonify, request
 from moviepy.editor import VideoFileClip
 from PIL import Image
 from flask_cors import CORS
+import cv2
 
 app = Flask(__name__)
 CORS(app)
@@ -65,6 +66,80 @@ def initial():
 
     return response.json()
 
+
+@app.route("/filter", methods=['GET'])
+def filter():
+    """
+    Applies an image onto a video.
+
+    Parameters:
+        video_path (str): The path to the video file.
+        image_path (str): The path to the image file.
+        strengst (int): The strength of the filter.
+
+    Returns:
+        Response: A JSON response indicating the success or failure of the operation.
+    """
+    video_path = "../storage/" + request.args.get('video_path').split('?')[0]
+    image_path = "../storage/" + request.args.get('image_path').split('?')[0]
+
+    strength = request.args.get('strength')
+    if video_path.endswith('.png'):
+        video_path, image_path = image_path, video_path
+        print(float(strength))
+        strength = 1 - float(strength)
+        print(strength)
+    name = request.args.get('name')
+    if(name == ""):
+        name = False
+
+    print(strength)
+
+    if not video_path or not image_path or not strength:
+        return jsonify({'success': False, 'error': 'One or more parameters are missing'})
+
+    try:            
+        cap = cv2.VideoCapture(video_path)
+
+        if not cap.isOpened():
+            print("Error: Unable to open video file.")
+            exit()
+
+        ret, first_frame = cap.read()
+
+        image = cv2.imread(image_path)
+        if(not video_path.endswith('png') and not image_path.endswith('png')):
+            cap2 = cv2.VideoCapture(image_path)
+            ret2, image = cap2.read()
+
+        # Resize the image to fit the frame size
+        resized_image = cv2.resize(image, (first_frame.shape[1], first_frame.shape[0]))
+
+        # Get the first frame of the video
+
+        # Apply the filter to the first frame
+        filtered_frame = cv2.addWeighted(first_frame, 1 - float(strength), resized_image, float(strength), 0)
+
+        # Generate a random name for the image file
+        image_filename = generate_random_string() + '.png'
+        if(name):
+            image_filename = name + '.png'
+
+        # Define the path to save the image in the same directory as the video
+        video_directory = os.path.dirname(video_path)
+        image_path = os.path.join(video_directory, image_filename)
+
+        # Save the image
+        cv2.imwrite(image_path, filtered_frame)
+
+        cap.release()
+        if(not video_path.endswith('png') and not image_path.endswith('png')):
+            cap2.release()
+
+        # Return the path to the saved image
+        return jsonify({'success': True, 'image_path': image_filename})
+    except Exception as e:
+        return jsonify({'error': 'An error occurred: ' + str(e)})
 
 @app.route("/start", methods=['GET'])
 def start():

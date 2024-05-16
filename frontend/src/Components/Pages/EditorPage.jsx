@@ -24,6 +24,7 @@ import { useComputedColorScheme } from '@mantine/core';
 import { ControlButton } from 'reactflow';
 import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
 
+//TODO: don't use states in filter nodes, create a react hook in parent element that will update the filter nodes
 
 const nodeTypes = {
     imageNode: ImageNode,
@@ -43,10 +44,9 @@ export default function App() {
   const [nodeMenu, setNodeMenu] = useState({x: 0, y: 0, hidden: true})
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
-
   const initialNodes = [
     { id: '1', position: { x: 450, y: 100 }, data: { label: '1', image: "" }, type: "outputNode"},
-    { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
+    { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', path: "", image: "" }, type: 'imageNode'}
   ];
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -56,29 +56,24 @@ export default function App() {
   const [masks, setMasks] = useState([])
   const [nodeOpened, setNodeOpened] = useState(false)
 
-  const onClickElementDelete = (e) => {
-    console.log(e)
-  }
-
   useHotkeys('delete', () => {
-    setEdges((eds) => eds.filter((e) => e.selected === undefined));
+    setEdges((eds) => eds.filter((e) => e.selected !== true));
   })
   
   let { id } = useParams();
  
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params) => {setEdges((eds) => addEdge(params, eds))},
     [setEdges]
   );
 
   const getData = async () => {
     const response = await axios.get("http://localhost:5000/initial?sessionid="+id)
-      
     setNodes((nds) =>
       initialNodes.map((node) => {
         if (node.id === '2' || node.id === "1") {
-          // when you update a simple type you can just update the value
           node.data.image = "http://localhost:8080/api/media/previews/" + response.data.previewPath
+          node.data.path = response.data.path
           node.data.name = response.data.name
         }
 
@@ -95,13 +90,6 @@ export default function App() {
   }
 
   const deleteNode = (node) => {
-    // setEdges(
-    //   edges.map((edge) => {
-    //     if(edge.source !== node.id && edge.target !== node.id){
-    //       return edge
-    //     }
-    //   })
-    // );
     if(node.id === "1"){
       notifications.show({
         title: 'Error',
@@ -111,13 +99,54 @@ export default function App() {
       setNodeMenu({x: 0, y:0, hidden: true, node: {}})
       return
     }
+    var a = false;
+    setEdges((edg) => {
+      
+      const filteredEdges = edg.filter((ed) => ed.source !== node.id && ed.target !== node.id);
+      const filterNodeIds = nodes.filter((nd) => nd.type === 'filterNode').map((nd) => nd.id);
+      //TODO: FIX TO ONLY UPDATE FILTER NODES THAT ARE CONNECTED TO THE DELETED NODE
+      const outgoing = getOutgoers(node, nodes, edges).map((a) => a.id)
+      const isPointingToFilterNode = filterNodeIds.some((id) => filteredEdges.some((ed) => ed.target === id));
+      if (outgoing.length !== 0) {
+        a = true
+        var updatedNodes = nodes.map((nd) => {
+            if (nd.type === 'filterNode' && outgoing.includes(nd.id)){
+            nd.data = {
+              ...nd.data,
+              updateFiler: updateFilter,
+              processed: false
+            };
+            }
+          return nd;
+        });
+        setNodes(updatedNodes.filter((nd) => nd.id !== node.id));
+      }
+      return filteredEdges;
+    });
     setEdges((edg) => edg.filter((ed) => ed.source !== node.id && ed.target !== node.id))
-    setNodes((nds) => nds.filter((nd) => nd.id !== node.id))
-
+    if(!a){
+      setNodes((nds) => nds.filter((nd) => nd.id !== node.id))
+    }
     setNodeMenu({x:0, y:0, hidden: true, node: {}})
   }
 
-  const addNode = (x, y, value, path="") => {
+  const updateData = (id, strength, swap) => {
+    const updatedNodes = nodes.map((nd) => {
+      if(nd.id === id){
+        nd.data = {
+          ...nd.data,
+          strength: strength,
+          swap: swap,
+          updateData: updateData,
+          updateFilter: updateFilter
+        }
+      }
+      return nd
+    })
+    setNodes(updatedNodes)
+  }
+
+  const addNodeM = (x, y, value, path="") => {
     if(value === "Texture"){
       var v = videos.filter((video) => video.previewPath===path)
       if(v.length !== 1){
@@ -125,8 +154,9 @@ export default function App() {
       }
       var vNow = v[0]
       let nds = [...nodes]
-      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: vNow.name, label: '2', image: "http://localhost:8080/api/media/previews/"+path }, type: 'imageNode'})
-      setNodes(nds)
+      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: vNow.name, label: '2', path: v[0].path,image: "http://localhost:8080/api/media/previews/"+path }, type: 'imageNode'})
+      // setNodes(nds)
+      setNodes((nds) => nds.concat(newNode));
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})
       return
@@ -137,19 +167,16 @@ export default function App() {
         return
       }
       let nds =[...nodes]
-      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: v[0].name, label: '2', image: "http://localhost:8080/api/media/previews/"+path }, type: 'maskNode'})
-      setNodes(nds)
+      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: v[0].name, label: '2', path: path,image: "http://localhost:8080/api/media/previews/"+path }, type: 'maskNode'})
+      setNodes((nds) => nds.concat(newNode))
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})
       return
     }
 
     if(value === "Filter"){
-      // { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', image: "" }, type: 'imageNode'}
-
-      let nds =[...nodes]
-      nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { image: nodes[0].data.image }, type: 'filterNode', dragHandle: ".draggable"})
-      setNodes(nds)
+      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { updateData: updateData, updateFilter: updateFilter, id: (lastId+1).toString(), image: nodes[0].data.image, processed: false, strength: 80, swap: false }, type: 'filterNode', dragHandle: ".draggable"})
+      setNodes((nds) => nds.concat(newNode));
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})
       return
@@ -166,7 +193,7 @@ export default function App() {
     setNodeMenu({x: 0, y:0, hidden: true})
     setMenu({x: 0, y: 0, hidden: true})
   }
-
+  
   const getVideos = async () => {
     try{
       const response = await axios.get("http://localhost:8080/api/videos?pageSize=200")
@@ -190,7 +217,6 @@ export default function App() {
   },[])
 
   const onNodeContextMenu = (event, node) => {
-    console.log("dasdsd")
     setNodeMenu({y: event.clientX, x: event.clientY, hidden: false, node: node})
   }
 
@@ -203,13 +229,151 @@ export default function App() {
     setMenu({y: event.clientX, x: event.clientY, hidden: false})
   },setMenu)
 
-  const validate = (e) => {
+  const validate = async (e) => {
+    if(nodes === undefined){
+      return true
+    }
     var a = nodes.findIndex((nd) => nd.id === e.target)
     var incomers = getIncomers(nodes[a], nodes, edges)
-    console.log(incomers.length)
-    return incomers.length <= (e.target === 1 ? 0 : 1)
+    return incomers.length <= (e.target === "1" ? 0 : 1)
   }
- 
+
+  const updateFilter = async (node, mE, strength, newPath="", swap=false) => {
+    const outgoers = getOutgoers(node, nodes, mE)
+    const incomers = getIncomers(node, nodes, mE)
+
+    if(incomers.length === 2){
+      if(!swap){
+        var videoPath = incomers[0].type === 'filterNode' ? incomers[0].data.image.split('/').pop() : incomers[0].data.path;
+        var imagePath = incomers[1].type === 'filterNode' ? incomers[1].data.image.split('/').pop() : incomers[1].data.path;
+      }else {
+        var videoPath = incomers[1].type === 'filterNode' ? incomers[1].data.image.split('/').pop() : incomers[1].data.path;
+        var imagePath = incomers[0].type === 'filterNode' ? incomers[0].data.image.split('/').pop() : incomers[0].data.path;
+      }
+
+      if(newPath === ""){
+        if(incomers[0].type === 'filterNode'){
+          videoPath = incomers[0].data.image.split('/').pop().split("?")[0]
+        }else{
+          imagePath = incomers[1].data.image.split('/').pop().split("?")[0]
+        }
+      }
+
+      const name = node.data.image.split("/").pop().split(".")[0];
+
+      const response = await axios.get(`http://localhost:5000/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}&name=${name}`)
+      setNodes((nds) =>
+        nodes.map((nd) => {
+          console.log(outgoers)
+          if(outgoers.length === 1){
+            if(outgoers[0].id === nd.id && nd.type === 'outputNode'){
+              nd.data = {
+                ...nd.data,
+                processed: true,
+                image: "http://localhost:8080/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
+              };
+              return nd;
+            }
+            if(outgoers[0].id === nd.id && nd.type === 'filterNode'){
+              updateFilter(nd, nd.data.edges, nd.data.strength/100, response.data.image_path + new Date().getTime(), nd.data.swap)
+            }
+          }
+          if (nd.id === node.id) {
+            nd.data = {
+              ...nd.data,
+              strength: strength*100,
+              swap: swap,
+              processed: true,
+              image: "http://localhost:8080/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
+            };
+          }
+
+          return nd;
+      }))
+    }
+  }
+
+  const handleConnect = async (e) => {
+    var a = nodes.findIndex((nd) => nd.id === e.target)
+    var b = nodes.findIndex((nd) => nd.id === e.source)
+
+    var incomers = getIncomers(nodes[a], nodes, edges)
+    
+    if(incomers.length === 1){
+
+      const videoPath = incomers[0].type === 'filterNode' ? incomers[0].data.image.split('/').pop() : incomers[0].data.path;
+      const imagePath = nodes[b].type === 'filterNode' ? nodes[b].data.image.split('/').pop() : nodes[b].data.path;
+
+      const strength = 0.8; 
+
+      const response = await axios.get(`http://localhost:5000/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}`)
+
+      onConnect(e);
+
+      setNodes((nds) =>
+        nodes.map((node) => {
+          if (node.id === e.target) {
+            node.data = {
+              ...node.data,
+              processed: true,
+              updateData: updateData,
+              updateFilter: updateFilter,
+              edges: edges.concat(e),
+              image: "http://localhost:8080/api/media/previews/" + response.data.image_path
+            };
+          }
+
+          return node;
+      }))
+    }
+    if(nodes[a].type === "outputNode"){
+      setNodes((nds) =>
+      nodes.map((node) => {
+        if (node.id === e.target) {
+          node.data = {
+            ...node.data,
+            image: nodes[b].data.image
+          };
+        }
+        return node;
+      })
+      );
+    }
+    if(nodes[b].type === "filterNode"){
+      setNodes((nds) =>
+      nodes.map((node) => {
+        if (node.id === e.source) {
+        node.data = {
+          ...node.data,
+          edges: edges.concat(e),
+          updateData: updateData,
+          updateFilter: updateFilter
+        };
+        }
+        return node;
+      })
+      );
+    }
+
+    onConnect(e)
+  }
+
+  const handleNodeChange = (e) => {
+    const updatedNodes = nodes.map((node) => {
+      if (node.type === 'filterNode') {
+        node.data = {
+          ...node.data,
+          edges: edges,
+          updateData: updateData,
+          updateFilter: updateFilter
+        };
+      }
+      return node;
+    });
+    setNodes(updatedNodes);
+    onNodesChange(e);
+  }
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <ReactFlow
@@ -220,10 +384,10 @@ export default function App() {
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
         nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
+        onNodesChange={handleNodeChange}
         onEdgesChange={onEdgesChange}
         isValidConnection={validate}
-        onConnect={onConnect}
+        onConnect={handleConnect}
         onContextMenu={onContextMenu}
         onPaneClick={onPaneClick}
         onNodeContextMenu={onNodeContextMenu}
@@ -236,7 +400,7 @@ export default function App() {
         masks = {
           masks.map((mask) => {return {value: mask.path, label: mask.name}})
         }
-        opened={opened} setOpened={setOpened} addNodeProp={addNode}/>
+        opened={opened} setOpened={setOpened} addNodeProp={addNodeM}/>
         {/* <Controls showInteractive={false}>
           <ControlButton onClick={onClickElementDelete}>
             dasdsads

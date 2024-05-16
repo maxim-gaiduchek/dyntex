@@ -13,7 +13,6 @@ export default function PaneMenu(props) {
     const [modalOpened, setModalOpened] = useState(false)
 
     const addNode = () => {
-      console.log(props.masks)
       if(value === "Texture" || value === "Mask"){
         setModalOpened(true)
         return
