@@ -60,8 +60,7 @@ export default function App() {
 
     if(incomers[0].type === "filterNode"){
       const inc2 = getIncomers(incomers[0], nodes, edges)
-
-      if(inc2.length !== 2){
+      if(inc2.length !== 2 && incomers[0].data.processed === false){
         notifications.show({
           title: 'Error',
           message: 'No input nodes connected to filter node. 🚫',
@@ -70,8 +69,13 @@ export default function App() {
         return []
       }
 
+      if(inc2.length === 1){
+        now.push({"filter1": inc2[0].type === "filterNode", "filter2": inc2[1].type === "filterNode","hasFilter": inc2[0].type === "filterNode", "path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, path: incomers[0].data.image, "type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap, same: true})
+        return now;
+      }
+
       if(inc2[0].type === "filterNode" || inc2[1].type === "filterNode"){
-        now.push({"path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image,"type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap})
+        now.push({"hasFilter": true,"filter1": inc2[0].type === "filterNode", "filter2": inc2[1].type === "filterNode",  "path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image,"type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap, same: false})
         if(inc2[0].type === "filterNode"){
           now.concat(await handleDownload(e, now, incomers[0]))
         }
@@ -80,7 +84,7 @@ export default function App() {
         }
         return now
       }
-      now.push({"path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image, "type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap})
+      now.push({"hasFilter": false,"path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image, "type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap, same: false})
     }
 
     return now;

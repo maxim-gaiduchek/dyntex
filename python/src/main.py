@@ -89,6 +89,63 @@ def initial():
 
     return response.json()
 
+def filterVideo(video_path, image_path, strength, name):
+    """
+    Apply mask to video
+    """
+    # Load the mask image
+    video_path = "../storage/" + video_path
+    image_path = "../storage/" + image_path
+    print(video_path, image_path)
+    mask = cv2.imread(image_path)
+    if mask is None:
+        print(f"Error: Unable to load image at {image_path}")
+        return
+
+    # Open the video file
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        print(f"Error: Unable to open video at {video_path}")
+        return
+
+    # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    # Resize the mask to match the video frame size
+    mask = cv2.resize(mask, (frame_width, frame_height))
+
+    # Prepare the output video writer
+    os.path.basename(video_path)
+    output_name_webm = name.replace(".png", ".webm")
+    output_path_webm = os.path.join(os.path.dirname(video_path), output_name_webm)
+
+    fourcc_webm = cv2.VideoWriter_fourcc(*'VP80')
+    out_webm = cv2.VideoWriter(output_path_webm, fourcc_webm, fps, (frame_width, frame_height))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    current_frame = 0
+    # Process each frame
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        progress = current_frame / total_frames * 100
+        print(f"Processing: {progress:.2f}%")
+        # Apply the weighted mask
+        blended_frame = cv2.addWeighted(frame, 1 - float(strength), mask, float(strength), 0)
+        current_frame+=1
+        # Write the blended frame to the output video
+        out_webm.write(blended_frame)
+
+    # Release everything
+    cap.release()
+    out_webm.release()
+
+    # Return the name of the saved video
+    return output_name_webm
+
+
 @app.route("/save", methods=['POST'])
 def save():
     """
@@ -102,7 +159,49 @@ def save():
         session = sessions[data_res['session_id']]
         return {"status": "Ok", "link": data.pop()["path"]}
 
-    return response.json()
+    last_link = ""
+    for video in data:
+        if(video['type'] == "filter"):
+
+            # response = requests.get("http://localhost:8080/api/videos/"+str(sessions[data_res['session_id']]['media_id']))
+            # video_path = response.json()['path']
+            name = video['path'].split('/')[-1].split('?')[0]
+            image_path = video['path'].split('/')[-1].replace('.png', '.webm')
+            strength = video['strength']
+            if(video['same'] == True):
+                if(video['path1'].endswith('.webm')):
+                    last_link = video['path1']
+            
+            if(video['hasFilter'] == False):
+                if(video['path1'].endswith('.webm')):
+                    # filter =)
+                    video_path, image_path = video['path1'], video['path2']
+                else:
+                    video_path, image_path = video['path2'], video['path1']
+                    
+                last_link = filterVideo(video_path, image_path, float(video['strength'])/100, name)
+            
+            if(video['hasFilter'] == True):
+                if(video['filter1'] == True):
+                    path1 = video['path1'].split('/')[-1].split('?')[0].replace('.png', '.webm')
+                else:
+                    path1 = video['path1'].split('/')[-1].split('?')[0]
+
+                if(video['filter2'] == True):
+                    path2 = video['path2'].split('/')[-1].split('?')[0].replace('.png', '.webm')
+                else:
+                    path2 = video['path2'].split('/')[-1].split('?')[0]
+                
+                if(path1.endswith('.webm') and path2.endswith('.webm')):
+                    continue
+                    #potom sdelaju))
+                if(path1.endswith('.webm')):
+                    last_link = filterVideo(path1, path2, float(video['strength'])/100, name)
+                
+                if(path2.endswith('.webm')):
+                    last_link = filterVideo(path2, path1, float(video['strength'])/100, name)
+
+    return {"status": "Ok", "link": last_link}
 
 @app.route("/filter", methods=['GET'])
 def filter():
