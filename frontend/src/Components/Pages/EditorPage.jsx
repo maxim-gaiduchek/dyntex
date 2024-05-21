@@ -37,6 +37,55 @@ const initialEdges = [{ id: 'e1-2', source: '2', target: '1' }];
  
 export default function App() {
   // eslint-disable-next-line
+  const handleDownload = async (e, now = [], node = undefined) => {
+    if(node === undefined){
+      node = nodes[0]
+    }
+    const incomers = getIncomers(node, nodes, edges)
+
+    if(incomers.length === 0){
+      notifications.show({
+        title: 'Error',
+        message: 'No input nodes connected to output node. 🚫',
+        color: "red"
+      })
+      return []
+    }
+
+    if(incomers[0].type === "imageNode"){
+      // handle download for image node
+      now.push({"path": incomers[0].data.path, "type": "texture"})
+      return now
+    }
+
+    if(incomers[0].type === "filterNode"){
+      const inc2 = getIncomers(incomers[0], nodes, edges)
+
+      if(inc2.length !== 2){
+        notifications.show({
+          title: 'Error',
+          message: 'No input nodes connected to filter node. 🚫',
+          color: "red"
+        })
+        return []
+      }
+
+      if(inc2[0].type === "filterNode" || inc2[1].type === "filterNode"){
+        now.push({"path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image,"type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap})
+        if(inc2[0].type === "filterNode"){
+          now.concat(await handleDownload(e, now, incomers[0]))
+        }
+        if(inc2[1].type === "filterNode"){
+          now.concat(await handleDownload(e, now, incomers[1]))
+        }
+        return now
+      }
+      now.push({"path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image, "type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap})
+    }
+
+    return now;
+  }
+
   const [info, setInfo] = useState("")
   const reactFlowRef = useRef(null);
   const [lastId, setId] = useState(4)
@@ -44,8 +93,10 @@ export default function App() {
   const [nodeMenu, setNodeMenu] = useState({x: 0, y: 0, hidden: true})
   const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
+  let { id } = useParams();
+
   const initialNodes = [
-    { id: '1', position: { x: 450, y: 100 }, data: { label: '1', image: "" }, type: "outputNode"},
+    { id: '1', position: { x: 450, y: 100 }, data: { handleDownload: handleDownload, label: '1', image: "", session_id: id }, type: "outputNode"},
     { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', path: "", image: "" }, type: 'imageNode'}
   ];
 
@@ -55,12 +106,12 @@ export default function App() {
   const [videos, setVideos] = useState([])
   const [masks, setMasks] = useState([])
   const [nodeOpened, setNodeOpened] = useState(false)
+  
 
   useHotkeys('delete', () => {
     setEdges((eds) => eds.filter((e) => e.selected !== true));
   })
   
-  let { id } = useParams();
  
   const onConnect = useCallback(
     (params) => {setEdges((eds) => addEdge(params, eds))},
@@ -117,6 +168,12 @@ export default function App() {
               processed: false
             };
             }
+            if(nd.type === 'outputNode'){
+              nd.data = {
+                ...nd.data,
+                handleDownload: handleDownload
+              }
+            }
           return nd;
         });
         setNodes(updatedNodes.filter((nd) => nd.id !== node.id));
@@ -139,6 +196,12 @@ export default function App() {
           swap: swap,
           updateData: updateData,
           updateFilter: updateFilter
+        }
+      }
+      if(nd.type === 'outputNode'){
+        nd.data = {
+          ...nd.data,
+          handleDownload: handleDownload
         }
       }
       return nd
@@ -264,12 +327,12 @@ export default function App() {
       const response = await axios.get(`http://localhost:5000/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}&name=${name}`)
       setNodes((nds) =>
         nodes.map((nd) => {
-          console.log(outgoers)
           if(outgoers.length === 1){
             if(outgoers[0].id === nd.id && nd.type === 'outputNode'){
               nd.data = {
                 ...nd.data,
                 processed: true,
+                handleDownload: handleDownload,
                 image: "http://localhost:8080/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
               };
               return nd;
@@ -323,6 +386,13 @@ export default function App() {
             };
           }
 
+          if(node.type === 'outputNode'){
+            node.data = {
+              ...node.data,
+              handleDownload: handleDownload
+            }
+          }
+
           return node;
       }))
     }
@@ -334,6 +404,12 @@ export default function App() {
             ...node.data,
             image: nodes[b].data.image
           };
+        }
+        if(node.type === 'outputNode'){
+          node.data = {
+            ...node.data,
+            handleDownload: handleDownload
+          }
         }
         return node;
       })
@@ -349,6 +425,12 @@ export default function App() {
           updateData: updateData,
           updateFilter: updateFilter
         };
+        }
+        if(node.type === 'outputNode'){
+          node.data = {
+            ...node.data,
+            handleDownload: handleDownload
+          }
         }
         return node;
       })
@@ -367,6 +449,12 @@ export default function App() {
           updateData: updateData,
           updateFilter: updateFilter
         };
+      }
+      if(node.type === 'outputNode'){
+        node.data = {
+          ...node.data,
+          handleDownload: handleDownload
+        }
       }
       return node;
     });
