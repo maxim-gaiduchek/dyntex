@@ -19,6 +19,8 @@ interface VideoService {
         videoDto: VideoDto,
     ): Video
 
+    fun toggleLike(videoId: Long, userId: Long): Video
+
     fun update(id: Long, videoDto: VideoDto): Video
 
     fun delete(id: Long)

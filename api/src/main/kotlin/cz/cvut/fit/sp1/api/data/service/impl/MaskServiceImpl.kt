@@ -97,4 +97,17 @@ class MaskServiceImpl(
     override fun countAll(): Long {
         return maskRepository.count()
     }
+
+    override fun toggleLike(maskId: Long, userId: Long): Mask {
+        val mask = getByIdOrThrow(maskId)
+        val user = userAccountService.getByIdOrThrow(userId)
+        if (user.likedMedia.contains(mask)) {
+            user.likedMedia.remove(mask)
+            mask.likedBy.remove(user)
+        } else {
+            user.likedMedia.add(mask)
+            mask.likedBy.add(user)
+        }
+        return maskRepository.save(mask)
+    }
 }

@@ -10,11 +10,13 @@ import cz.cvut.fit.sp1.api.data.model.media.Video
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
 import cz.cvut.fit.sp1.api.validation.group.CreateGroup
 import org.springframework.core.io.Resource
+import cz.cvut.fit.sp1.api.validation.group.UpdateGroup
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -79,7 +81,7 @@ class VideoController(
     }
 
     @DeleteMapping("/{id}")
-    @Secured("USER", "ADMIN")
+    @PreAuthorize("@accessService.hasUserAccessToUpdateVideo(#id)")
     fun delete(
         @PathVariable id: Long,
     ): ResponseEntity<Any> {
@@ -88,11 +90,23 @@ class VideoController(
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("@accessService.hasUserAccessToUpdateVideo(#id)")
     fun updateVideo(
         @PathVariable id: Long,
-        @RequestBody videoDto: VideoDto,
+        @Validated(UpdateGroup::class) @RequestBody videoDto: VideoDto
+    ,
     ): VideoDto? {
         val video = videoService.update(id, videoDto)
         return videoMapper.toDto(video)
+    }
+
+    @PutMapping("/{videoId}/likes/{userId}")
+    @PreAuthorize("@accessService.hasUserAccessToUpdateVideo(#videoId)")
+    fun toggleVideoLike(
+        @PathVariable videoId: Long,
+        @PathVariable userId: Long,
+    ): VideoDto? {
+        val updatedVideo = videoService.toggleLike(videoId, userId)
+        return videoMapper.toDto(updatedVideo)
     }
 }

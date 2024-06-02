@@ -7,9 +7,9 @@ import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchUserAccountParamsDto
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.repository.UserAccountRepository
+import cz.cvut.fit.sp1.api.data.service.interfaces.AuthService
 import cz.cvut.fit.sp1.api.data.service.interfaces.AvatarService
 import cz.cvut.fit.sp1.api.data.service.interfaces.UserAccountService
-import cz.cvut.fit.sp1.api.data.service.interfaces.VerificationService
 import cz.cvut.fit.sp1.api.exception.AccessDeniedException
 import cz.cvut.fit.sp1.api.exception.EntityNotFoundException
 import cz.cvut.fit.sp1.api.exception.ValidationException
@@ -17,7 +17,6 @@ import cz.cvut.fit.sp1.api.exception.exceptioncodes.UserAccountExceptionCodes
 import cz.cvut.fit.sp1.api.security.service.interfaces.SecurityProvider
 import jakarta.transaction.Transactional
 import org.apache.commons.lang3.RandomStringUtils
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
@@ -32,11 +31,9 @@ class UserAccountServiceImpl(
     private val avatarService: AvatarService,
     private val securityProvider: SecurityProvider,
     @Value("\${verification.enable}") private val verificationEnable: Boolean,
+    @Value("\${verification.token-expiring-time}") private val tokenExpire: Int,
+    @Lazy private var authService: AuthService,
 ) : UserAccountService {
-    @Autowired
-    @Lazy
-    private var verificationService: VerificationService? = null
-
 
     companion object {
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
@@ -119,18 +116,22 @@ class UserAccountServiceImpl(
             user.authEnable = true
             return userAccountRepository.save(user)
         }
-        verificationService!!.sendVerificationEmail(user.email, user.authToken)
+        authService.sendVerificationEmail(user.email, user.authToken)
         return userAccountRepository.save(user)
     }
 
     private fun checkUserAccountCreationPossibility(userCredentialsDto: UserCredentialsDto) {
-        val password = userCredentialsDto.password
-        if (EMPTY_STRING_HASH == password) {
-            throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
-        }
+        val password = userCredentialsDto.password!!
+        checkPasswordValidity(password)
         val email = userCredentialsDto.email!!
         if (userAccountRepository.existsByEmail(email)) {
             throw ValidationException(UserAccountExceptionCodes.USER_EMAIL_ALREADY_EXISTS, email)
+        }
+    }
+
+    private fun checkPasswordValidity(password: String) {
+        if (EMPTY_STRING_HASH == password) {
+            throw ValidationException(UserAccountExceptionCodes.USER_PASSWORD_IS_EMPTY)
         }
     }
 
@@ -179,5 +180,41 @@ class UserAccountServiceImpl(
             .getOrElse {
                 throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
             }
+    }
+
+    override fun getByEmail(email: String): UserAccount {
+        return userAccountRepository.findByEmailAndAuthEnableTrue(email)
+            .getOrElse {
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, email)
+            }
+    }
+
+    override fun recoveryPassword(email: String) {
+        val user = getByEmail(email)
+        val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+        user.authToken = authToken
+        val currentDate = Date()
+        user.dateOfRecovery = currentDate
+        authService.sendRecoveryEmail(email, authToken)
+        save(user)
+    }
+
+    override fun updatePassword(
+        authToken: String,
+        password: String
+    ) {
+        checkPasswordValidity(password)
+        val user = getByAuthToken(authToken)
+        if (!expiringCheck(user)) {
+            throw ValidationException(UserAccountExceptionCodes.AUTH_TOKEN_IS_EXPIRED)
+        }
+        val token = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
+        user.password = password
+        user.token = token
+        save(user)
+    }
+
+    private fun expiringCheck(user: UserAccount): Boolean {
+        return Date().time <= user.dateOfRecovery!!.time + (tokenExpire * 60 * 1000)
     }
 }
