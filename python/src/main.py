@@ -33,10 +33,9 @@ CORS(app)
 
 sessions = {
     "test": {
-        "media_id": 5007 
+        "media_id": 5007
     }
 }
-
 
 @app.route("/download/<path:file_path>", methods=['GET'])
 def download(file_path):
@@ -91,6 +90,18 @@ def initial():
 
     return response.json()
 
+@app.route("/progress", methods=['GET'])
+def progress():
+    """
+    Returns download progress
+    """
+
+    session_id = request.args.get("sessionid")
+
+    if(session_id not in sessions):
+        return {"error": "no session with this id"}
+    
+    return sessions[session_id]['download']
 def applyMask(background, overlay, alpha_channel, overlay_colors, strength):
     # To take advantage of the speed of numpy and apply transformations to the entire image with a single operation
     # the arrays need to be the same shape. However, the shapes currently looks like this:
@@ -117,7 +128,7 @@ def applyMask(background, overlay, alpha_channel, overlay_colors, strength):
     background[0:h, 0:w] = composite
 
     return background
-def filterVideo(video_path, image_path, strength, name):
+def filterVideo(video_path, image_path, strength, name, session_id = ""):
     """
     Apply mask to video
     """
@@ -158,7 +169,8 @@ def filterVideo(video_path, image_path, strength, name):
         if not ret:
             break
         progress = current_frame / total_frames * 100
-        print(f"Processing: {progress:.2f}%")
+        if(session_id != ""):
+            sessions[session_id]['download']['progress'] = progress
         # Apply the weighted mask
         # blended_frame = cv2.addWeighted(frame, 1 - float(strength), mask, float(strength), 0)
         # separate the alpha channel from the color channels
@@ -190,14 +202,38 @@ def save():
     """
 
     data_res = request.get_json()
-    data = data_res['data'][::-1]
+    session_id = sessions[data_res['session_id']]['id']
 
+    if(sessions[session_id]['download']['output'] != ""):
+        sessions[session_id]['download'] = {
+            "downloaded": False,
+            "progress": 0,
+            "items": 0,
+            "item": 0,
+            "output": "",
+            "inprogress": False
+        }
+
+    print(sessions[session_id])
+    data = data_res['data'][::-1]
+    sessions[session_id]['download']['items'] = len(data)
+    sessions[session_id]['download']['output'] = ""
+
+    
+    if(sessions[session_id]['download']['inprogress'] == True):
+        return "{}"
+
+    sessions[session_id]['download']['inprogress'] = True
     if(len(data) == 1 and data[0]['type'] != "filter"):
-        session = sessions[data_res['session_id']]
-        return {"status": "Ok", "link": data.pop()["path"]}
+        p = data.pop()["path"]
+        sessions[session_id]['download']['output'] = p
+        sessions[session_id]['download']['inprogress'] = False
+        sessions[session_id]['download']['item'] += 1  
+        return {"status": "Ok", "link": p}
 
     last_link = ""
     for video in data:
+        sessions[session_id]['download']['item'] += 1
         if(video['type'] == "filter"):
 
             # response = requests.get("http://localhost:8080/api/videos/"+str(sessions[data_res['session_id']]['media_id']))
@@ -220,7 +256,7 @@ def save():
                 else:
                     video_path, image_path = video['path2'], video['path1']
                     
-                last_link = filterVideo(video_path, image_path, float(video['strength'])/100, name)
+                last_link = filterVideo(video_path, image_path, float(video['strength'])/100, name, session_id)
             
             if(video['hasFilter'] == True):
                 if(video['filter1'] == True):
@@ -237,11 +273,13 @@ def save():
                     continue
                     #potom sdelaju))
                 if(path1.endswith('.webm')):
-                    last_link = filterVideo(path1, path2, float(video['strength'])/100, name)
+                    last_link = filterVideo(path1, path2, float(video['strength'])/100, name, session_id)
                 
                 if(path2.endswith('.webm')):
-                    last_link = filterVideo(path2, path1, float(video['strength'])/100, name)
+                    last_link = filterVideo(path2, path1, float(video['strength'])/100, name, session_id)
 
+    sessions[session_id]['download']['output'] = last_link
+    sessions[session_id]['download']['inprogress'] = False
     return {"status": "Ok", "link": last_link}
 
 @app.route("/filter", methods=['GET'])
@@ -271,9 +309,12 @@ def filter():
         strength = 1 - float(strength)
         print(strength)
     name = request.args.get('name')
-    if(name == ""):
+    if not name:
         name = False
-
+    else:
+        if name.startswith("undefined"):
+            name = False
+            
     print(strength)
 
     if not video_path or not image_path or not strength:
@@ -307,7 +348,7 @@ def filter():
         except IndexError:
             # If there's no alpha channel, create a default alpha channel (fully opaque)
             alpha_channel = np.ones((resized_image.shape[0], resized_image.shape[1]))
-            overlay_colors = overlay_colors
+            overlay_colors = resized_image
         filtered_frame = applyMask(first_frame, resized_image, alpha_channel, overlay_colors, float(strength))
         # Generate a random name for the image file
         image_filename = generate_random_string() + '.png'
@@ -345,7 +386,15 @@ def start():
 
     sessions[id_session] = {
         "id": id_session,
-        "media_id": media_id
+        "media_id": media_id,
+        "download": {
+            "downloaded": False,
+            "progress": 0,
+            "items": 0,
+            "item": 0,
+            "output": "",
+            "inprogress": False
+        }
     }
 
     return sessions[id_session]

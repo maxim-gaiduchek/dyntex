@@ -16,14 +16,17 @@ export default memo(({ data, isConnectable }) => {
               e.preventDefault();
               console.log(data)
               const link = PythonUrl+"/save"
-              const d = await data.handleDownload(e)
               try{
-                const resp = await axios.post(link, { data: d, session_id: data.session_id })
-                window.open(PythonUrl+"/download/" + resp.data.link, '_blank').focus();
+                const d = await data.handleDownload(e)
+
+                try{
+                  const resp = axios.post(link, { data: d, session_id: data.session_id })
+                }catch(err){
+                }
+                window.open("/download/" + data.session_id, '_blank').focus();
               }catch(err){
-                alert("Unknown error occured =(")
               }
-              
+
             }}>Download</Button>
         </div>
       </div>

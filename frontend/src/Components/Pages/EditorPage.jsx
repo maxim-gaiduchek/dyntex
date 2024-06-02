@@ -80,6 +80,14 @@ export default function App() {
 
       if(inc2[0].type === "filterNode" || inc2[1].type === "filterNode"){
         now.push({"hasFilter": true,"filter1": inc2[0].type === "filterNode", "filter2": inc2[1].type === "filterNode",  "path1": (inc2[0].data.path === undefined) ? inc2[0].data.image : inc2[0].data.path, "path2": (inc2[1].data.path === undefined) ? inc2[1].data.image : inc2[1].data.path, path: incomers[0].data.image,"type": "filter", strength: incomers[0].data.strength, swap: incomers[0].data.swap, same: false})
+        if(inc2[0].type === "filterNode" && inc2[1].type === "filterNode"){
+          notifications.show({
+            title: 'Error',
+            message: 'Combining two filter nodes is unsupported yet. 🚫',
+            color: "red"
+          })
+          throw new Error("Combining two filter nodes is unsupported yet.")
+        }
         if(inc2[0].type === "filterNode"){
           now.concat(await handleDownload(e, now, incomers[0]))
         }

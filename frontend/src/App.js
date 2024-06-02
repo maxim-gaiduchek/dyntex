@@ -26,6 +26,7 @@ import Users from './Components/Pages/Users';
 import Favourites from './Components/Pages/Favourites';
 import Tags from './Components/Pages/Tags';
 import MaskPage from './Components/Textures/MaskPage';
+import DownloadPage from './Components/Pages/DownloadPage';
 
 const router = createBrowserRouter([
   {
@@ -95,6 +96,10 @@ const router = createBrowserRouter([
   {
     path: "*",
     element: <NotFound/>
+  },
+  {
+    path: "/download/:id",
+    element: <DownloadPage/>
   }
 ]);
 
