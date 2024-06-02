@@ -22,6 +22,8 @@ import NodeMenu from '../Editor/NodeMenu';
 import { notifications } from '@mantine/notifications';
 import { useComputedColorScheme } from '@mantine/core';
 import { ControlButton } from 'reactflow';
+import { useDisclosure } from '@mantine/hooks';
+import { Modal } from '@mantine/core';
 import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
 
 //TODO: don't use states in filter nodes, create a react hook in parent element that will update the filter nodes
@@ -37,6 +39,7 @@ const initialEdges = [{ id: 'e1-2', source: '2', target: '1' }];
  
 export default function App() {
   // eslint-disable-next-line
+  
   const handleDownload = async (e, now = [], node = undefined) => {
     if(node === undefined){
       node = nodes[0]
@@ -100,7 +103,7 @@ export default function App() {
   let { id } = useParams();
 
   const initialNodes = [
-    { id: '1', position: { x: 450, y: 100 }, data: { handleDownload: handleDownload, label: '1', image: "", session_id: id }, type: "outputNode"},
+    { id: '1', position: { x: 450, y: 100 }, data: { label: '1', image: "", session_id: id }, type: "outputNode"},
     { id: '2', position: { x: 150, y: 100 }, data: { name: "Papich", label: '2', path: "", image: "" }, type: 'imageNode'}
   ];
 
