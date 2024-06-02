@@ -34,7 +34,7 @@ class MediaProcessorUnitTest {
     @MockBean
     @Autowired
     lateinit var restTemplate: RestTemplate
-    val basePath = Path(System.getProperty("user.home"), "sp1", "storage").toString() // TODO need to create configuration with setters on path
+    val basePath = Path(System.getProperty("user.home"), "sp1", "storage").toString()
 
     @BeforeEach
     fun setUp() {
