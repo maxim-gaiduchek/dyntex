@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
-
+import BaseUrl from '../../BaseUrl';
 export default function MainPage(){
 
     const [value, setValue] = React.useState("Textures")
@@ -53,7 +53,7 @@ export default function MainPage(){
 
     const fetchMasks = async (page = 1) => {
       try{
-        const response = await axios.get('http://localhost:8080/api/masks?page='+page);
+        const response = await axios.get(BaseUrl+'/api/masks?page='+page);
         setPages(response.data.totalPages)
         setMasks(response.data.masks)
       } catch(e) {
@@ -63,7 +63,7 @@ export default function MainPage(){
     const fetchData = async (page = 1) => {
       setTextures(null)
       try{
-        const response = await axios.get('http://localhost:8080/api/videos?page='+page);
+        const response = await axios.get(BaseUrl+'/api/videos?page='+page);
         setPages(response.data.totalPages)
         setTextures(response.data.videos)
       } catch{
@@ -72,7 +72,7 @@ export default function MainPage(){
 
     const fetchTags = async () => {
       try{
-        const response = await axios.get('http://localhost:8080/api/tags')
+        const response = await axios.get(BaseUrl+'/api/tags')
         response.data.tags.forEach((d) => {
           d.value = d.name
         })
@@ -87,7 +87,7 @@ export default function MainPage(){
       }
 
       try{
-        const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
+        const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
         setUser(response.data)
       }catch(e){
         //very very bad and stupid =)
@@ -104,7 +104,7 @@ export default function MainPage(){
       setLastTags(values)
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
-      var url = "http://localhost:8080/api/videos"
+      var url = BaseUrl+"/api/videos"
       if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
@@ -169,7 +169,7 @@ export default function MainPage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                <TextureCard texture = {texture}/>
+                                <TextureCard liked={user === undefined ? false : user.likedMedia?.some(media => media.id === texture.id) || false} texture = {texture}/>
                              </Grid.Col>
                          ))
                      }
@@ -202,7 +202,7 @@ export default function MainPage(){
                             <div style={{
                               width: "100%", 
                               height: 300, 
-                              backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
+                              backgroundImage: "url("+BaseUrl+"/api/media/previews/"+mask.path+")",
                               backgroundSize: "cover",
                               backgroundPosition: "center"
                               }

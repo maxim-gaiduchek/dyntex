@@ -21,6 +21,7 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import baseUrl from '../../BaseUrl';
 
   export default function LoginPage() {
 
@@ -30,7 +31,7 @@ import { useNavigate } from 'react-router-dom';
     const nextStep = async () => {
         if(active === 2){
             try {
-                const response = await axios.post('http://localhost:8080/api/users', {
+                const response = await axios.post(baseUrl+'/api/users', {
                   email,
                   "name" : name + " " + surname,
                   "password": await hashPasswd(),
@@ -115,7 +116,6 @@ import { useNavigate } from 'react-router-dom';
 
     useEffect(() => {
         if(!(cookies.token === undefined)){
-            console.log("PENIS")
             // navigate("/")
         }
     }, [])

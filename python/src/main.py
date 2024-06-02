@@ -18,21 +18,386 @@ Dependencies:
 """
 
 import os
-from flask import Flask, jsonify, request
+import string
+import random
+import requests
+from flask import Flask, jsonify, request, send_file
 from moviepy.editor import VideoFileClip
 from PIL import Image
+from flask_cors import CORS
+import cv2
+import numpy as np
 
 app = Flask(__name__)
+CORS(app)
 
-@app.route('/', methods=['GET'])
-def index():
+sessions = {
+    "test": {
+        "media_id": 5007
+    }
+}
+
+@app.route("/download/<path:file_path>", methods=['GET'])
+def download(file_path):
     """
-    Handle GET requests to the root endpoint.
+    Download a file from the storage directory.
+
+    Parameters:
+        file_path (str): The path to the file relative to the storage directory.
 
     Returns:
-        Response: A JSON response containing a greeting message.
+        Response: The file to be downloaded.
     """
-    return jsonify({"response": "hello 2"})
+    try:
+        # Construct the absolute path to the file
+        absolute_path = os.path.abspath(os.path.join(app.root_path, '..', '..', 'storage', file_path))
+        # Check if the file exists
+        if not os.path.isfile(absolute_path):
+            return jsonify({'error': 'File not found'})
+        
+        # Send the file for download
+        return send_file(absolute_path, as_attachment=True)
+    except Exception as e:
+        return jsonify({'error': 'An error occurred: ' + str(e)})
+
+def generate_random_string(length = 10):
+    """
+    Generating id
+    """
+
+    # Define the characters you want to use in your random string
+    characters = string.ascii_letters + string.digits
+
+    # Generate a random string of specified length
+    random_string = ''.join(random.choice(characters) for _ in range(length))
+    
+    return random_string
+
+@app.route("/initial", methods=['GET'])
+def initial():
+    """
+    IDK)
+    """
+
+    session_id = request.args.get("sessionid")
+
+    if(session_id not in sessions):
+        return {"error": "no session with this id"}
+    
+    # print(sessions[session_id])
+
+    response = requests.get("http://localhost:8080/api/videos/"+str(sessions[session_id]['media_id']))
+
+    return response.json()
+
+@app.route("/progress", methods=['GET'])
+def progress():
+    """
+    Returns download progress
+    """
+
+    session_id = request.args.get("sessionid")
+
+    if(session_id not in sessions):
+        return {"error": "no session with this id"}
+    
+    return sessions[session_id]['download']
+def applyMask(background, overlay, alpha_channel, overlay_colors, strength):
+    # To take advantage of the speed of numpy and apply transformations to the entire image with a single operation
+    # the arrays need to be the same shape. However, the shapes currently looks like this:
+    #    - overlay_colors shape:(width, height, 3)  3 color values for each pixel, (red, green, blue)
+    #    - alpha_channel  shape:(width, height, 1)  1 single alpha value for each pixel
+    # We will construct an alpha_mask that has the same shape as the overlay_colors by duplicate the alpha channel
+    # for each color so there is a 1:1 alpha channel for each color channel
+    alpha_mask = np.dstack((alpha_channel, alpha_channel, alpha_channel))
+    adjusted_alpha_mask = alpha_mask * strength
+
+    # The background image is larger than the overlay so we'll take a subsection of the background that matches the
+    # dimensions of the overlay.
+    # NOTE: For simplicity, the overlay is applied to the top-left corner of the background(0,0). An x and y offset
+    # could be used to place the overlay at any position on the background.
+    h, w = overlay.shape[:2]
+    # print(h, w)
+    # print("dads")
+    background_subsection = background[0:h, 0:w]
+
+    # combine the background with the overlay image weighted by alpha
+    composite = background_subsection * (1 - adjusted_alpha_mask) + overlay_colors * adjusted_alpha_mask
+
+    # overwrite the section of the background image that has been updated
+    background[0:h, 0:w] = composite
+
+    return background
+def filterVideo(video_path, image_path, strength, name, session_id = ""):
+    """
+    Apply mask to video
+    """
+    # Load the mask image
+    video_path = "../storage/" + video_path
+    image_path = "../storage/" + image_path
+    print(video_path, image_path)
+    mask = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+    if mask is None:
+        print(f"Error: Unable to load image at {image_path}")
+        return
+    # Open the video file
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        print(f"Error: Unable to open video at {video_path}")
+        return
+
+    # Get video properties
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    # Resize the mask to match the video frame size
+    mask = cv2.resize(mask, (frame_width, frame_height))
+
+    # Prepare the output video writer
+    os.path.basename(video_path)
+    output_name_webm = name.replace(".png", ".webm")
+    output_path_webm = os.path.join(os.path.dirname(video_path), output_name_webm)
+
+    fourcc_webm = cv2.VideoWriter_fourcc(*'VP80')
+    out_webm = cv2.VideoWriter(output_path_webm, fourcc_webm, fps, (frame_width, frame_height))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    current_frame = 0
+    # Process each frame
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        progress = current_frame / total_frames * 100
+        if(session_id != ""):
+            sessions[session_id]['download']['progress'] = progress
+        # Apply the weighted mask
+        # blended_frame = cv2.addWeighted(frame, 1 - float(strength), mask, float(strength), 0)
+        # separate the alpha channel from the color channels
+        try:
+            # Try to separate the alpha channel from the color channels
+            alpha_channel = mask[:, :, 3] / 255.0  # Convert from 0-255 to 0.0-1.0
+            overlay_colors = mask[:, :, :3]
+        except IndexError:
+            # If there's no alpha channel, create a default alpha channel (fully opaque)
+            alpha_channel = np.ones((mask.shape[0], mask.shape[1]))
+            overlay_colors = mask
+        blended_frame = applyMask(frame, mask, alpha_channel, overlay_colors, float(strength))
+        current_frame+=1
+        # Write the blended frame to the output video
+        out_webm.write(blended_frame)
+
+    # Release everything
+    cap.release()
+    out_webm.release()
+
+    # Return the name of the saved video
+    return output_name_webm
+
+
+@app.route("/save", methods=['POST'])
+def save():
+    """
+    Save video
+    """
+
+    data_res = request.get_json()
+    session_id = sessions[data_res['session_id']]['id']
+
+    if(sessions[session_id]['download']['output'] != ""):
+        sessions[session_id]['download'] = {
+            "downloaded": False,
+            "progress": 0,
+            "items": 0,
+            "item": 0,
+            "output": "",
+            "inprogress": False
+        }
+
+    print(sessions[session_id])
+    data = data_res['data'][::-1]
+    sessions[session_id]['download']['items'] = len(data)
+    sessions[session_id]['download']['output'] = ""
+
+    
+    if(sessions[session_id]['download']['inprogress'] == True):
+        return "{}"
+
+    sessions[session_id]['download']['inprogress'] = True
+    if(len(data) == 1 and data[0]['type'] != "filter"):
+        p = data.pop()["path"]
+        sessions[session_id]['download']['output'] = p
+        sessions[session_id]['download']['inprogress'] = False
+        sessions[session_id]['download']['item'] += 1  
+        return {"status": "Ok", "link": p}
+
+    last_link = ""
+    for video in data:
+        sessions[session_id]['download']['item'] += 1
+        if(video['type'] == "filter"):
+
+            # response = requests.get("http://localhost:8080/api/videos/"+str(sessions[data_res['session_id']]['media_id']))
+            # video_path = response.json()['path']
+            print("dasdsDSADSA")
+            print(video['path'])
+            name = video['path'].split('/')[-1].split('?')[0]
+            image_path = video['path'].split('/')[-1].replace('.png', '.webm')
+            strength = video['strength']
+            if(strength == "100"):
+                strength = "99"
+            if(video['same'] == True):
+                if(video['path1'].endswith('.webm')):
+                    last_link = video['path1']
+            
+            if(video['hasFilter'] == False):
+                if(video['path1'].endswith('.webm')):
+                    # filter =)
+                    video_path, image_path = video['path1'], video['path2']
+                else:
+                    video_path, image_path = video['path2'], video['path1']
+                    
+                last_link = filterVideo(video_path, image_path, float(video['strength'])/100, name, session_id)
+            
+            if(video['hasFilter'] == True):
+                if(video['filter1'] == True):
+                    path1 = video['path1'].split('/')[-1].split('?')[0].replace('.png', '.webm')
+                else:
+                    path1 = video['path1'].split('/')[-1].split('?')[0]
+
+                if(video['filter2'] == True):
+                    path2 = video['path2'].split('/')[-1].split('?')[0].replace('.png', '.webm')
+                else:
+                    path2 = video['path2'].split('/')[-1].split('?')[0]
+                
+                if(path1.endswith('.webm') and path2.endswith('.webm')):
+                    continue
+                    #potom sdelaju))
+                if(path1.endswith('.webm')):
+                    last_link = filterVideo(path1, path2, float(video['strength'])/100, name, session_id)
+                
+                if(path2.endswith('.webm')):
+                    last_link = filterVideo(path2, path1, float(video['strength'])/100, name, session_id)
+
+    sessions[session_id]['download']['output'] = last_link
+    sessions[session_id]['download']['inprogress'] = False
+    return {"status": "Ok", "link": last_link}
+
+@app.route("/filter", methods=['GET'])
+def filter():
+    """
+    Applies an image onto a video.
+
+    Parameters:
+        video_path (str): The path to the video file.
+        image_path (str): The path to the image file.
+        strengst (int): The strength of the filter.
+
+    Returns:
+        Response: A JSON response indicating the success or failure of the operation.
+    """
+    video_path = "../storage/" + request.args.get('video_path').split('?')[0]
+    image_path = "../storage/" + request.args.get('image_path').split('?')[0]
+
+    print(video_path, image_path)
+
+    strength = request.args.get('strength')
+    if(strength == "1"):
+        strength = "0.99"
+    if video_path.endswith('.png'):
+        video_path, image_path = image_path, video_path
+        print(float(strength))
+        strength = 1 - float(strength)
+        print(strength)
+    name = request.args.get('name')
+    if not name:
+        name = False
+    else:
+        if name.startswith("undefined"):
+            name = False
+            
+    print(strength)
+
+    if not video_path or not image_path or not strength:
+        return jsonify({'success': False, 'error': 'One or more parameters are missing'})
+
+    try:            
+        cap = cv2.VideoCapture(video_path)
+
+        if not cap.isOpened():
+            print("Error: Unable to open video file.")
+            exit()
+
+        ret, first_frame = cap.read()
+
+        image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+        if(not video_path.endswith('png') and not image_path.endswith('png')):
+            cap2 = cv2.VideoCapture(image_path)
+            ret2, image = cap2.read()
+
+        # Resize the image to fit the frame size
+        resized_image = cv2.resize(image, (first_frame.shape[1], first_frame.shape[0]))
+
+        # Get the first frame of the video
+
+        # Apply the filter to the first frame
+        # filtered_frame = cv2.addWeighted(first_frame, 1 - float(strength), resized_image, float(strength), 0)
+        try:
+            # Try to separate the alpha channel from the color channels
+            alpha_channel = resized_image[:, :, 3] / 255.0  # Convert from 0-255 to 0.0-1.0
+            overlay_colors = resized_image[:, :, :3]
+        except IndexError:
+            # If there's no alpha channel, create a default alpha channel (fully opaque)
+            alpha_channel = np.ones((resized_image.shape[0], resized_image.shape[1]))
+            overlay_colors = resized_image
+        filtered_frame = applyMask(first_frame, resized_image, alpha_channel, overlay_colors, float(strength))
+        # Generate a random name for the image file
+        image_filename = generate_random_string() + '.png'
+        if(name):
+            image_filename = name + '.png'
+
+        # Define the path to save the image in the same directory as the video
+        video_directory = os.path.dirname(video_path)
+        image_path = os.path.join(video_directory, image_filename)
+
+        # Save the image
+        cv2.imwrite(image_path, filtered_frame)
+
+        cap.release()
+        if(not video_path.endswith('png') and not image_path.endswith('png')):
+            cap2.release()
+
+        # Return the path to the saved image
+        return jsonify({'success': True, 'image_path': image_filename})
+    except Exception as e:
+        print(e)
+        return jsonify({'error': 'An error occurred: ' + str(e)})
+
+@app.route("/start", methods=['GET'])
+def start():
+    """
+    Method for starting editor session
+
+    Returns:
+        Response: A JSON response containing sesion id
+    """
+
+    media_id = request.args.get('id')
+    id_session = generate_random_string() 
+
+    sessions[id_session] = {
+        "id": id_session,
+        "media_id": media_id,
+        "download": {
+            "downloaded": False,
+            "progress": 0,
+            "items": 0,
+            "item": 0,
+            "output": "",
+            "inprogress": False
+        }
+    }
+
+    return sessions[id_session]
 
 @app.route('/prepare', methods=['GET'])
 def prepare_video():

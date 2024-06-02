@@ -6,6 +6,7 @@ import { LoadingOverlay } from '@mantine/core'
 import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
+import BaseUrl from '../../BaseUrl'
 
 export default function Account(){
     const [user, setUser] = useState(null)
@@ -23,9 +24,9 @@ export default function Account(){
       try{
         let url;
         if(id === "me"){
-          url = "http://localhost:8080/api/users/authenticated"
+          url = BaseUrl+"/api/users/authenticated"
         }else{
-          url = "http://localhost:8080/api/users/"+id
+          url = BaseUrl+"/api/users/"+id
         }
         const response = await axios.get(url, options)
         setUser(response.data)
