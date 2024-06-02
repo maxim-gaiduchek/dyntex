@@ -26,6 +26,7 @@ from moviepy.editor import VideoFileClip
 from PIL import Image
 from flask_cors import CORS
 import cv2
+import numpy as np
 
 app = Flask(__name__)
 CORS(app)
@@ -35,6 +36,7 @@ sessions = {
         "media_id": 5007 
     }
 }
+
 
 @app.route("/download/<path:file_path>", methods=['GET'])
 def download(file_path):
@@ -89,6 +91,32 @@ def initial():
 
     return response.json()
 
+def applyMask(background, overlay, alpha_channel, overlay_colors, strength):
+    # To take advantage of the speed of numpy and apply transformations to the entire image with a single operation
+    # the arrays need to be the same shape. However, the shapes currently looks like this:
+    #    - overlay_colors shape:(width, height, 3)  3 color values for each pixel, (red, green, blue)
+    #    - alpha_channel  shape:(width, height, 1)  1 single alpha value for each pixel
+    # We will construct an alpha_mask that has the same shape as the overlay_colors by duplicate the alpha channel
+    # for each color so there is a 1:1 alpha channel for each color channel
+    alpha_mask = np.dstack((alpha_channel, alpha_channel, alpha_channel))
+    adjusted_alpha_mask = alpha_mask * strength
+
+    # The background image is larger than the overlay so we'll take a subsection of the background that matches the
+    # dimensions of the overlay.
+    # NOTE: For simplicity, the overlay is applied to the top-left corner of the background(0,0). An x and y offset
+    # could be used to place the overlay at any position on the background.
+    h, w = overlay.shape[:2]
+    # print(h, w)
+    # print("dads")
+    background_subsection = background[0:h, 0:w]
+
+    # combine the background with the overlay image weighted by alpha
+    composite = background_subsection * (1 - adjusted_alpha_mask) + overlay_colors * adjusted_alpha_mask
+
+    # overwrite the section of the background image that has been updated
+    background[0:h, 0:w] = composite
+
+    return background
 def filterVideo(video_path, image_path, strength, name):
     """
     Apply mask to video
@@ -97,11 +125,10 @@ def filterVideo(video_path, image_path, strength, name):
     video_path = "../storage/" + video_path
     image_path = "../storage/" + image_path
     print(video_path, image_path)
-    mask = cv2.imread(image_path)
+    mask = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
     if mask is None:
         print(f"Error: Unable to load image at {image_path}")
         return
-
     # Open the video file
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -133,7 +160,17 @@ def filterVideo(video_path, image_path, strength, name):
         progress = current_frame / total_frames * 100
         print(f"Processing: {progress:.2f}%")
         # Apply the weighted mask
-        blended_frame = cv2.addWeighted(frame, 1 - float(strength), mask, float(strength), 0)
+        # blended_frame = cv2.addWeighted(frame, 1 - float(strength), mask, float(strength), 0)
+        # separate the alpha channel from the color channels
+        try:
+            # Try to separate the alpha channel from the color channels
+            alpha_channel = mask[:, :, 3] / 255.0  # Convert from 0-255 to 0.0-1.0
+            overlay_colors = mask[:, :, :3]
+        except IndexError:
+            # If there's no alpha channel, create a default alpha channel (fully opaque)
+            alpha_channel = np.ones((mask.shape[0], mask.shape[1]))
+            overlay_colors = mask
+        blended_frame = applyMask(frame, mask, alpha_channel, overlay_colors, float(strength))
         current_frame+=1
         # Write the blended frame to the output video
         out_webm.write(blended_frame)
@@ -165,9 +202,13 @@ def save():
 
             # response = requests.get("http://localhost:8080/api/videos/"+str(sessions[data_res['session_id']]['media_id']))
             # video_path = response.json()['path']
+            print("dasdsDSADSA")
+            print(video['path'])
             name = video['path'].split('/')[-1].split('?')[0]
             image_path = video['path'].split('/')[-1].replace('.png', '.webm')
             strength = video['strength']
+            if(strength == "100"):
+                strength = "99"
             if(video['same'] == True):
                 if(video['path1'].endswith('.webm')):
                     last_link = video['path1']
@@ -219,7 +260,11 @@ def filter():
     video_path = "../storage/" + request.args.get('video_path').split('?')[0]
     image_path = "../storage/" + request.args.get('image_path').split('?')[0]
 
+    print(video_path, image_path)
+
     strength = request.args.get('strength')
+    if(strength == "1"):
+        strength = "0.99"
     if video_path.endswith('.png'):
         video_path, image_path = image_path, video_path
         print(float(strength))
@@ -243,7 +288,7 @@ def filter():
 
         ret, first_frame = cap.read()
 
-        image = cv2.imread(image_path)
+        image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
         if(not video_path.endswith('png') and not image_path.endswith('png')):
             cap2 = cv2.VideoCapture(image_path)
             ret2, image = cap2.read()
@@ -254,8 +299,16 @@ def filter():
         # Get the first frame of the video
 
         # Apply the filter to the first frame
-        filtered_frame = cv2.addWeighted(first_frame, 1 - float(strength), resized_image, float(strength), 0)
-
+        # filtered_frame = cv2.addWeighted(first_frame, 1 - float(strength), resized_image, float(strength), 0)
+        try:
+            # Try to separate the alpha channel from the color channels
+            alpha_channel = resized_image[:, :, 3] / 255.0  # Convert from 0-255 to 0.0-1.0
+            overlay_colors = resized_image[:, :, :3]
+        except IndexError:
+            # If there's no alpha channel, create a default alpha channel (fully opaque)
+            alpha_channel = np.ones((resized_image.shape[0], resized_image.shape[1]))
+            overlay_colors = overlay_colors
+        filtered_frame = applyMask(first_frame, resized_image, alpha_channel, overlay_colors, float(strength))
         # Generate a random name for the image file
         image_filename = generate_random_string() + '.png'
         if(name):
@@ -275,6 +328,7 @@ def filter():
         # Return the path to the saved image
         return jsonify({'success': True, 'image_path': image_filename})
     except Exception as e:
+        print(e)
         return jsonify({'error': 'An error occurred: ' + str(e)})
 
 @app.route("/start", methods=['GET'])

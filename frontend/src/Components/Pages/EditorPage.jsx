@@ -251,11 +251,8 @@ export default function App() {
       setMenu({x: 0, y: 0, hidden: true})
       return
     }
-    let nds = [...nodes]
-    nds.push({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { label: (lastId+1).toString() } })
-    setNodes(nds)
-    setId(lastId+1)
     setMenu({x: 0, y: 0, hidden: true})
+    return
   }
   
   const onPaneClick = () => {
@@ -476,6 +473,7 @@ export default function App() {
         nodes={nodes}
         edges={edges}
         zoomOnScroll={false}
+        deleteKeyCode={null}
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
         nodeTypes={nodeTypes}
