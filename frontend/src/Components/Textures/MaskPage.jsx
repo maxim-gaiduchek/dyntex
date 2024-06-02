@@ -12,7 +12,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import DropZoneMask from '../Textures/DropZoneMask';
 import { Link } from 'react-router-dom';
-
+import BaseUrl from '../../BaseUrl';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
 
@@ -36,7 +36,7 @@ export default function MaskPage(){
 
     const fetchMasks = async (page = 1) => {
       try{
-        const response = await axios.get('http://localhost:8080/api/masks?page='+page);
+        const response = await axios.get(BaseUrl+'/api/masks?page='+page);
         setPages(response.data.totalPages)
         setMasks(response.data.masks)
       } catch(e) {
@@ -45,7 +45,7 @@ export default function MaskPage(){
 
     const fetchTags = async () => {
       try{
-        const response = await axios.get('http://localhost:8080/api/tags')
+        const response = await axios.get(BaseUrl+'/api/tags')
         response.data.tags.forEach((d) => {
           d.value = d.name
         })
@@ -60,7 +60,7 @@ export default function MaskPage(){
       }
 
       try{
-        const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
+        const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
         setUser(response.data)
       }catch(e){
         //very very bad and stupid =)
@@ -77,7 +77,7 @@ export default function MaskPage(){
       setLastTags(values)
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
-      var url = "http://localhost:8080/api/videos"
+      var url = BaseUrl+"/api/videos"
       if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
@@ -116,7 +116,7 @@ export default function MaskPage(){
                       <div style={{
                         width: "100%", 
                         height: 300, 
-                        backgroundImage: "url(http://localhost:8080/api/media/previews/"+mask.path+")",
+                        backgroundImage: "url("+BaseUrl+"/api/media/previews/"+mask.path+")",
                         backgroundSize: "cover",
                         backgroundPosition: "center"
                         }

@@ -4,11 +4,24 @@ import classes from './BadgeCard.module.css';
 import { notifications } from '@mantine/notifications';
 import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
+import axios from 'axios';
+import { useCookies } from 'react-cookie';
+import { useState } from 'react';
+import BaseUrl from '../../BaseUrl';
 
 export default function TextureCard(props) {
-  const { id, name, tags, description, previewPath, size, fps, createdBy } = props.texture;
+  var { id, name, tags, description, previewPath, size, fps, createdBy } = props.texture;
+  
+  const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+  const [liked, setLiked] = useState(props.liked)
+  previewPath = props.texture.previewPath || props.texture.path.replace(/\.[^/.]+$/, "") + ".png";
+  const options = {
+    headers: {
+      'Authorization': cookies.token
+    }
+  };
   const features = tags.map((badge) => (
-    <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
+    <Badge variant="light" key={badge.emoji} leftSection={badge.emoji}>
       {badge.name}
     </Badge>
   ));
@@ -16,8 +29,8 @@ export default function TextureCard(props) {
   return (
     <Card withBorder radius="md" p="md" className={classes.card}>
       <Card.Section>
-        <Link to={"http://localhost:3000/media/"+id}>
-          <Image src={"http://localhost:8080/api/media/previews/"+previewPath} alt={name} height={180} />
+        <Link to={"/media/"+id}>
+          <Image src={BaseUrl+"/api/media/previews/"+previewPath} alt={name} height={180} />
         </Link>
       </Card.Section>
 
@@ -32,9 +45,12 @@ export default function TextureCard(props) {
           </Badge>
         </Group>
         <HoverCard width={280} openDelay={300} shadow="md">
-          <HoverCard.Target>
-            <span className={classes.accountLink}>Added by: <Link to={"/account/" + createdBy.id}>{createdBy.name}</Link></span>
-          </HoverCard.Target>
+          {
+            createdBy !== null &&
+            <HoverCard.Target>
+              <span className={classes.accountLink}>Added by: <Link to={"/account/" + createdBy.id}>{createdBy.name}</Link></span>
+            </HoverCard.Target>
+          }
           <HoverCard.Dropdown>
             <AccountPreview account={createdBy}/>
           </HoverCard.Dropdown>
@@ -62,15 +78,31 @@ export default function TextureCard(props) {
           </Button>
         </Link>
         <ActionIcon
-        onClick={() =>
-          notifications.show({
-            title: 'Texture added',
-            message: 'Texture has been added to favourites! ⭐',
-            color: "green"
-          })
+        onClick={async () => 
+          {
+            const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
+
+            if(liked === false){
+              notifications.show({
+                title: 'Texture added',
+                message: 'Texture has been added to favourites! ⭐',
+                color: "green"
+              })
+            }else{
+              notifications.show({
+                title: 'Texture removed',
+                message: 'Texture has been removed from favourites! ⭐',
+                color: "green"
+              })
+            }
+
+            setLiked(!liked)
+          }
         }
         variant="default" radius="md" size={36}>
-          <IconHeart className={classes.like} stroke={1.5} />
+          {
+            liked ? <IconHeartFilled size={24} color="red"/> : <IconHeart size={24}/>
+          }
         </ActionIcon>
       </Group>
     </Card>

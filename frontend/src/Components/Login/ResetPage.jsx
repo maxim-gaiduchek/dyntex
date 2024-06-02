@@ -13,7 +13,8 @@ import {
   import { Link } from 'react-router-dom';
   import React from 'react';
   import { notifications } from '@mantine/notifications';
-
+  import BaseUrl from '../../BaseUrl';
+  
   export default function ResetPage() {
     const [email, setEmail] = React.useState("");
     const [error, setError] = React.useState([false])

@@ -8,7 +8,7 @@ import { useCookies } from 'react-cookie';
 import { notifications } from '@mantine/notifications';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import CategorySearch from './CategorySearch';
-
+import BaseUrl from '../../BaseUrl';
 export default function DropZone(props) {
   const [file, setFile] = useState(null);
   const [filled, setFilled] = useState(false);
@@ -52,7 +52,7 @@ export default function DropZone(props) {
     console.log(description)
     formData.append("tagIds", tagId)
     formData.append("name", name);
-    axios.post('http://localhost:8080/api/videos', formData, options)
+    axios.post(BaseUrl+'/api/videos', formData, options)
     .then((res) => {
       setFinished(true)
       setProgress(100);

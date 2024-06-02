@@ -25,7 +25,8 @@ import { ControlButton } from 'reactflow';
 import { useDisclosure } from '@mantine/hooks';
 import { Modal } from '@mantine/core';
 import { getIncomers, getOutgoers, getConnectedEdges } from 'reactflow';
-
+import BaseUrl from '../../BaseUrl'
+import PythonUrl from '../../PythonUrl';
 //TODO: don't use states in filter nodes, create a react hook in parent element that will update the filter nodes
 
 const nodeTypes = {
@@ -126,11 +127,11 @@ export default function App() {
   );
 
   const getData = async () => {
-    const response = await axios.get("http://localhost:5000/initial?sessionid="+id)
+    const response = await axios.get(PythonUrl+"/initial?sessionid="+id)
     setNodes((nds) =>
       initialNodes.map((node) => {
         if (node.id === '2' || node.id === "1") {
-          node.data.image = "http://localhost:8080/api/media/previews/" + response.data.previewPath
+          node.data.image = BaseUrl+"/api/media/previews/" + response.data.previewPath
           node.data.path = response.data.path
           node.data.name = response.data.name
         }
@@ -224,7 +225,7 @@ export default function App() {
       }
       var vNow = v[0]
       let nds = [...nodes]
-      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: vNow.name, label: '2', path: v[0].path,image: "http://localhost:8080/api/media/previews/"+path }, type: 'imageNode'})
+      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: vNow.name, label: '2', path: v[0].path,image: BaseUrl+"/api/media/previews/"+path }, type: 'imageNode'})
       // setNodes(nds)
       setNodes((nds) => nds.concat(newNode));
       setId(lastId+1)
@@ -237,7 +238,7 @@ export default function App() {
         return
       }
       let nds =[...nodes]
-      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: v[0].name, label: '2', path: path,image: "http://localhost:8080/api/media/previews/"+path }, type: 'maskNode'})
+      const newNode = ({ id: (lastId+1).toString(), position: { x: x, y: y }, data: { name: v[0].name, label: '2', path: path,image: BaseUrl+"/api/media/previews/"+path }, type: 'maskNode'})
       setNodes((nds) => nds.concat(newNode))
       setId(lastId+1)
       setMenu({x: 0, y: 0, hidden: true})
@@ -263,7 +264,7 @@ export default function App() {
   
   const getVideos = async () => {
     try{
-      const response = await axios.get("http://localhost:8080/api/videos?pageSize=200")
+      const response = await axios.get(BaseUrl+"/api/videos?pageSize=200")
 
       setVideos(response.data.videos)
     }catch(e){}
@@ -271,7 +272,7 @@ export default function App() {
 
   const getMasks = async () => {
     try{
-      const response = await axios.get("http://localhost:8080/api/masks?pageSize=200")
+      const response = await axios.get(BaseUrl+"/api/masks?pageSize=200")
       
       setMasks(response.data.masks)
     }catch(e){}
@@ -328,7 +329,7 @@ export default function App() {
 
       const name = node.data.image.split("/").pop().split(".")[0];
 
-      const response = await axios.get(`http://localhost:5000/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}&name=${name}`)
+      const response = await axios.get(PythonUrl+`/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}&name=${name}`)
       setNodes((nds) =>
         nodes.map((nd) => {
           if(outgoers.length === 1){
@@ -337,7 +338,7 @@ export default function App() {
                 ...nd.data,
                 processed: true,
                 handleDownload: handleDownload,
-                image: "http://localhost:8080/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
+                image: BaseUrl+"/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
               };
               return nd;
             }
@@ -351,7 +352,7 @@ export default function App() {
               strength: strength*100,
               swap: swap,
               processed: true,
-              image: "http://localhost:8080/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
+              image: BaseUrl+"/api/media/previews/" + response.data.image_path + "?time=" + new Date().getTime()
             };
           }
 
@@ -373,7 +374,7 @@ export default function App() {
 
       const strength = 0.8; 
 
-      const response = await axios.get(`http://localhost:5000/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}`)
+      const response = await axios.get(PythonUrl+`/filter?video_path=${videoPath}&image_path=${imagePath}&strength=${strength}`)
 
       onConnect(e);
 
@@ -386,7 +387,7 @@ export default function App() {
               updateData: updateData,
               updateFilter: updateFilter,
               edges: edges.concat(e),
-              image: "http://localhost:8080/api/media/previews/" + response.data.image_path
+              image: BaseUrl+"/api/media/previews/" + response.data.image_path
             };
           }
 

@@ -1,5 +1,6 @@
 import { Group } from "@mantine/core";
 import { IconCheck } from "@tabler/icons-react";
+import BaseUrl from "../../BaseUrl";
 
 export default function SelectOption(props){
 
@@ -11,7 +12,7 @@ export default function SelectOption(props){
             style = {{
                 width: 50,
             }}
-            alt="preview" src={"http://localhost:8080/api/media/previews/"+props.option.value}/>
+            alt="preview" src={BaseUrl+"/api/media/previews/"+props.option.value}/>
             {checked && <IconCheck stroke={1.5} size={18}/>}
             {props.option.label}
         </Group>

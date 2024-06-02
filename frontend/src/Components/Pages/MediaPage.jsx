@@ -11,6 +11,8 @@ import axios from "axios";
 import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
+import BaseUrl from "../../BaseUrl";
+import PythonUrl from "../../PythonUrl";
 
 export default function MediaPage(props){
     let { id } = useParams();
@@ -20,9 +22,9 @@ export default function MediaPage(props){
     const getTextureInfo = async () => {
         let response;
         if(props.type === "video"){
-            response = await axios.get('http://localhost:8080/api/videos/'+id);
+            response = await axios.get(BaseUrl+'/api/videos/'+id);
         }else {
-            response = await axios.get('http://localhost:8080/api/masks/'+id);
+            response = await axios.get(BaseUrl+'/api/masks/'+id);
         }
         console.log(response.data)
         setTexture(response.data)
@@ -35,7 +37,7 @@ export default function MediaPage(props){
 
     const startEditor = async () =>{
         try{
-            const response = await axios.get("http://localhost:5000/start?id="+texture.id)
+            const response = await axios.get(PythonUrl+"/start?id="+texture.id)
 
             window.open("/editor/" + response.data.id, '_blank').focus();
         }catch(e){}
@@ -46,7 +48,7 @@ export default function MediaPage(props){
         {
             texture != null ?
             <>
-                <Group justify="center" style={{backgroundColor: "black", padding: "0"}} grow>
+                <Group justify="center" style={{backgroundColor: props.type==="video" ? "black" : "white", padding: "0"}} grow>
                     {
                         props.type === "mask" ?
                         <img
@@ -54,7 +56,7 @@ export default function MediaPage(props){
                             width: "100%",
                             maxWidth: 500
                         }}
-                        alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.path}/>
+                        alt="texture" src={BaseUrl+"/api/media/previews/" + texture.path}/>
                         :
                         <video 
                             className={classes.video}
@@ -65,13 +67,13 @@ export default function MediaPage(props){
                                 width: "100%",
                                 maxWidth: 600
                             }}>
-                            <source src={"http://localhost:8080/api/media/stream/" + texture.path} type="video/mp4" />
+                            <source src={BaseUrl+"/api/media/stream/" + texture.path} type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                     }
                 </Group>
                 <Group mt="xs" justify="left">
-                    <Link to={"http://localhost:8080/api/"+(props.type)+"s/download/"+texture.path} target="_blank">
+                    <Link to={BaseUrl+"/api/"+(props.type)+"s/download/"+texture.path} target="_blank">
                         <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
                             Download
                         </Button>

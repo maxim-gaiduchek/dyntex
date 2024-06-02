@@ -9,6 +9,7 @@ import { notifications } from '@mantine/notifications';
 import { IconExclamationCircle } from '@tabler/icons-react';
 import CategorySearch from './CategorySearch';
 import { IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import BaseUrl from '../../BaseUrl'
 
 export default function DropZoneMask(props) {
   const [file, setFile] = useState(null);
@@ -53,7 +54,7 @@ export default function DropZoneMask(props) {
     console.log(description)
     formData.append("tagIds", tagId)
     formData.append("name", name);
-    axios.post('http://localhost:8080/api/masks', formData, options)
+    axios.post(BaseUrl+'/api/masks', formData, options)
     .then((res) => {
       setFinished(true)
       setProgress(100);

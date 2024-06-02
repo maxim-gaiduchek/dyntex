@@ -19,7 +19,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import BaseUrl from '../../BaseUrl';
 
   export default function LoginPage() {
     const [email, setEmail] = React.useState("");
@@ -61,7 +61,7 @@ import { useNavigate } from 'react-router-dom';
     const login = async () => {
         if(!error[0] && !error[1]){
             try {
-              const response = await axios.post('http://localhost:8080/api/users/login', {
+              const response = await axios.post(BaseUrl+'/api/users/login', {
                 email,
                 "password": await hashPasswd(),
               });
@@ -76,6 +76,7 @@ import { useNavigate } from 'react-router-dom';
               const expirationDate = new Date();
               expirationDate.setDate(expirationDate.getDate() + 30);
               setCookie("token", response.data.token, { expires: expirationDate })
+              setCookie("id", response.data.id, { expires: expirationDate })
               navigate("/")
             } catch (error) {
               console.log(error)

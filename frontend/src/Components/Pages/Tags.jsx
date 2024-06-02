@@ -10,6 +10,7 @@ import EmojiPicker from 'emoji-picker-react';
 import { useComputedColorScheme } from "@mantine/core"
 import { HoverCard } from "@mantine/core"
 import { IconMoodEmpty } from "@tabler/icons-react"
+import BaseUrl from "../../BaseUrl"
 
 export default function Tags() {
     const [tags, setTags] = useState([])
@@ -20,7 +21,7 @@ export default function Tags() {
 
     const fetchData = async () => {
         try{
-            const response = await axios.get("http://localhost:8080/api/tags?pageSize=200");
+            const response = await axios.get(BaseUrl+"/api/tags?pageSize=200");
             
             setTags(response.data.tags)
         } catch(e){}

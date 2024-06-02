@@ -4,13 +4,13 @@ import { Group, LoadingOverlay } from "@mantine/core"
 import { useEffect } from "react"
 import axios from "axios"
 import { useState } from "react"
-
+import BaseUrl from "../../BaseUrl"
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
 
     const getStats = async () => {
         try{
-            const response = await axios.get("http://localhost:8080/api/statistics")
+            const response = await axios.get(BaseUrl+"/api/statistics")
             setStats(response.data)
         }catch(e){
             console.log(e)

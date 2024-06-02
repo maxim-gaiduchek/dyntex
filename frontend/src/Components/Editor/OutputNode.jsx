@@ -2,7 +2,7 @@ import { Button } from '@mantine/core';
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import axios from 'axios';
-
+import PythonUrl from '../../PythonUrl';
 
 export default memo(({ data, isConnectable }) => {
   return (
@@ -15,11 +15,11 @@ export default memo(({ data, isConnectable }) => {
             <Button onClick={async (e) => {
               e.preventDefault();
               console.log(data)
-              const link = "http://localhost:5000/save"
+              const link = PythonUrl+"/save"
               const d = await data.handleDownload(e)
               try{
                 const resp = await axios.post(link, { data: d, session_id: data.session_id })
-                window.open("http://localhost:5000/download/" + resp.data.link, '_blank').focus();
+                window.open(PythonUrl+"/download/" + resp.data.link, '_blank').focus();
               }catch(err){
                 alert("Unknown error occured =(")
               }
