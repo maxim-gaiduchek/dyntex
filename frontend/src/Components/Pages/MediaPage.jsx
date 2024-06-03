@@ -10,17 +10,21 @@ import MediaProfile from "../Textures/MediaProfile";
 import axios from "axios";
 import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
+import BaseUrl from "../../BaseUrl";
+import PythonUrl from "../../PythonUrl";
 
 export default function MediaPage(props){
     let { id } = useParams();
     const [texture, setTexture] = useState(null)
+    const navigate = useNavigate()
 
     const getTextureInfo = async () => {
         let response;
         if(props.type === "video"){
-            response = await axios.get('http://localhost:8080/api/videos/'+id);
+            response = await axios.get(BaseUrl+'/api/videos/'+id);
         }else {
-            response = await axios.get('http://localhost:8080/api/masks/'+id);
+            response = await axios.get(BaseUrl+'/api/masks/'+id);
         }
         console.log(response.data)
         setTexture(response.data)
@@ -31,12 +35,20 @@ export default function MediaPage(props){
         // eslint-disable-next-line
     }, [])
 
+    const startEditor = async () =>{
+        try{
+            const response = await axios.get(PythonUrl+"/start?id="+texture.id)
+
+            window.open("/editor/" + response.data.id, '_blank').focus();
+        }catch(e){}
+    }
+
     return (
         <>
         {
             texture != null ?
             <>
-                <Group justify="center" style={{backgroundColor: "black", padding: "0"}} grow>
+                <Group justify="center" style={{backgroundColor: props.type==="video" ? "black" : "white", padding: "0"}} grow>
                     {
                         props.type === "mask" ?
                         <img
@@ -44,34 +56,33 @@ export default function MediaPage(props){
                             width: "100%",
                             maxWidth: 500
                         }}
-                        alt="texture" src={"http://localhost:8080/api/media/previews/" + texture.path}/>
+                        alt="texture" src={BaseUrl+"/api/media/previews/" + texture.path}/>
                         :
                         <video 
                             className={classes.video}
                             loop
+                            muted
                             autoPlay 
                             style={{
                                 width: "100%",
                                 maxWidth: 600
                             }}>
-                            <source src={"http://localhost:8080/api/media/stream/" + texture.path} type="video/mp4" />
+                            <source src={BaseUrl+"/api/media/stream/" + texture.path} type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                     }
                 </Group>
                 <Group mt="xs" justify="left">
-                    <Link to={"http://localhost:8080/api/"+(props.type)+"s/download/"+texture.path} target="_blank">
+                    <Link to={BaseUrl+"/api/"+(props.type)+"s/download/"+texture.path} target="_blank">
                         <Button radius="md" rightSection={<IconDownload size={14} />} style={{width: 300}}>
                             Download
                         </Button>
                     </Link>
                     {
                         props.type === "video" && 
-                        <Link to={"/editor"} target="_blank">
-                            <Button radius="md" rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
-                                Process
-                            </Button>
-                        </Link>
+                        <Button radius="md" onClick={startEditor} rightSection={<IconPencil size={14} />} variant="default" style={{width: 300}}>
+                            Process
+                        </Button>
                     }
                     <ActionIcon
                     onClick={() =>
@@ -113,7 +124,10 @@ export default function MediaPage(props){
                         </Group>
                     </Grid.Col>
                     <Grid.Col span={{xs: 12, md: 4}}>
-                        {/* <Title order={3}>Attributes:</Title>
+                        {
+                            props.type === "video" &&
+                            <>
+                                <Title order={3}>Attributes:</Title>
                         <br/>
                         <Group>
                             <IconDeviceFloppy size={20}/> 
@@ -130,7 +144,9 @@ export default function MediaPage(props){
                         <Group>
                             <IconFileInfo size={20}/>
                             <Text size="sm">Format: {texture.format}</Text>
-                        </Group> */}
+                        </Group>
+                            </>
+                        }
                     </Grid.Col>
                 </Grid>
                 <br/>

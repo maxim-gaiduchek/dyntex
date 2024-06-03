@@ -10,17 +10,26 @@ import EmojiPicker from 'emoji-picker-react';
 import { useComputedColorScheme } from "@mantine/core"
 import { HoverCard } from "@mantine/core"
 import { IconMoodEmpty } from "@tabler/icons-react"
+import BaseUrl from "../../BaseUrl"
+import { notifications } from '@mantine/notifications';
+import { useCookies } from "react-cookie"
 
 export default function Tags() {
     const [tags, setTags] = useState([])
     const [opened, { open, close }] = useDisclosure(false);
     const [emoji, setEmoji] = useState("")
     const [name, setName] = useState("")
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const options = {
+        headers: {
+        'Authorization': cookies.token
+        }
+    };
     const computedColorScheme = useComputedColorScheme('light', { getInitialValueInEffect: true });
 
     const fetchData = async () => {
         try{
-            const response = await axios.get("http://localhost:8080/api/tags");
+            const response = await axios.get(BaseUrl+"/api/tags?pageSize=200");
             
             setTags(response.data.tags)
         } catch(e){}
@@ -53,7 +62,16 @@ export default function Tags() {
                     </HoverCard.Dropdown>
                 </HoverCard>
                 <br/>
-                <Button onClick={() => {alert("еще не сделал сори)")}} disabled={emoji === "" || name === ""}>Add Tag</Button>
+                <Button onClick={async () => {
+                    try{
+                        await axios.post(BaseUrl+"/api/tags", {emoji: emoji, name: name}, options)
+                        fetchData()
+                        close()
+                        notifications.show({title: "Tag Added", message: "Tag has been added successfully", color: "teal"})
+                    } catch(e){
+                        notifications.show({title: "Error", message: "An error occured while adding tag", color: "red"})
+                    }
+                }} disabled={emoji === "" || name === ""}>Add Tag</Button>
             </Modal>
             <h2>Tags</h2>
             <Button onClick={open}>Add Tag</Button>

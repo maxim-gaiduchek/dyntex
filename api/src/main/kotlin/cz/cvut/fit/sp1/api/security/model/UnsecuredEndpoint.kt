@@ -2,8 +2,7 @@ package cz.cvut.fit.sp1.api.security.model
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpMethod.GET
-import org.springframework.http.HttpMethod.POST
+import org.springframework.http.HttpMethod.*
 import java.util.*
 
 enum class UnsecuredEndpoint(
@@ -25,6 +24,7 @@ enum class UnsecuredEndpoint(
     GET_VIDEO("/api/videos/.*", GET),
     GET_VIDEOS("/api/videos", GET),
     GET_VIDEO_PREVIEW("/api/videos/previews/.*", GET),
+    LIKE_VIDEO("/api/videos/*/likes/*", PUT),
 
     GET_MASK("/api/masks/.*", GET),
     GET_MASKS("/api/masks", GET),

@@ -41,20 +41,20 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.14.0")
     implementation("io.vavr:vavr:0.10.4")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+    implementation("org.postgresql:postgresql:42.7.3")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
+    implementation("org.flywaydb:flyway-core:10.11.1")
+    implementation("org.flywaydb:flyway-core:9.15.0")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
 
     compileOnly("org.projectlombok:lombok")
-    implementation("org.postgresql:postgresql:42.7.3")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
-
-    implementation("org.flywaydb:flyway-core:10.11.1")
-
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
 
     /*
         implementation("org.flywaydb:flyway-database-postgresql:10.11.1")
     */
-    implementation("org.flywaydb:flyway-core:9.15.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
@@ -63,7 +63,6 @@ dependencies {
     /*
      * Auto dto mapper
      * */
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
 
     api("org.apache.httpcomponents.client5:httpclient5:5.2.1")

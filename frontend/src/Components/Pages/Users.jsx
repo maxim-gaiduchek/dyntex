@@ -2,13 +2,14 @@ import { Grid } from "@mantine/core"
 import { useState, useEffect } from "react"
 import { UserInfoAction } from "../Card/UserInfoAction"
 import axios from "axios"
+import BaseUrl from '../../BaseUrl'
 
 export default function Users() {
     const [users, setUsers] = useState([])
 
     const fetchData = async () => {
         try{
-            const response = await axios.get("http://localhost:8080/api/users")
+            const response = await axios.get(BaseUrl+"/api/users")
             console.log(response)
             setUsers(response.data.userAccounts) 
         } catch(e){}

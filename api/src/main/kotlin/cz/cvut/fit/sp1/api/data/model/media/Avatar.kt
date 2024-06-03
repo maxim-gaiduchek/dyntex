@@ -3,7 +3,6 @@ package cz.cvut.fit.sp1.api.data.model.media
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import jakarta.persistence.Entity
-import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToOne
 
 @Entity

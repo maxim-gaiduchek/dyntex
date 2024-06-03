@@ -12,7 +12,7 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import DropZoneMask from '../Textures/DropZoneMask';
 import { Link } from 'react-router-dom';
-
+import BaseUrl from '../../BaseUrl';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
 
@@ -26,6 +26,8 @@ export default function TexturePage(){
     const [totalPages, setPages] = React.useState(0)
     const [search, setSearch] = React.useState("")
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+    const [user, setUser] = React.useState(undefined)
+    const navigate = useNavigate()
 
     const options = {
       headers: {
@@ -45,7 +47,7 @@ export default function TexturePage(){
     const changeSearchText = async (str) => {
         setPages(1)
         try{
-            let url = 'http://localhost:8080/api/videos?name='+str+''
+            let url = BaseUrl+'/api/videos?name='+str+''
             var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
             if(ids.length !== 0){
                 url += "&tags=" + ids.map((obj) => obj.id).join(",")
@@ -58,13 +60,30 @@ export default function TexturePage(){
         }
     }
 
+    const checkLogged = async () => {
+      if(cookies.token === undefined){
+        navigate("/login")
+      }
+
+      try{
+        const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
+        setUser(response.data)
+      }catch(e){
+        //very very bad and stupid =)
+        console.log(e)
+        removeCookie("token")
+        navigate("/login")
+      }
+
+    }
+
     const debouncedChangeSearchText = debounce(changeSearchText, 200);
 
     const fetchData = async (page = 1) => {
       console.log(search)
       setTextures(null)
       try{
-        let url = 'http://localhost:8080/api/videos?page='+page
+        let url = BaseUrl+'/api/videos?page='+page
         var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
         if(ids.length !== 0){
             url += "&tags=" + ids.map((obj) => obj.id).join(",")
@@ -78,7 +97,7 @@ export default function TexturePage(){
 
     const fetchTags = async () => {
       try{
-        const response = await axios.get('http://localhost:8080/api/tags')
+        const response = await axios.get(BaseUrl+'/api/tags')
         response.data.tags.forEach((d) => {
           d.value = d.name
         })
@@ -94,7 +113,7 @@ export default function TexturePage(){
       setLastTags(values)
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
-      var url = "http://localhost:8080/api/videos"
+      var url = BaseUrl+"/api/videos"
       if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
@@ -104,6 +123,7 @@ export default function TexturePage(){
     }
 
     useEffect(() => {
+      checkLogged()
       fetchTags()
       fetchData()
     },[])
@@ -148,7 +168,7 @@ export default function TexturePage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                <TextureCard texture = {texture}/>
+                                <TextureCard liked={user === undefined ? false : user.likedMedia?.some(media => media.id === texture.id) || false} texture = {texture}/>
                              </Grid.Col>
                          ))
                      }

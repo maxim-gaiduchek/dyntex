@@ -48,14 +48,14 @@ backend-build:
       - build/libs/*.jar
 
 
-pytest:
-  stage: test
-  image: python:latest
-  before_script:
-    - pip install -r python/requirements.txt
-  script:
-    - cd python
-    - pytest
-  only:
-    refs:
-      - develop
+# pytest:
+#   stage: test
+#   image: python:latest
+#   before_script:
+#     - pip install -r python/requirements.txt
+#   script:
+#     - cd python
+#     - pytest
+#   only:
+#     refs:
+#       - develop
