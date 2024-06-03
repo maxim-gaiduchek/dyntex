@@ -35,6 +35,7 @@ class MediaProcessorUnitTest (
         mediaProcessor = MediaProcessor(media, fileStorage, restTemplate, storagePathProperties)
     }
 
+    var pngType = "image/png"
     @Test
     fun isVideoTrue() {
         Mockito.`when`(
@@ -51,7 +52,7 @@ class MediaProcessorUnitTest (
     fun isVideoFalse() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Assertions.assertFalse(mediaProcessor.isVideo(media))
         Mockito.`when`(
             media.contentType,
@@ -63,7 +64,7 @@ class MediaProcessorUnitTest (
     fun isMaksTrue() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Assertions.assertTrue(mediaProcessor.isMask(media))
     }
 
@@ -83,7 +84,7 @@ class MediaProcessorUnitTest (
     fun extractMaskInfoSuccess() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Mockito.`when`(
             media.size,
         ).thenReturn(322L)

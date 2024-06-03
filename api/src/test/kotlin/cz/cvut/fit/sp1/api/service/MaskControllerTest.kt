@@ -123,27 +123,31 @@ class MaskControllerTest {
         assertEquals(HttpStatus.OK, response.statusCode)
     }
 
+    val updateName = "update name"
+    val updatePath = "update path"
+    val updateSize = "update size"
+    val updateFormat = "update format"
     @Test
     fun `test updateMask`() {
         val maskDto = MaskDto(
             id = 1L,
-            name = "updated name",
-            path = "updated path",
-            size = "updated size",
-            format = "updated format",
+            name = updateName,
+            path = updatePath,
+            size = updateSize,
+            format = updateFormat,
             createdBy = null,
             createdById = null,
             likes = 0,
             tags = mutableListOf(),
             tagIds = mutableListOf(1L)
         )
-        val updatedMask = Mask("updated name", "updated path", "updated format")
+        val updatedMask = Mask(updateName, updatePath, updateFormat)
         val updatedMaskDto = MaskDto(
             id = 1L,
-            name = "updated name",
-            path = "updated path",
-            size = "updated size",
-            format = "updated format",
+            name = updateName,
+            path = updatePath,
+            size = updateSize,
+            format = updateFormat,
             createdBy = null,
             createdById = null,
             likes = 0,

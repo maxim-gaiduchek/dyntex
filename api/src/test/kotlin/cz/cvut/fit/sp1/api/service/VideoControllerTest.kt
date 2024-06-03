@@ -145,36 +145,38 @@ class VideoControllerTest {
         verify(videoService, times(1)).delete(1L)
         assertEquals(HttpStatus.OK, response.statusCode)
     }
-
+    var updatedName = "updated name"
+    var updatedPath = "updated path"
+    var updatedFormat = "updated format"
     @Test
     fun `test updateVideo`() {
         val videoDto = VideoDto(
             fps = 30L,
             duration = 120.0,
             id = 1L,
-            name = "updated name",
-            path = "updated path",
+            name = updatedName,
+            path = updatedPath,
             previewPath = "updated previewPath",
             size = "updated size",
             description = "updated description",
-            format = "updated format",
+            format = updatedFormat,
             createdBy = null,
             createdById = null,
             likes = 0,
             tags = mutableListOf(),
             tagIds = mutableListOf(1L)
         )
-        val updatedVideo = Video("updated name", "updated path", "updated format")
+        val updatedVideo = Video(updatedName, updatedPath, updatedFormat)
         val updatedVideoDto = VideoDto(
             fps = 30L,
             duration = 120.0,
             id = 1L,
-            name = "updated name",
-            path = "updated path",
+            name = updatedName,
+            path = updatedPath,
             previewPath = "updated previewPath",
             size = "updated size",
             description = "updated description",
-            format = "updated format",
+            format = updatedFormat,
             createdBy = null,
             createdById = null,
             likes = 0,
