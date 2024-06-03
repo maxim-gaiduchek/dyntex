@@ -17,3 +17,11 @@ spring:
   h2:
     console:
       enabled: true
+  flyway:
+    enabled: false
+
+verification:
+  enable: true
+  token-expiring-time: 60
+  mail:
+    url: 'http://localhost:8080/api/auth'

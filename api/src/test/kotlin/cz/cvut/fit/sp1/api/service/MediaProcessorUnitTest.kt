@@ -14,6 +14,7 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import kotlin.io.path.Path
@@ -31,10 +32,15 @@ class MediaProcessorUnitTest {
     @Autowired
     lateinit var storagePathProperties: StoragePathProperties
 
+    val imageType = "image/png"
+
     @MockBean
     @Autowired
     lateinit var restTemplate: RestTemplate
     val basePath = Path(System.getProperty("user.home"), "sp1", "storage").toString()
+
+    @MockBean
+    lateinit var mailSender: JavaMailSender
 
     @BeforeEach
     fun setUp() {
@@ -57,7 +63,7 @@ class MediaProcessorUnitTest {
     fun isVideoFalse() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(imageType)
         Assertions.assertFalse(mediaProcessor.isVideo(media))
         Mockito.`when`(
             media.contentType,
@@ -69,7 +75,7 @@ class MediaProcessorUnitTest {
     fun isMaksTrue() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(imageType)
         Assertions.assertTrue(mediaProcessor.isMask(media))
     }
 
@@ -104,7 +110,7 @@ class MediaProcessorUnitTest {
     fun extractVideoInfoFail() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(imageType)
         val exception =
             Assertions.assertThrows(
                 MediaException::class.java,
@@ -121,7 +127,7 @@ class MediaProcessorUnitTest {
     fun extractMaskInfoSuccess() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(imageType)
         Mockito.`when`(
             media.size,
         ).thenReturn(322L)
@@ -131,7 +137,6 @@ class MediaProcessorUnitTest {
         val mask = mediaProcessor.extractMaskInfo()
         Assertions.assertEquals("png", mask.format)
         Assertions.assertEquals(Path(basePath, "${mask.name}.png").toString(), mask.path)
-        // Assertions.assertEquals(322L, mask.size)
         val width = 800
         val height = 800
         val aspectRatio = width.toDouble() / height.toDouble()
