@@ -90,4 +90,8 @@ class TagServiceImpl(
     override fun countAll(): Long {
         return tagRepository.count()
     }
+
+    override fun save(tag: Tag): Tag {
+        return tagRepository.save(tag)
+    }
 }

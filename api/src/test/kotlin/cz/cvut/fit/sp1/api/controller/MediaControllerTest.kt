@@ -5,15 +5,10 @@ import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.Resource
 import org.springframework.core.io.support.ResourceRegion
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.mock.web.MockHttpServletRequest
-import org.springframework.mock.web.MockMultipartFile
-import org.springframework.security.test.context.support.WithMockUser
 import kotlin.io.path.Path
 import org.junit.jupiter.api.Assertions.*
 

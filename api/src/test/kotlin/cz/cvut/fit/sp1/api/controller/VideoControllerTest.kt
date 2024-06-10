@@ -1,8 +1,7 @@
-package cz.cvut.fit.sp1.api.service
+package cz.cvut.fit.sp1.api.controller
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.mapper.VideoMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
-import cz.cvut.fit.sp1.api.controller.VideoController
 import cz.cvut.fit.sp1.api.data.dto.VideoDto
 import cz.cvut.fit.sp1.api.data.dto.search.SearchVideoDto
 import cz.cvut.fit.sp1.api.data.model.media.Video

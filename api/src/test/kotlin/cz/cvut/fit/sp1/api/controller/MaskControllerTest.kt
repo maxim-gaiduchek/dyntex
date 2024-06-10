@@ -1,8 +1,7 @@
-package cz.cvut.fit.sp1.api.service
+package cz.cvut.fit.sp1.api.controller
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.mapper.MaskMapper
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
-import cz.cvut.fit.sp1.api.controller.MaskController
 import cz.cvut.fit.sp1.api.data.dto.MaskDto
 import cz.cvut.fit.sp1.api.data.model.media.Mask
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService

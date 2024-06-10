@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
 
 @Configuration
-@ConditionalOnProperty(
-        prefix = "spring.flyway",
-        name = ["enabled"],
-        matchIfMissing = true
-)
 class FlywayMigrationConfiguration {
 
     @Bean
@@ -24,16 +19,15 @@ class FlywayMigrationConfiguration {
 
 @Configuration
 @ConditionalOnProperty(
-        prefix = "spring.flyway",
-        name = ["enabled"],
-        matchIfMissing = true
+    prefix = "spring.flyway",
+    name = ["enabled"],
+    havingValue = "true"
 )
 class FlywayConfiguration(
-        flyway: Flyway
+    flyway: Flyway
 ) {
 
     init {
-        flyway.baseline()
         flyway.migrate()
     }
 }
