@@ -23,6 +23,9 @@ spring:
   h2:
     console:
       enabled: true
+  flyway:
+    enabled: false
+
 verification:
   enable: true
   token-expiring-time: 60

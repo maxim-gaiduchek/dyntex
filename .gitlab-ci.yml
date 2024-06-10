@@ -24,17 +24,17 @@ backend-compile:
     - chmod +x gradlew
     - ./gradlew assemble
 
-#backend-test:
-#  stage: test
-#  image: $IMAGE
-#  script:
-#    - cd $API_PROJECT_PATH
-#    - chmod +x gradlew
-#    - ./gradlew test --stacktrace --info
-#  artifacts:
-#    paths:
-#      - test.log
-#    expire_in: 1 day
+backend-test:
+  stage: test
+  image: $IMAGE
+  script:
+    - cd $API_PROJECT_PATH
+    - chmod +x gradlew
+    - ./gradlew test --stacktrace --info
+  artifacts:
+    paths:
+      - test.log
+    expire_in: 1 day
 
 backend-build:
   stage: build

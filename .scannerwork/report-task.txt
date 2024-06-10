@@ -2,5 +2,5 @@ projectKey=sp1
 serverUrl=http://localhost:9000
 serverVersion=10.5.1.90531
 dashboardUrl=http://localhost:9000/dashboard?id=sp1
-ceTaskId=89b0f3e9-8db0-4537-aab1-0d6d1fd470a8
-ceTaskUrl=http://localhost:9000/api/ce/task?id=89b0f3e9-8db0-4537-aab1-0d6d1fd470a8
+ceTaskId=06ff5ceb-7cec-4fbf-99bc-dd3d44ec19d1
+ceTaskUrl=http://localhost:9000/api/ce/task?id=06ff5ceb-7cec-4fbf-99bc-dd3d44ec19d1

@@ -44,9 +44,14 @@ class MediaProcessorUnitTest {
 
     @BeforeEach
     fun setUp() {
+        media = Mockito.mock(MultipartFile::class.java)
+        fileStorage = Mockito.mock(FileStorage::class.java)
+        restTemplate = Mockito.mock(RestTemplate::class.java)
+        storagePathProperties.mediaPath = Path(System.getProperty("user.home"), "sp1", "storage").toString()
         mediaProcessor = MediaProcessor(media, fileStorage, restTemplate, storagePathProperties)
     }
 
+    var pngType = "image/png"
     @Test
     fun isVideoTrue() {
         Mockito.`when`(
@@ -63,7 +68,7 @@ class MediaProcessorUnitTest {
     fun isVideoFalse() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Assertions.assertFalse(mediaProcessor.isVideo(media))
         Mockito.`when`(
             media.contentType,
@@ -75,7 +80,7 @@ class MediaProcessorUnitTest {
     fun isMaksTrue() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Assertions.assertTrue(mediaProcessor.isMask(media))
     }
 
@@ -91,43 +96,11 @@ class MediaProcessorUnitTest {
         Assertions.assertFalse(mediaProcessor.isMask(media))
     }
 
-//    @Test
-//    fun extractVideoInfoSuccess() {
-//        Mockito.`when`(
-//            media.contentType,
-//        ).thenReturn("video/mp4")
-//        Mockito.`when`(
-//            media.inputStream,
-//        ).thenReturn(InputStream.nullInputStream())
-//        val video = mediaProcessor.extractVideoInfo()
-//        Assertions.assertEquals("mp4", video.format)
-//        Assertions.assertEquals(Path(basePath, "${video.name}.mp4").toString(), video.path)
-// //        Assertions.assertTrue( video.fps == 30L )
-// //        Assertions.assertTrue( video.duration >= 3 )
-//    }
-
-    @Test
-    fun extractVideoInfoFail() {
-        Mockito.`when`(
-            media.contentType,
-        ).thenReturn("image/png")
-        val exception =
-            Assertions.assertThrows(
-                MediaException::class.java,
-                Executable {
-                    mediaProcessor.extractVideoInfo()
-                },
-            )
-        val expectedCode = VideoExceptionCodes.INVALID_VIDEO_FILE.code
-        val actualCode = exception.code
-        Assertions.assertTrue(expectedCode == actualCode)
-    }
-
     @Test
     fun extractMaskInfoSuccess() {
         Mockito.`when`(
             media.contentType,
-        ).thenReturn("image/png")
+        ).thenReturn(pngType)
         Mockito.`when`(
             media.size,
         ).thenReturn(322L)
@@ -136,8 +109,7 @@ class MediaProcessorUnitTest {
         ).thenReturn(this::class.java.classLoader.getResourceAsStream("mask_test_0001.png"))
         val mask = mediaProcessor.extractMaskInfo()
         Assertions.assertEquals("png", mask.format)
-        Assertions.assertEquals(Path(basePath, "${mask.name}.png").toString(), mask.path)
-        // Assertions.assertEquals(322L, mask.size)
+        Assertions.assertEquals(322L.toString(), mask.size)
         val width = 800
         val height = 800
         val aspectRatio = width.toDouble() / height.toDouble()

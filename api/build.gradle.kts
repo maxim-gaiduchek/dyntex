@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+var flywayCoreVersion = "9.15.0"
+
 plugins {
     id("org.springframework.boot") version "3.2.3"
     id("io.spring.dependency-management") version "1.1.4"
@@ -28,8 +30,20 @@ repositories {
     mavenCentral()
 }
 
+val springBootStarterMailVersion = "3.2.5"
+val jakartaValidationApiVersion = "3.0.2"
+val commonsLang3Version = "3.14.0"
+val vavrVersion = "0.10.4"
+val springdocOpenapiVersion = "2.5.0"
+val postgresqlVersion = "42.7.3"
+val mapstructVersion = "1.5.5.Final"
+val lombokVersion = "1.18.24"
+val mapstructProcessorVersion = "1.6.0.Beta1"
+val httpclientVersion = "5.2.1"
+val h2Version = "2.2.222"
+
 dependencies {
-    implementation ("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-mail:$springBootStarterMailVersion")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -37,20 +51,19 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-    implementation("org.apache.commons:commons-lang3:3.14.0")
-    implementation("io.vavr:vavr:0.10.4")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-    implementation("org.postgresql:postgresql:42.7.3")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:3.2.5")
-    implementation("org.flywaydb:flyway-core:10.11.1")
-    implementation("org.flywaydb:flyway-core:9.15.0")
-    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    implementation("jakarta.validation:jakarta.validation-api:$jakartaValidationApiVersion")
+    implementation("org.apache.commons:commons-lang3:$commonsLang3Version")
+    implementation("io.vavr:vavr:$vavrVersion")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocOpenapiVersion")
+    implementation("org.postgresql:postgresql:$postgresqlVersion")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootStarterMailVersion")
+    implementation("org.flywaydb:flyway-core:$flywayCoreVersion")
+    implementation("org.mapstruct:mapstruct:$mapstructVersion")
 
-    compileOnly("org.projectlombok:lombok")
+    compileOnly("org.projectlombok:lombok:$lombokVersion")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
     /*
         implementation("org.flywaydb:flyway-database-postgresql:10.11.1")
@@ -58,14 +71,14 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("com.h2database:h2:2.2.222")
+    testImplementation("com.h2database:h2:$h2Version")
 
     /*
      * Auto dto mapper
      * */
-    kapt("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
+    kapt("org.mapstruct:mapstruct-processor:$mapstructProcessorVersion")
 
-    api("org.apache.httpcomponents.client5:httpclient5:5.2.1")
+    api("org.apache.httpcomponents.client5:httpclient5:$httpclientVersion")
 }
 
 tasks.withType<KotlinCompile> {
