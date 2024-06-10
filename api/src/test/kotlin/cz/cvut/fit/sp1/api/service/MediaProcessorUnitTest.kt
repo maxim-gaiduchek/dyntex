@@ -3,10 +3,8 @@ package cz.cvut.fit.sp1.api.service
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
-import cz.cvut.fit.sp1.api.controller.AuthenticationController
 import cz.cvut.fit.sp1.api.exception.MediaException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
-import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -30,7 +28,6 @@ class MediaProcessorUnitTest {
     @MockBean
     lateinit var fileStorage: FileStorage
 
-
     @MockBean
     lateinit var javaMailSender: JavaMailSender
 
@@ -52,6 +49,7 @@ class MediaProcessorUnitTest {
     }
 
     var pngType = "image/png"
+
     @Test
     fun isVideoTrue() {
         Mockito.`when`(

@@ -2,23 +2,21 @@ storage:
   media-path: /Users/huglx/sp1/storage
 
 postgres-autostart:
-  enabled: true
-  user: postgres
-  password: postgres
-  databaseName: dyntex-db-test
-  containerName: sp-test
-  port: 55432
+  enabled: false
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:55432/dyntex-db-test
-    username: postgres
-    password: postgres
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  profiles:
+      active: test
   jpa:
     generate-ddl: true
     properties:
       hibernate:
-        ddl-auto: update
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: drop-create
+      database-platform: org.hibernate.dialect.H2Dialect
       show-sql: true
   h2:
     console:
