@@ -25,7 +25,7 @@ spring:
     enabled: false
 
 verification:
-  enable: true
+  enable: false
   token-expiring-time: 60
   mail:
     url: 'http://localhost:8080/api/auth'

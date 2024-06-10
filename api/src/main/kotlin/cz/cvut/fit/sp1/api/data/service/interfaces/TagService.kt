@@ -21,4 +21,6 @@ interface TagService {
     fun delete(id: Long, forceDelete: Boolean)
 
     fun countAll(): Long
+
+    fun save(tag: Tag): Tag
 }
