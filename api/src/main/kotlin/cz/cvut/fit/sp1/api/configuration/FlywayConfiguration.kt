@@ -22,6 +22,7 @@ class FlywayConfiguration(
 ) {
 
     init {
+        flyway.baseline()
         flyway.migrate()
     }
 }

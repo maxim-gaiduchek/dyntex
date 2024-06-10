@@ -3,6 +3,7 @@ package cz.cvut.fit.sp1.api.service
 import cz.cvut.fit.sp1.api.component.FileStorage
 import cz.cvut.fit.sp1.api.component.MediaProcessor
 import cz.cvut.fit.sp1.api.configuration.StoragePathProperties
+import cz.cvut.fit.sp1.api.controller.AuthenticationController
 import cz.cvut.fit.sp1.api.exception.MediaException
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.MaskExceptionCodes
 import cz.cvut.fit.sp1.api.exception.exceptioncodes.VideoExceptionCodes
@@ -14,6 +15,7 @@ import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 import kotlin.io.path.Path
@@ -27,6 +29,10 @@ class MediaProcessorUnitTest {
 
     @MockBean
     lateinit var fileStorage: FileStorage
+
+
+    @MockBean
+    lateinit var javaMailSender: JavaMailSender
 
     @Autowired
     lateinit var storagePathProperties: StoragePathProperties
