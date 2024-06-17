@@ -83,13 +83,20 @@ import baseUrl from '../../BaseUrl';
         setEmail(text);
     }
 
-    const hashPasswd = async () => {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
+    const hashPasswd = async (password) => {
+        const response = await fetch('https://api.hashify.net/hash/sha256/hex', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ data: password })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to hash password');
+        }
+      
+        const { Digest } = await response.json();
+        return Digest;
+      }
     const checkPassword = (event) => {
         let errcpy = [...error];
         
