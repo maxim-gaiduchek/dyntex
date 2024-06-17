@@ -5,7 +5,7 @@ export function UserInfoAction(props) {
   return (
     <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
       <Avatar
-        src="https://avatars.githubusercontent.com/u/58140020?v=4"
+        src="/avatar.png"
         size={120}
         radius={120}
         mx="auto"

@@ -51,7 +51,7 @@ export default function Account(){
                         aspectRatio: "1/1",
                         width: "100%", 
                         backgroundColor: "red",
-                        backgroundImage: "url(https://avatars.githubusercontent.com/u/58140020?v=4)",
+                        backgroundImage: "url('/avatar.png')",
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         marginBottom: 20
@@ -68,15 +68,15 @@ export default function Account(){
             </Grid>
             <br/>
             <Title order={3}>Uploaded Textures:</Title>
-            {/* <Grid className='textureGrid'>
+            <Grid className='textureGrid'>
                 {
-                    user.textures.map((texture) => (
+                    user.createdMedia.map((texture) => (
                         <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
                             <TextureCard texture = {texture}/>
                         </Grid.Col>
                     ))
                 }
-            </Grid> */}
+            </Grid>
             </>
             :
             <div style={{width: "100%", height: "calc(100vh - 20px)", marginTop: 5}}>

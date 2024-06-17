@@ -7,7 +7,7 @@ export default function MediaProfile(props) {
     <div>
       <Group wrap="nowrap" style={{position: "relative"}}>
         <Avatar
-          src="https://avatars.githubusercontent.com/u/58140020?v=4"
+          src="/avatar.png"
           size={94}
           radius="md"
         />

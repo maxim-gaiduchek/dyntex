@@ -7,7 +7,7 @@ export function UserButton() {
     <UnstyledButton className={classes.user}>
       <Group>
         <Avatar
-          src="https://avatars.githubusercontent.com/u/58140020?v=4"
+          src="/avatar.png"
           radius="xl"
         />
 
