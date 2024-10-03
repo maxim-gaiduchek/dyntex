@@ -418,7 +418,7 @@ def prepare_video():
     try:
         video_directory = os.path.dirname(video_path)
         video_filename = os.path.basename(video_path)
-        new_name = os.path.splitext(video_filename)[0] + '.webm'
+        new_name = os.path.splitext(video_filename)[0] + generate_random_string(5) + '.webm'
         new_preview_name = os.path.splitext(video_filename)[0] + ".png"
 
         video_clip = VideoFileClip(video_path)
@@ -426,8 +426,10 @@ def prepare_video():
         resized_clip = video_clip.resize(width=1920)
 
         output_filepath = os.path.join(video_directory, new_name)
-        resized_clip.write_videofile(output_filepath, codec='libvpx',
-        ffmpeg_params=["-deadline", "realtime", "-cpu-used", "0"])
+
+        #resized_clip.write_videofile(output_filepath, codec='libvpx',
+        #                             ffmpeg_params=["-deadline", "realtime", "-cpu-used", "0"])
+        resized_clip.write_videofile(output_filepath, codec='libvpx') #removed fast rendering for testing purposes
 
         file_stats = os.stat(output_filepath)
 
