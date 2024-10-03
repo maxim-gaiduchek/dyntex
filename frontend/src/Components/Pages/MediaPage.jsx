@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { Group, Title, Button, Text, Grid } from "@mantine/core";
 import { ActionIcon } from "@mantine/core";
-import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconHeart, IconHeartFilled, IconShare } from "@tabler/icons-react";
 import classes from '../Card/BadgeCard.module.css';
 import { Link } from "react-router-dom";
 import { notifications } from '@mantine/notifications';
@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import { getUser } from "../../utils";
 import BaseUrl from "../../BaseUrl";
 import PythonUrl from "../../PythonUrl";
+import { ShareButton } from "../UI/ShareButton";
 
 export default function MediaPage(props){
     let { id } = useParams();
@@ -132,6 +133,7 @@ export default function MediaPage(props){
                             }
                         </ActionIcon>
                     }
+                    <ShareButton url={window.location.href}/>
                 </Group>
                 <br/>
                 <Group>

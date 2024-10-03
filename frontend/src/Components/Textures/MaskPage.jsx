@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import DropZoneMask from '../Textures/DropZoneMask';
 import { Link } from 'react-router-dom';
 import BaseUrl from '../../BaseUrl';
+import MaskCard from '../Card/MaskCard';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
 
@@ -112,17 +113,7 @@ export default function MaskPage(){
               {
                 masks.map((mask) => (
                 <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                    <Link to={"/mask/" + mask.id}>
-                      <div style={{
-                        width: "100%", 
-                        height: 300, 
-                        backgroundImage: "url("+BaseUrl+"/api/media/previews/"+mask.path+")",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center"
-                        }
-                      }>
-                      </div>
-                    </Link>
+                    <MaskCard mask={mask}/>
                 </Grid.Col>
                 ))
               }
