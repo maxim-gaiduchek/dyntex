@@ -10,8 +10,8 @@ export function ShareButton(props){
             navigator.clipboard.writeText(props.url)
             notifications.show({
                 title: 'Link Copied',
-                message: 'The link has been copied to clipboard ⭐',
-                color: "green"
+                message: 'The link has been copied to clipboard 📋',
+                color: theme.colors.blue[6]
                 })
         }}>
             <IconShare size={24} color={theme.colors.blue[6]}/>
