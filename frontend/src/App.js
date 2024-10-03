@@ -105,7 +105,7 @@ const router = createBrowserRouter([
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
-  const allowed = ["/login", "/register", "/serverdown"]
+  const allowed = ["/login", "/register", "/serverdown", "/editor", "/download"]
   
   const options = {
     headers: {
