@@ -31,6 +31,7 @@ export default function Tags() {
         try{
             const response = await axios.get(BaseUrl+"/api/tags?pageSize=200");
             
+            console.log(response.data.tags)
             setTags(response.data.tags)
         } catch(e){}
     }

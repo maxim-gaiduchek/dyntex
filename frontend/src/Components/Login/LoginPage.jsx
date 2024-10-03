@@ -82,6 +82,7 @@ import BaseUrl from '../../BaseUrl';
               })
               const expirationDate = new Date();
               expirationDate.setDate(expirationDate.getDate() + 30);
+              console.log(expirationDate)
               setCookie("token", response.data.token, { expires: expirationDate })
               setCookie("id", response.data.id, { expires: expirationDate })
               navigate("/")
