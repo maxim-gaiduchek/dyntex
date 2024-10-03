@@ -15,7 +15,7 @@ export function UserButton() {
   }, [])
 
   return (
-    <Link to={"/account/" + (user?.id || "1")}>
+    <Link to={"/account/me"}>
       <UnstyledButton className={classes.user}>
         <Group>
           <Avatar

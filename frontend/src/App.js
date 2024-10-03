@@ -13,8 +13,9 @@ import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import { useEffect } from 'react';
 import '@mantine/dropzone/styles.css';
+import BaseUrl from './BaseUrl';
 import { useLocation } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -27,6 +28,9 @@ import Favourites from './Components/Pages/Favourites';
 import Tags from './Components/Pages/Tags';
 import MaskPage from './Components/Textures/MaskPage';
 import DownloadPage from './Components/Pages/DownloadPage';
+import Unauthorized from './Components/Pages/Unathorized';
+import Verified from './Components/Pages/Verified';
+import { getUser } from './utils';
 
 const router = createBrowserRouter([
   {
@@ -100,13 +104,20 @@ const router = createBrowserRouter([
   {
     path: "/download/:id",
     element: <DownloadPage/>
+  },
+  {
+    path: "/unauthorized",
+    element: <Unauthorized/>
+  },
+  {
+    path: "/verified",
+    element: <Verified/>
   }
 ]);
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
   const allowed = ["/login", "/register", "/serverdown", "/editor", "/download"]
-  
   const options = {
     headers: {
       'Authorization': cookies.token
@@ -121,6 +132,28 @@ function App() {
       // navigate("/login")
       window.location.replace("/login")
 
+    }
+    console.log(window.location.pathname)
+    if(cookies.token !== undefined){
+      try {
+          const response = await axios.get(BaseUrl + "/api/users/authenticated", {
+              headers: {
+                  'Authorization': cookies.token
+              }
+          });
+          console.log("dsauiDHIUAHDUIASU")
+          if(window.location.pathname === "/unauthorized"){
+            window.location.replace("/")
+          }
+          // return response.data;
+      } catch (e) {
+          if(e.response.status === 403 && window.location.pathname !== "/unauthorized"){
+            window.location.replace("/unauthorized")
+          }
+          // console.error(e);
+          // removeCookie("token");
+          // navigate("/login");
+      }
     }
 
     // this code fucking sucks for some reason and breaks login (idk probably something about how react states work).
@@ -146,8 +179,13 @@ function App() {
     script.async = true;
   
     document.body.appendChild(script);
-    checkLogged()
+    // checkLogged()
   },[])
+
+  useEffect(() => {
+    checkLogged()
+  },[cookies.token])
+
   return (
     <RouterProvider router={router} />  
   );

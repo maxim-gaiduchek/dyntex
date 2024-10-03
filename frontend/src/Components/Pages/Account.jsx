@@ -1,4 +1,4 @@
-import { Grid } from '@mantine/core'
+import { Button, Grid } from '@mantine/core'
 import { Title, Text } from '@mantine/core'
 import TextureCard from '../Card/TextureCard'
 import { useState, useEffect } from 'react'
@@ -64,6 +64,15 @@ export default function Account(){
                     Role: {user.role} <br/>
                     Media Uploaded: {user.createdMedia.length}
                     <br/>
+                    <br/>
+                    {
+                      id === "me" &&
+                      <Button color='red' onClick={() => {
+                        removeCookie("token")
+                        removeCookie("id")
+                        navigate("/login")
+                      }}>Logout</Button>
+                    }
                 </Grid.Col>
             </Grid>
             <br/>
