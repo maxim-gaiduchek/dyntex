@@ -123,16 +123,19 @@ function App() {
 
     }
 
-    try{
-      const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
-      // setUser(response.data)
-    }catch(e){
-      //very very bad and stupid =)
-      console.log(e)
-      removeCookie("token")
-      // navigate("/login")
-      window.location.replace("/login")
-    }
+    // this code fucking sucks for some reason and breaks login (idk probably something about how react states work).
+    // the issue should resolve itself when we move to different tokens (waiting for backend) =).
+
+    // try{
+    //   const response = await axios.get("http://localhost:8080/api/users/authenticated", options)
+    //   // setUser(response.data)
+    // }catch(e){
+    //   //very very bad and stupid =)
+    //   console.log(e)
+    //   removeCookie("token")
+    //   // navigate("/login")
+    //   window.location.replace("/login")
+    // }
 
   }
 

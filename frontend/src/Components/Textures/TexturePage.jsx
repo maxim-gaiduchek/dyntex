@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import BaseUrl from '../../BaseUrl';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
+import { getUser } from '../../utils';
 
 export default function TexturePage(){
 
@@ -58,23 +59,6 @@ export default function TexturePage(){
         } catch(e){
             console.log(e)
         }
-    }
-
-    const checkLogged = async () => {
-      if(cookies.token === undefined){
-        navigate("/login")
-      }
-
-      try{
-        const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
-        setUser(response.data)
-      }catch(e){
-        //very very bad and stupid =)
-        console.log(e)
-        removeCookie("token")
-        navigate("/login")
-      }
-
     }
 
     const debouncedChangeSearchText = debounce(changeSearchText, 200);
@@ -122,8 +106,13 @@ export default function TexturePage(){
       setTextures(response.data.videos)
     }
 
+    const loadUser = async () => {
+      const user = await getUser(cookies.token)
+      setUser(user)
+    }
+
     useEffect(() => {
-      checkLogged()
+      loadUser()
       fetchTags()
       fetchData()
     },[])

@@ -30,8 +30,8 @@ export default function Account(){
         }
         const response = await axios.get(url, options)
         setUser(response.data)
+        console.log(response.data)
       }catch(e){
-        console.log(e)
         navigate("/notfound")
       }
     }
@@ -68,7 +68,7 @@ export default function Account(){
             </Grid>
             <br/>
             <Title order={3}>Uploaded Textures:</Title>
-            <Grid className='textureGrid'>
+            {/* <Grid className='textureGrid'>
                 {
                     user.createdMedia.map((texture) => (
                         <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
@@ -76,7 +76,7 @@ export default function Account(){
                         </Grid.Col>
                     ))
                 }
-            </Grid>
+            </Grid> */}
             </>
             :
             <div style={{width: "100%", height: "calc(100vh - 20px)", marginTop: 5}}>

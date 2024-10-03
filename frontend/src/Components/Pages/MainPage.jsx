@@ -14,6 +14,7 @@ import DropZoneMask from '../Textures/DropZoneMask';
 import { Link } from 'react-router-dom';
 
 import CategorySearch from '../Textures/CategorySearch';
+import MaskCard from '../Card/MaskCard';
 import DropZone from '../Textures/DropZone';
 import BaseUrl from '../../BaseUrl';
 export default function MainPage(){
@@ -188,7 +189,7 @@ export default function MainPage(){
                      <Skeleton visible={true} width={"100%"} height={250}/>
                  </Grid.Col>
                </> 
-              }
+              }ArticleCard
             </>
             :
             <>
@@ -198,17 +199,16 @@ export default function MainPage(){
                     {
                       masks.map((mask) => (
                       <Grid.Col span={{xs: 12, md: 6, lg: 4}}>
-                          <Link to={"/mask/" + mask.id}>
-                            <div style={{
-                              width: "100%", 
-                              height: 300, 
-                              backgroundImage: "url("+BaseUrl+"/api/media/previews/"+mask.path+")",
-                              backgroundSize: "cover",
-                              backgroundPosition: "center"
-                              }
-                            }>
-                            </div>
-                          </Link>
+                          <MaskCard mask={mask}/>
+                          {/* <div style={{
+                            width: "100%", 
+                            height: 300, 
+                            backgroundImage: "url("+BaseUrl+"/api/media/previews/"+mask.path+")",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center"
+                            }
+                          }>
+                          </div> */}
                       </Grid.Col>
                       ))
                     }

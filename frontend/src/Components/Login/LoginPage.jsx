@@ -24,6 +24,7 @@ import BaseUrl from '../../BaseUrl';
   export default function LoginPage() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const [remember, setRemember] = React.useState(false);
     const [error, setError] = React.useState([false, false])
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
     const navigate = useNavigate()
@@ -82,8 +83,14 @@ import BaseUrl from '../../BaseUrl';
               })
               const expirationDate = new Date();
               expirationDate.setDate(expirationDate.getDate() + 30);
-              setCookie("token", response.data.token, { expires: expirationDate })
-              setCookie("id", response.data.id, { expires: expirationDate })
+              console.log(expirationDate)
+              if(remember){
+                setCookie("token", response.data.token, { expires: expirationDate })
+                setCookie("id", response.data.id, { expires: expirationDate })
+              }else{
+                setCookie("token", response.data.token)
+                setCookie("id", response.data.id)
+              }
               navigate("/")
             } catch (error) {
               console.log(error)
@@ -120,7 +127,7 @@ import BaseUrl from '../../BaseUrl';
           <TextInput label="Email" error={error[0]} value={email} onChange={checkEmail} placeholder="you@example.com" required />
           <PasswordInput label="Password" error={error[1]} value={password} onChange={checkPassword} placeholder="Your password" required mt="md" />
           <Group justify="space-between" mt="lg">
-            <Checkbox label="Remember me" />
+            <Checkbox label="Remember me" value={remember} onChange={(e) => setRemember(e.target.value)}/>
             <Anchor component="button" size="sm">
               <Link to="/reset">Forgot password?</Link>
             </Anchor>

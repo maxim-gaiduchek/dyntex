@@ -6,14 +6,16 @@ import { Link } from 'react-router-dom';
 import AccountPreview from './AccountPreview';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import BaseUrl from '../../BaseUrl';
+import { getUser } from '../../utils';
 
 export default function TextureCard(props) {
   var { id, name, tags, description, previewPath, size, fps, createdBy } = props.texture;
   
   const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
   const [liked, setLiked] = useState(props.liked)
+  
   previewPath = props.texture.previewPath || props.texture.path.replace(/\.[^/.]+$/, "") + ".png";
   const options = {
     headers: {

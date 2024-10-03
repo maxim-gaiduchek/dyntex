@@ -42,9 +42,7 @@ export function NavbarNested() {
       </ScrollArea>
 
       <div className={classes.footer}>
-        <Link to={"/account"}>
-          <UserButton />
-        </Link>
+        <UserButton />
       </div>
     </nav>
   );
