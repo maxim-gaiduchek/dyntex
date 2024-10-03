@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom"
 import { useEffect, useState } from "react";
 import { Group, Title, Button, Text, Grid } from "@mantine/core";
 import { ActionIcon } from "@mantine/core";
-import { IconHeart } from "@tabler/icons-react";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import classes from '../Card/BadgeCard.module.css';
 import { Link } from "react-router-dom";
 import { notifications } from '@mantine/notifications';
@@ -10,13 +10,24 @@ import MediaProfile from "../Textures/MediaProfile";
 import axios from "axios";
 import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, IconFileInfo, IconStar } from "@tabler/icons-react";
 import { Badge } from '@mantine/core';
+import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
+import { getUser } from "../../utils";
 import BaseUrl from "../../BaseUrl";
 import PythonUrl from "../../PythonUrl";
 
 export default function MediaPage(props){
     let { id } = useParams();
     const [texture, setTexture] = useState(null)
+    const [liked, setLiked] = useState(false)
+    const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
+
+    const options = {
+        headers: {
+          'Authorization': cookies.token
+        }
+      };
+
     const navigate = useNavigate()
 
     const getTextureInfo = async () => {
@@ -28,8 +39,15 @@ export default function MediaPage(props){
         }
         console.log(response.data)
         setTexture(response.data)
+        checkLike(response.data)
     }
     
+    const checkLike = async (t) => {
+        const user = await getUser(cookies.token)
+        console.log(user)
+        setLiked(user === undefined ? false : user.likedMedia?.some(media => media.id === t.id) || false)
+    }
+
     useEffect(() => {
         getTextureInfo()
         // eslint-disable-next-line
@@ -41,6 +59,26 @@ export default function MediaPage(props){
 
             window.open("/editor/" + response.data.id, '_blank').focus();
         }catch(e){}
+    }
+
+    const likeVideo = async () => {
+        const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
+
+        if(liked === false){
+            notifications.show({
+            title: 'Texture added',
+            message: 'Texture has been added to favourites! ⭐',
+            color: "green"
+            })
+        }else{
+            notifications.show({
+            title: 'Texture removed',
+            message: 'Texture has been removed from favourites! ⭐',
+            color: "green"
+            })
+        }
+
+        setLiked(!liked)
     }
 
     return (
@@ -84,17 +122,16 @@ export default function MediaPage(props){
                             Process
                         </Button>
                     }
-                    <ActionIcon
-                    onClick={() =>
-                    notifications.show({
-                        title: 'Texture added',
-                        message: 'Texture has been added to favourites! ⭐',
-                        color: "green"
-                    })
+                    {
+                        props.type === "video" && 
+                        <ActionIcon
+                        onClick={likeVideo}
+                        variant="default" radius="md" size={36}>
+                            {
+                                liked ? <IconHeartFilled size={24} color="red"/> : <IconHeart size={24}/>
+                            }
+                        </ActionIcon>
                     }
-                    variant="default" radius="md" size={36}>
-                    <IconHeart className={classes.like} stroke={1.5} />
-                    </ActionIcon>
                 </Group>
                 <br/>
                 <Group>
