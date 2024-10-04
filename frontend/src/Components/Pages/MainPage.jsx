@@ -189,7 +189,7 @@ export default function MainPage(){
                      <Skeleton visible={true} width={"100%"} height={250}/>
                  </Grid.Col>
                </> 
-              }ArticleCard
+              }
             </>
             :
             <>

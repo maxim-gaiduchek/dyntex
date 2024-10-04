@@ -40,6 +40,7 @@ import baseUrl from '../../BaseUrl';
                 const expirationDate = new Date();
                 expirationDate.setDate(expirationDate.getDate() + 30);
                 setCookie("token", response.data.token, { expires: expirationDate })
+                setCookie("id", response.data.id, { expires: expirationDate })
                 navigate("/unauthorized")
                 setActive((current) => (current < 3 ? current + 1 : current));
               } catch (error) {
