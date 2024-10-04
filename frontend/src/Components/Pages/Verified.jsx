@@ -15,7 +15,7 @@ export default function Verified() {
     const sendToken = async () =>{
         try{
             const token = getToken();
-            const response = await axios.get(BaseUrl + "/api/auth?authToken=" + token);
+            const response = await axios.get(BaseUrl + "/api/auth/verify?authToken=" + token);
             console.log(response)
         }catch(e){
             console.log(e)

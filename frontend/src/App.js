@@ -110,14 +110,14 @@ const router = createBrowserRouter([
     element: <Unauthorized/>
   },
   {
-    path: "/verified",
+    path: "/verify",
     element: <Verified/>
   }
 ]);
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
-  const allowed = ["/login", "/register", "/serverdown", "/editor", "/download"]
+  const allowed = ["/login", "/register", "/serverdown", "/editor", "/download", "/verify"]
   const options = {
     headers: {
       'Authorization': cookies.token
@@ -147,6 +147,9 @@ function App() {
           }
           // return response.data;
       } catch (e) {
+          if(e.code === "ERR_NETWORK"){
+            window.location.replace("/serverdown")
+          }
           if(e.response.status === 403 && window.location.pathname !== "/unauthorized"){
             window.location.replace("/unauthorized")
           }
