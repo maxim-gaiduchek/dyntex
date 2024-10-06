@@ -1,15 +1,50 @@
 stages:
+  - compile
   - test
+  - build
 
-pytest:
-  stage: test
-  image: python:latest
-  before_script:
-    - pip install -r python/requirements.txt
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  API_PROJECT_PATH: "api/"
+  IMAGE: "eclipse-temurin:21-alpine"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+backend-compile:
+  stage: compile
+  image: $IMAGE
   script:
-    - cd python
-    - pytest
-  only:
-    refs:
-      - develop
+    - cd $API_PROJECT_PATH
+    - chmod +x gradlew
+    - ./gradlew assemble
 
+
+backend-build:
+  stage: build
+  image: $IMAGE
+  script:
+    - cd $API_PROJECT_PATH
+    - chmod +x gradlew
+    - ./gradlew jar
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
+
+# pytest:
+#   stage: test
+#   image: python:latest
+#   before_script:
+#     - pip install -r python/requirements.txt
+#   script:
+#     - cd python
+#     - pytest
+#   only:
+#     refs:
+#       - develop

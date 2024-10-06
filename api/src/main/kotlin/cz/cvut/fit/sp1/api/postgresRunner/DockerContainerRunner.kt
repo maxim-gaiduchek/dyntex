@@ -1,7 +1,6 @@
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.reflect.KClass
 
 class DockerContainerRunner(
     private val image: String,

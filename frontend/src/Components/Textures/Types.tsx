@@ -1,0 +1,1 @@
+export declare const VIDEO_MIME_TYPES: ("image/png" | "image/gif" | "image/jpeg" | "image/svg+xml" | "image/webp" | "image/avif" | "image/heic")[];

@@ -1,8 +1,19 @@
 # SP1
 
-описание потом напишем сделайте кому не лень пж) [проект тут](https://sos.fit.cvut.cz/login/?next=/courses/bi-sp121/teams/be27196b-e5da-40e7-8028-c593ee6493d9/).
+BI-SP1.21 - Vybudování a uspořádání databáze dynamických textur (videí). 
 
-гайды как делать -> [WIKI](https://gitlab.fit.cvut.cz/stojkiva/sp1/-/wikis/Home)
+
+Obecný popis webové aplikace:
+
+- Web, kde můžete najít videa pomocí požadovaných charakteristik a tagů. Stahovat, nahravat a měnit nastavení je možné až po autorizaci.
+ 
+- Jako další funkcianalitu na webu bude možné použít vybranou masku na vybranou dynamickou texturu a stáhnout nebo uložit výsledek. Také v budoucích iteracích bude možné rozšířit počet procesů které lze provádět s media objekty přidáním takových procesů, jako je odstranění šumu z obrázku, lepení videa a podobně.
+ 
+- Základ klasifikaci (tagů) DynTex (http://dyntex.univ-lr.fr/classification_datasets/classification_datasets.html). 
+- Základ anotačního systému DynTex (http://dyntex.univ-lr.fr/annotations/annotations.html). 
+Technologie: 
+- Beckend:  Kotlin, Spring, Postgres
+- Frontend: React
 
 ## Table of Contents
 
@@ -49,7 +60,7 @@ The client application is developed using React.js. It provides a user-friendly 
 
 #### Docker Container with Spring Boot
 
-The backend services are implemented using Spring Boot, deployed within a Docker container. Spring Boot provides a robust framework for building and deploying Java-based applications. It serves as the intermediary between the client-side application and the image processing microservice.
+The backend services are implemented using Spring Boot, deployed within a Docker container. Spring Boot provides a robust framework for building and deploying Java-based applications. It serves as the intermediary between the client-side application and the image processing microservice. The API documentation can be found on [Swagger-generated page](http://localhost:8080/api/swagger-ui/index.html). 
 
 #### Python Microservice for Image Processing
 

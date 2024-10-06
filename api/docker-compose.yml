@@ -1,0 +1,13 @@
+#version: '1'
+#
+#services:
+#  dyntex-db:
+#    image: postgres
+#    ports:
+#      - 5432
+#    volumes:
+#      - ../build/db-dyntex-data:/var/lib/postgresql/data/
+#    environment:
+#      POSTGRES_PASSWORD: postgres
+#      POSTGRES_USER: postgres
+#      POSTGRES_DB: dyntex

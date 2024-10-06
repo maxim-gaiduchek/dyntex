@@ -1,0 +1,31 @@
+storage:
+  media-path: /Users/huglx/sp1/storage
+
+postgres-autostart:
+  enabled: false
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  profiles:
+      active: test
+  jpa:
+    generate-ddl: true
+    properties:
+      hibernate:
+        ddl-auto: drop-create
+      database-platform: org.hibernate.dialect.H2Dialect
+      show-sql: true
+  h2:
+    console:
+      enabled: true
+  flyway:
+    enabled: false
+
+verification:
+  enable: false
+  token-expiring-time: 60
+  mail:
+    url: 'http://localhost:8080/api/auth'
