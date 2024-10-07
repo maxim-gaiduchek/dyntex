@@ -3,7 +3,7 @@ package cz.cvut.fit.sp1.api.security.service.impl
 import cz.cvut.fit.sp1.api.data.model.AccountRole
 import cz.cvut.fit.sp1.api.data.service.interfaces.MaskService
 import cz.cvut.fit.sp1.api.data.service.interfaces.VideoService
-import cz.cvut.fit.sp1.api.security.model.TokenAuthentication
+import cz.cvut.fit.sp1.api.security.data.model.JwtAuthentication
 import cz.cvut.fit.sp1.api.security.service.interfaces.AccessService
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
@@ -41,7 +41,7 @@ class AccessServiceImpl(
         return auth.userId == video.createdBy!!.id
     }
 
-    private fun fetchAuthentication(): TokenAuthentication? {
-        return SecurityContextHolder.getContext().authentication as? TokenAuthentication
+    private fun fetchAuthentication(): JwtAuthentication? {
+        return SecurityContextHolder.getContext().authentication as? JwtAuthentication
     }
 }

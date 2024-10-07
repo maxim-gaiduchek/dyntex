@@ -1,4 +1,4 @@
-package cz.cvut.fit.sp1.api.security.model
+package cz.cvut.fit.sp1.api.security.configuration
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpMethod
@@ -35,6 +35,9 @@ enum class UnsecuredEndpoint(
     GET_STATISTIC("/api/statistics", GET),
 
     GET_VERIFY("/api/auth/verify", GET),
+
+    GET_SECURITY("/api/security/.*", GET),
+    POST_SECURITY("/api/security/.*", POST),
     ;
 
     companion object {

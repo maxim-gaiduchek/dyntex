@@ -31,7 +31,7 @@ export default function Favourites(){
 
     const options = {
       headers: {
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       }
     };
 

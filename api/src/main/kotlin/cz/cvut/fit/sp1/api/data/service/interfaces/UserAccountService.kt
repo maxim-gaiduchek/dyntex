@@ -24,6 +24,8 @@ interface UserAccountService {
 
     fun getByAuthentication(): UserAccount
 
+    fun getByRefreshTokenOrThrow(refreshToken: String): UserAccount
+
     fun update(id: Long, userAccountDto: UserAccountDto): UserAccount
 
     fun updateAvatar(id: Long, file: MultipartFile): UserAccount
@@ -40,7 +42,7 @@ interface UserAccountService {
 
     fun save(user: UserAccount): UserAccount
 
-    fun getByEmail(email: String): UserAccount
+    fun getByEmailOrThrow(email: String): UserAccount
 
     fun updatePassword(authToken: String, password :String)
 

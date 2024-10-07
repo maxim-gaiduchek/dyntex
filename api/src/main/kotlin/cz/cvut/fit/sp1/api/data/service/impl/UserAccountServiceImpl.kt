@@ -39,7 +39,6 @@ class UserAccountServiceImpl(
         private const val EMPTY_STRING_HASH = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         private const val TOKEN_SIZE = 128
         private const val AUTH_TOKEN_SIZE = 128
-
     }
 
     override fun findAll(paramsDto: SearchUserAccountParamsDto?): SearchUserAccountDto? {
@@ -89,6 +88,11 @@ class UserAccountServiceImpl(
             .getOrElse {
                 throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, id)
             }
+    }
+
+    override fun getByRefreshTokenOrThrow(refreshToken: String): UserAccount {
+        return userAccountRepository.findByRefreshTokensContainsAndAuthEnableTrue(refreshToken)
+            ?: throw EntityNotFoundException(UserAccountExceptionCodes.USER_DOES_NOT_EXISTS)
     }
 
     override fun update(id: Long, userAccountDto: UserAccountDto): UserAccount {
@@ -182,15 +186,15 @@ class UserAccountServiceImpl(
             }
     }
 
-    override fun getByEmail(email: String): UserAccount {
+    override fun getByEmailOrThrow(email: String): UserAccount {
         return userAccountRepository.findByEmailAndAuthEnableTrue(email)
             .getOrElse {
-                throw EntityNotFoundException(UserAccountExceptionCodes.USER_NOT_FOUND, email)
+                throw EntityNotFoundException(UserAccountExceptionCodes.USER_DOES_NOT_EXISTS)
             }
     }
 
     override fun recoveryPassword(email: String) {
-        val user = getByEmail(email)
+        val user = getByEmailOrThrow(email)
         val authToken = RandomStringUtils.random(AUTH_TOKEN_SIZE, true, false)
         user.authToken = authToken
         val currentDate = Date()

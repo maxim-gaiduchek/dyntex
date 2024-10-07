@@ -1,19 +1,18 @@
-package cz.cvut.fit.sp1.api.security.model
+package cz.cvut.fit.sp1.api.security.data.model
 
 import cz.cvut.fit.sp1.api.data.model.AccountRole
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 
-class TokenAuthentication(
+class JwtAuthentication(
     private var authenticated: Boolean = false,
     val userId: Long,
     val email: String,
-    val userName: String,
     val role: AccountRole
 ) : Authentication {
 
     override fun getName(): String {
-        return userName
+        return email
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
@@ -36,7 +35,8 @@ class TokenAuthentication(
         return authenticated
     }
 
+    @Throws(IllegalArgumentException::class)
     override fun setAuthenticated(isAuthenticated: Boolean) {
-        authenticated = isAuthenticated
+        this.authenticated = isAuthenticated
     }
 }

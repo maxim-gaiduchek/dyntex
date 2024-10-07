@@ -31,7 +31,7 @@ export default function MaskPage(){
 
     const options = {
       headers: {
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       }
     };
 
