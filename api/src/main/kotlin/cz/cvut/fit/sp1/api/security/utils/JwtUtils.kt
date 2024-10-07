@@ -8,12 +8,12 @@ import io.jsonwebtoken.Claims
 object JwtUtils {
 
     fun generate(claims: Claims): JwtAuthentication {
-        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Long::class.java)
-        val role = claims.get(JwtClaimsConstants.USER_ROLE_KEY, AccountRole::class.java)
+        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Integer::class.java).toLong()
+        val roleStr = claims.get(JwtClaimsConstants.USER_ROLE_KEY, String::class.java)
         return JwtAuthentication(
             userId = userId,
             email = claims.subject,
-            role = role,
+            role = AccountRole.valueOf(roleStr),
         )
     }
 }
