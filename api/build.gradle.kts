@@ -41,6 +41,7 @@ val lombokVersion = "1.18.24"
 val mapstructProcessorVersion = "1.6.0.Beta1"
 val httpclientVersion = "5.2.1"
 val h2Version = "2.2.222"
+val jwtVersion = "0.11.5"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-mail:$springBootStarterMailVersion")
@@ -59,6 +60,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf:$springBootStarterMailVersion")
     implementation("org.flywaydb:flyway-core:$flywayCoreVersion")
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
+    implementation("io.jsonwebtoken:jjwt-api:$jwtVersion")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:$jwtVersion")
 
     compileOnly("org.projectlombok:lombok:$lombokVersion")
 

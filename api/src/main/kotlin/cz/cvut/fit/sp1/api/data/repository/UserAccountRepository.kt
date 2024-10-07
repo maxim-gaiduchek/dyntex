@@ -12,6 +12,7 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
     fun findAll(specification: Specification<UserAccount>, pageable: Pageable): Page<UserAccount>
 
     fun getByToken(token: String): Optional<UserAccount>
+
     fun findByIdAndAuthEnableTrue(id: Long): Optional<UserAccount>
 
     fun getByTokenAndAuthEnableTrue(token: String): Optional<UserAccount>
@@ -24,6 +25,5 @@ interface UserAccountRepository : JpaRepository<UserAccount, Long> {
 
     fun findByEmailAndAuthEnableTrue(email: String): Optional<UserAccount>
 
-
-
+    fun findByRefreshTokensContainsAndAuthEnableTrue(refreshToken: String): UserAccount?
 }

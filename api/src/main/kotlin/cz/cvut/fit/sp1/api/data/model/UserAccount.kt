@@ -3,7 +3,16 @@ package cz.cvut.fit.sp1.api.data.model
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import cz.cvut.fit.sp1.api.data.model.media.Avatar
 import cz.cvut.fit.sp1.api.data.model.media.Media
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import org.hibernate.annotations.ColumnDefault
 import java.util.*
 
@@ -33,4 +42,12 @@ class UserAccount(
     var authEnable: Boolean? = false
 
     var dateOfRecovery: Date? = null
+
+    @ElementCollection
+    @CollectionTable(
+        name = "user_refresh_tokens",
+        joinColumns = [JoinColumn(name = "user_id")]
+    )
+    @Column(name = "user_refresh_token")
+    var refreshTokens: MutableSet<String> = mutableSetOf()
 }

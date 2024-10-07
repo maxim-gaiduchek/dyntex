@@ -1,6 +1,6 @@
 package cz.cvut.fit.sp1.api
 
-import cz.cvut.fit.sp1.api.security.model.UnsecuredEndpoint
+import cz.cvut.fit.sp1.api.security.configuration.UnsecuredEndpoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain
 @Configuration
 @Profile("test")
 class TestSecurityConfiguration {
+
     @Bean
     fun testFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http
