@@ -69,8 +69,8 @@ import BaseUrl from '../../BaseUrl';
     const login = async () => {
         if(!error[0] && !error[1]){
             try {
-              const response = await axios.post(BaseUrl+'/api/users/login', {
-                email,
+              const response = await axios.post(BaseUrl+'/api/security/login', {
+                "login": email,
                 "password": await hashPasswd(),
               });
               
@@ -79,17 +79,17 @@ import BaseUrl from '../../BaseUrl';
                   color: 'green',
                   icon: <IconCheck/>,
                   autoClose: 4000,
-                  message: 'User logged in ' + response.data.name,
+                  message: 'User logged in',
               })
               const expirationDate = new Date();
               expirationDate.setDate(expirationDate.getDate() + 30);
               console.log(expirationDate)
               if(remember){
-                setCookie("token", response.data.token, { expires: expirationDate })
-                setCookie("id", response.data.id, { expires: expirationDate })
+                setCookie("token", response.data.accessToken, { expires: expirationDate })
+                setCookie("id", response.data.userId, { expires: expirationDate })
               }else{
-                setCookie("token", response.data.token)
-                setCookie("id", response.data.id)
+                setCookie("token", response.data.accessToken)
+                setCookie("id", response.data.userId)
               }
               navigate("/")
             } catch (error) {

@@ -37,7 +37,7 @@ export default function DropZone(props) {
     const options = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       },
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;

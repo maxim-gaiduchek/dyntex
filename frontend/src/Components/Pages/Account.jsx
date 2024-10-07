@@ -16,7 +16,7 @@ export default function Account(){
 
     const options = {
       headers: {
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       }
     };
 
