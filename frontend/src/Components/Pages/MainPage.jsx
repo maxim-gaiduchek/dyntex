@@ -32,7 +32,7 @@ export default function MainPage(){
 
     const options = {
       headers: {
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       }
     };
 
