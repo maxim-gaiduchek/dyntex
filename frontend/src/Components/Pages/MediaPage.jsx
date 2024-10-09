@@ -44,7 +44,7 @@ export default function MediaPage(props){
     }
     
     const checkLike = async (t) => {
-        const user = await getUser(cookies.token)
+        const user = await getUser(cookies.token).data
         console.log(user)
         setLiked(user === undefined ? false : user.likedMedia?.some(media => media.id === t.id) || false)
     }

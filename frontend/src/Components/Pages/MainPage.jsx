@@ -17,6 +17,7 @@ import CategorySearch from '../Textures/CategorySearch';
 import MaskCard from '../Card/MaskCard';
 import DropZone from '../Textures/DropZone';
 import BaseUrl from '../../BaseUrl';
+import { callApi, getUser } from '../../utils';
 export default function MainPage(){
 
     const [value, setValue] = React.useState("Textures")
@@ -88,8 +89,16 @@ export default function MainPage(){
       }
 
       try{
-        const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
-        setUser(response.data)
+        // const response = await axios.get(BaseUrl+"/api/users/authenticated", options)
+        // setUser(response.data)
+        // callApi("/api/users/authenticated", "get", {}, cookies.token).then((response) => {
+        //   console.log(response.data)
+        //   setUser(response.data)
+        // });
+        getUser(cookies.token).then((response) => {
+          console.log(response.data)
+          setUser(response.data)
+        });
       }catch(e){
         //very very bad and stupid =)
         console.log(e)
@@ -156,7 +165,7 @@ export default function MainPage(){
             ?
             <>
               {
-               textures !== null ?
+               textures !== null && user !== undefined ?
                <>
                  {
                    textures.length === 0 ?
@@ -170,7 +179,7 @@ export default function MainPage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                <TextureCard liked={user === undefined ? false : user.likedMedia?.some(media => media.id === texture.id) || false} texture = {texture}/>
+                                <TextureCard liked={user === undefined ? false : (user.likedMedia?.some(media => media.id === texture.id) || false)} texture = {texture}/>
                              </Grid.Col>
                          ))
                      }

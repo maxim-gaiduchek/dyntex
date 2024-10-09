@@ -13,7 +13,6 @@ export function UserButton() {
     getUser(cookies.token).then((u) => setUser(u.data));
     // getUser(cookies.token).then((u) => setUser(u.data));
     // callApi("/api/users/authenticated", "get", {}, cookies.token).then((u) => setUser(u.data));
-    console.log(user)
   }, [])
 
   return (

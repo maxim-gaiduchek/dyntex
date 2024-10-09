@@ -67,7 +67,6 @@ export const callApi = async (path, method, data = undefined, token = undefined,
               };
         }
     }
-    console.log(options)
     //TODO: handle access token refresh
     try{
         var response
