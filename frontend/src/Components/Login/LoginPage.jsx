@@ -72,7 +72,7 @@ import BaseUrl from '../../BaseUrl';
               const response = await axios.post(BaseUrl+'/api/security/login', {
                 "login": email,
                 "password": await hashPasswd(),
-              });
+              }, {withCredentials: true});
               
               notifications.show({
                   title: 'Logged in',
@@ -83,7 +83,8 @@ import BaseUrl from '../../BaseUrl';
               })
               const expirationDate = new Date();
               expirationDate.setDate(expirationDate.getDate() + 30);
-              console.log(expirationDate)
+              console.log(response.data)
+              setCookie("refreshToken", response.data.refreshToken)         
               if(remember){
                 setCookie("token", response.data.accessToken, { expires: expirationDate })
                 setCookie("id", response.data.userId, { expires: expirationDate })

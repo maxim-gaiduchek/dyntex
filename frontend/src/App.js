@@ -30,7 +30,7 @@ import MaskPage from './Components/Textures/MaskPage';
 import DownloadPage from './Components/Pages/DownloadPage';
 import Unauthorized from './Components/Pages/Unathorized';
 import Verified from './Components/Pages/Verified';
-import { getUser } from './utils';
+import { callApi } from './utils';
 
 const router = createBrowserRouter([
   {
@@ -136,12 +136,7 @@ function App() {
     console.log(window.location.pathname)
     if(cookies.token !== undefined){
       try {
-          const response = await axios.get(BaseUrl + "/api/users/authenticated", {
-              headers: {
-                  'Authorization': cookies.token
-              }
-          });
-          console.log("dsauiDHIUAHDUIASU")
+          callApi("/api/users/authenticated", "get", {}, cookies.token)
           if(window.location.pathname === "/unauthorized"){
             window.location.replace("/")
           }

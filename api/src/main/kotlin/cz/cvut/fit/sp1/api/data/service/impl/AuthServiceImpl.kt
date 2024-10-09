@@ -98,7 +98,7 @@ class AuthServiceImpl(
             return JwtResponse()
         }
         val claims = jwtProvider.getRefreshClaims(refreshToken!!)
-        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Long::class.java)
+        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Integer::class.java).toLong()
         val user = userAccountService.getByIdOrThrow(userId)
         val refreshTokens = user.refreshTokens
         if (!refreshTokens.contains(refreshToken)) {
@@ -117,7 +117,7 @@ class AuthServiceImpl(
             throw AccessDeniedException(AccessExceptionCodes.INVALID_JWT)
         }
         val claims = jwtProvider.getRefreshClaims(refreshToken!!)
-        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Long::class.java)
+        val userId = claims.get(JwtClaimsConstants.USER_ID_KEY, Integer::class.java).toLong()
         val user = userAccountService.getByIdOrThrow(userId)
         val refreshTokens = user.refreshTokens
         if (!refreshTokens.contains(refreshToken)) {
