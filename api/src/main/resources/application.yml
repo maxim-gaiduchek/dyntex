@@ -75,5 +75,5 @@ jwt:
   cookie:
     age:
       access: 300
-      refresh: 267840000
+      refresh: 267840000000000
     secure: false

@@ -13,8 +13,6 @@ function updateToken(newToken) {
         }
     }
     
-    var expires = new Date();
-    expires.setFullYear(expires.getFullYear() + 1);
     document.cookie = `token=${newToken};`;
 }
 
@@ -54,6 +52,7 @@ const refreshToken = async (token) => {
 
 export const callApi = async (path, method, data, token = undefined) => {
     var options;
+    console.log(path)
     if(token !== undefined){
         options = {
             headers: {

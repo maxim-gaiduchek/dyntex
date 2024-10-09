@@ -12,7 +12,7 @@ import { IconDownload, IconPencil, IconDeviceFloppy, IconKeyframes, IconAlarm, I
 import { Badge } from '@mantine/core';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from "../../utils";
+import { callApi, getUser } from "../../utils";
 import BaseUrl from "../../BaseUrl";
 import PythonUrl from "../../PythonUrl";
 import { ShareButton } from "../UI/ShareButton";
@@ -63,8 +63,9 @@ export default function MediaPage(props){
     }
 
     const likeVideo = async () => {
-        const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
-
+        // const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
+        // const response = await axios.put(BaseUrl+"/api/"+props.type+"s/"+id+"/likes", {}, cookies.token)
+        const response = callApi("/api/"+props.type+"s/"+id+"/likes/"+cookies.id, "put", {}, cookies.token)
         if(liked === false){
             notifications.show({
             title: 'Texture added',
