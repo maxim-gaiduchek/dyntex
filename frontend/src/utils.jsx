@@ -27,7 +27,7 @@ export const getUser = async (token) => {
     //   };
     // const response = await axios.get(BaseUrl + "/api/users/authenticated", options);
     // return response.data;
-    return await callApi("/api/users/authenticated", "get", {}, token);
+    return await callApi("/api/users/authenticated", "get", undefined, token);
 };
 
 const refreshToken = async (token) => {
@@ -81,12 +81,12 @@ export const callApi = async (path, method, data = undefined, token = undefined,
         if(token !== undefined){
             // refreshToken(token);
             //try again =)
-            try{
-                const response2 = await axios[method](BaseUrl + path, options = options, data = data);
-                return {"status": response2.status, "data": response2.data};
-            }catch(e){
-                return {"status": e, "data": e};
-            }
+            // try{
+            //     const response2 = await axios[method](BaseUrl + path, options = options, data = data);
+            //     return {"status": response2.status, "data": response2.data};
+            // }catch(e){
+            //     return {"status": e, "data": e};
+            // }
         }
         return {"status": e, "data": e};
     }

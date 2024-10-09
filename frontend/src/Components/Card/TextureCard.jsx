@@ -78,8 +78,8 @@ export default function TextureCard(props) {
         <ActionIcon
         onClick={async () => 
           {
-            const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, {headers: {"Authorization": "Bearer "+cookies.token}})
-            // const response = callApi("/api/videos/"+id+"/likes/"+cookies.id, "put", undefined, cookies.token)
+            // const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, {headers: {"Authorization": "Bearer "+cookies.token}})
+            const response = await callApi("/api/videos/"+id+"/likes/"+cookies.id, "put", undefined, cookies.token)
             if(liked === false){
               notifications.show({
                 title: 'Texture added',
