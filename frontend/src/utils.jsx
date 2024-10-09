@@ -17,66 +17,73 @@ function updateToken(newToken) {
 }
 
 export const getUser = async (token) => {
-    //TODO: use callApi
-    if (token === undefined) {
-        return false
-    }
 
-    try {
-        const response = await axios.get(BaseUrl + "/api/users/authenticated", {
-            headers: {
-                'Authorization': "Bearer " + token
-            }
-        });
-
-        return response.data;
-        //save new accessToken
-    } catch (e) {
-        return false
-        // console.error(e);
-        // removeCookie("token");
-        // navigate("/login");
-    }
+    //write old getUser
+    // const options = {
+    //     headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //      'Authorization': "Bearer " + token
+    //     },
+    //   };
+    // const response = await axios.get(BaseUrl + "/api/users/authenticated", options);
+    // return response.data;
+    return await callApi("/api/users/authenticated", "get", {}, token);
 };
 
 const refreshToken = async (token) => {
-    const options = {
-        headers: {
-        },
-        withCredentials: true
-      };
-    const response = await axios.get(BaseUrl + "/api/security/refresh", options);
-    
-    updateToken(response.data.accessToken);
-}
-
-export const callApi = async (path, method, data, token = undefined) => {
-    var options;
-    console.log(path)
-    if(token !== undefined){
-        options = {
+    //check if e.code == 403 or 500
+    try{
+        const options = {
             headers: {
-              'Content-Type': 'multipart/form-data',
-              'Authorization': "Bearer " + token
             },
+            withCredentials: true
           };
-    }else{
-        options = {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          };
+        const response = await axios.get(BaseUrl + "/api/security/refresh", options);
+        
+        updateToken(response.data.accessToken);
+    }catch(e){
+        console.log(e)
+        //refresh token has expired
+        // document.cookie = ""
+        // window.location.href = "/login"
     }
+}
+export const callApi = async (path, method, data = undefined, token = undefined, options = undefined) => {
+    if(options === undefined){
+        if(token !== undefined){
+            options = {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': "Bearer " + token
+                },
+                withCredentials: true
+              };
+        }else{
+            options = {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true
+              };
+        }
+    }
+    console.log(options)
     //TODO: handle access token refresh
     try{
-        const response = await axios[method](BaseUrl + path, data, options);
+        var response
+        if(data === undefined){
+            response = await axios[method](BaseUrl + path, options = options);
+        }else{
+            response = await axios[method](BaseUrl + path, data, options = options);
+        }
         return {"status": response.status, "data": response.data};
     }   catch (e) {
+        console.log("PENIS PENIS", e)
         if(token !== undefined){
-            refreshToken(token);
+            // refreshToken(token);
             //try again =)
             try{
-                const response2 = await axios[method](BaseUrl + path, data, options);
+                const response2 = await axios[method](BaseUrl + path, options = options, data = data);
                 return {"status": response2.status, "data": response2.data};
             }catch(e){
                 return {"status": e, "data": e};

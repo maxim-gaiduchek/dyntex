@@ -2,7 +2,7 @@ import { UnstyledButton, Group, Avatar, Text, rem } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './UserButton.module.css';
 import { useState, useEffect } from 'react';
-import { getUser } from '../../utils';
+import { callApi, getUser } from '../../utils';
 import { Link } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 export function UserButton() {
@@ -10,7 +10,9 @@ export function UserButton() {
   const [user, setUser] = useState(undefined);
 
   useEffect(() => {
-    getUser(cookies.token).then((u) => setUser(u));
+    getUser(cookies.token).then((u) => setUser(u.data));
+    // getUser(cookies.token).then((u) => setUser(u.data));
+    // callApi("/api/users/authenticated", "get", {}, cookies.token).then((u) => setUser(u.data));
     console.log(user)
   }, [])
 

@@ -10,6 +10,7 @@ import { IconExclamationCircle } from '@tabler/icons-react';
 import CategorySearch from './CategorySearch';
 import { IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import BaseUrl from '../../BaseUrl'
+import { callApi } from '../../utils';
 
 export default function DropZoneMask(props) {
   const [file, setFile] = useState(null);
@@ -39,8 +40,9 @@ export default function DropZoneMask(props) {
     const options = {
       headers: {
         'Content-Type': 'multipart/form-data',
-        'Authorization': cookies.token
+        'Authorization': "Bearer " + cookies.token
       },
+      withCredentials: true,
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
         var percentage = Math.floor((loaded * 100) / total);
@@ -54,10 +56,14 @@ export default function DropZoneMask(props) {
     console.log(description)
     formData.append("tagIds", tagId)
     formData.append("name", name);
-    axios.post(BaseUrl+'/api/masks', formData, options)
-    .then((res) => {
-      setFinished(true)
-      setProgress(100);
+    // axios.post(BaseUrl+'/api/masks', formData, options)
+    // .then((res) => {
+    //   setFinished(true)
+    //   setProgress(100);
+    // });
+    callApi("/api/masks", "post", formData, cookies.token, options).then((res) => {
+        setFinished(true)
+        setProgress(100);
     });
   }
 

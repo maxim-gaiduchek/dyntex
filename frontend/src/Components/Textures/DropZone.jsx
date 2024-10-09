@@ -3,6 +3,7 @@ import { IconUpload, IconPhoto, IconX } from '@tabler/icons-react';
 import { Dropzone } from '@mantine/dropzone';
 import { useState } from 'react';
 import axios from 'axios';
+import { callApi } from '../../utils';
 import { Loader, TextInput, Textarea } from '@mantine/core';
 import { useCookies } from 'react-cookie';
 import { notifications } from '@mantine/notifications';
@@ -39,6 +40,7 @@ export default function DropZone(props) {
         'Content-Type': 'multipart/form-data',
         'Authorization': "Bearer " + cookies.token
       },
+      withCredentials: true,
       onUploadProgress: (progressEvent) => {
         const { loaded, total } = progressEvent;
         var percentage = Math.floor((loaded * 100) / total);
@@ -47,16 +49,20 @@ export default function DropZone(props) {
     };
 
     formData.append("video", file_loc);
-    // formData.append("name", name);
     formData.append("description", description);
     console.log(description)
     formData.append("tagIds", tagId)
     formData.append("name", name);
-    axios.post(BaseUrl+'/api/videos', formData, options)
-    .then((res) => {
-      setFinished(true)
-      setProgress(100);
-    });
+    // axios.post(BaseUrl+'/api/videos', formData, options)
+    // .then((res) => {
+    //   setFinished(true)
+    //   setProgress(100);
+    // });
+    callApi("/api/videos", "post", formData, cookies.token, options).then((res) => {
+        setFinished(true)
+        setProgress(100);
+      }
+    )
   }
 
 
