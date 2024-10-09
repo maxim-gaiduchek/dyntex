@@ -10,8 +10,10 @@ data class UserAccountDto(
     var name: String?,
     var email: String?,
     var role: AccountRole?,
-    var likedMedia: MutableList<MediaDto>? = mutableListOf(),
-    var createdMedia: MutableList<MediaDto>? = mutableListOf(),
+    var likedVideos: MutableList<VideoDto>? = mutableListOf(),
+    var likedMasks: MutableList<MaskDto>? = mutableListOf(),
+    var createdVideos: MutableList<VideoDto>? = mutableListOf(),
+    var createdMasks: MutableList<MaskDto>? = mutableListOf(),
     var avatar: AvatarDto?,
     var token: String?,
 )

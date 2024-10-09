@@ -79,7 +79,7 @@ class VideoServiceImpl(
         val user = userAccountService.getByAuthentication()
         val tags = tagService.getAllByIds(videoDto.tagIds!!)
         video.createdBy = user
-        user.createdMedia.add(video)
+        user.createdVideos.add(video)
         video.tags = tags
         tags.forEach { it.media.add(video) }
     }
@@ -88,11 +88,11 @@ class VideoServiceImpl(
     override fun toggleLike(videoId: Long, userId: Long): Video {
         val video = getByIdOrThrow(videoId)
         val user = userAccountService.getByIdOrThrow(userId)
-        if (user.likedMedia.contains(video)) {
-            user.likedMedia.remove(video)
+        if (user.likedVideos.contains(video)) {
+            user.likedVideos.remove(video)
             video.likedBy.remove(user)
         } else {
-            user.likedMedia.add(video)
+            user.likedVideos.add(video)
             video.likedBy.add(user)
         }
         return videoRepository.save(video)
@@ -102,7 +102,7 @@ class VideoServiceImpl(
         val video = getByIdOrThrow(id)
         fileStorage.delete(video.path)
         video.tags.forEach { it.media.remove(video) }
-        video.likedBy.forEach { it.likedMedia.remove(video) }
+        video.likedBy.forEach { it.likedVideos.remove(video) }
         videoRepository.delete(video)
     }
 

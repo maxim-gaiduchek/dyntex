@@ -6,7 +6,7 @@ import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import jakarta.persistence.*
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 open class Media(
     open var name: String,
     open var path: String,
@@ -18,7 +18,7 @@ open class Media(
     open var width: Int = 0
     open var height: Int = 0
 
-    @ManyToMany(mappedBy = "likedMedia")
+    @ManyToMany(fetch = FetchType.LAZY)
     open var likedBy: MutableList<UserAccount> = mutableListOf()
 
     @ManyToOne

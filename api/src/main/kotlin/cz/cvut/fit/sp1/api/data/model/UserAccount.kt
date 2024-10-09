@@ -2,7 +2,8 @@ package cz.cvut.fit.sp1.api.data.model
 
 import cz.cvut.fit.sp1.api.data.model.base.StandardAuditModel
 import cz.cvut.fit.sp1.api.data.model.media.Avatar
-import cz.cvut.fit.sp1.api.data.model.media.Media
+import cz.cvut.fit.sp1.api.data.model.media.Mask
+import cz.cvut.fit.sp1.api.data.model.media.Video
 import jakarta.persistence.CascadeType
 import jakarta.persistence.CollectionTable
 import jakarta.persistence.Column
@@ -27,11 +28,17 @@ class UserAccount(
     @ColumnDefault("2")
     var role: AccountRole = AccountRole.USER
 
+    @ManyToMany(mappedBy = "likedBy")
+    var likedVideos: MutableList<Video> = mutableListOf()
+
     @ManyToMany(fetch = FetchType.LAZY)
-    var likedMedia: MutableList<Media> = mutableListOf()
+    var likedMasks: MutableList<Mask> = mutableListOf()
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
-    var createdMedia: MutableList<Media> = mutableListOf()
+    var createdVideos: MutableList<Video> = mutableListOf()
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+    var createdMasks: MutableList<Mask> = mutableListOf()
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     var createdTags: MutableList<Tag> = mutableListOf()
