@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from 'react';
 import BaseUrl from '../../BaseUrl';
-import { getUser } from '../../utils';
+import { callApi, getUser } from '../../utils';
 
 export default function TextureCard(props) {
   var { id, name, tags, description, previewPath, size, fps, createdBy } = props.texture;
@@ -17,11 +17,7 @@ export default function TextureCard(props) {
   const [liked, setLiked] = useState(props.liked)
   
   previewPath = props.texture.previewPath || props.texture.path.replace(/\.[^/.]+$/, "") + ".png";
-  const options = {
-    headers: {
-      'Authorization': cookies.token
-    }
-  };
+
   const features = tags.map((badge) => (
     <Badge variant="light" key={badge.emoji} leftSection={badge.emoji}>
       {badge.name}
@@ -82,8 +78,8 @@ export default function TextureCard(props) {
         <ActionIcon
         onClick={async () => 
           {
-            const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
-
+            // const response = await axios.put(BaseUrl+"/api/videos/"+id+"/likes/"+cookies.id, {}, options)
+            const response = callApi("/api/media/"+id+"/likes/"+cookies.id, "put", {}, cookies.token)
             if(liked === false){
               notifications.show({
                 title: 'Texture added',

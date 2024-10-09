@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 import BaseUrl from '../../BaseUrl';
 import CategorySearch from '../Textures/CategorySearch';
 import DropZone from '../Textures/DropZone';
-import { getUser } from '../../utils';
+import { callApi, getUser } from '../../utils';
 
 export default function TexturePage(){
 
@@ -48,12 +48,13 @@ export default function TexturePage(){
     const changeSearchText = async (str) => {
         setPages(1)
         try{
-            let url = BaseUrl+'/api/videos?name='+str+''
+            let url = '/api/videos?name='+str+''
             var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
             if(ids.length !== 0){
                 url += "&tags=" + ids.map((obj) => obj.id).join(",")
             }
-            const response = await axios.get(url)
+            // const response = await axios.get(url)
+            const response = await callApi(url, "get", {}, cookies.token)
 
             setTextures(response.data.videos)
         } catch(e){
@@ -64,18 +65,20 @@ export default function TexturePage(){
     const debouncedChangeSearchText = debounce(changeSearchText, 200);
 
     const fetchData = async (page = 1) => {
-      console.log(search)
       setTextures(null)
       try{
-        let url = BaseUrl+'/api/videos?page='+page
+        let url = '/api/videos?page='+page
         var ids = tags.filter((tag) => {return lastTags.includes(tag.emoji + tag.name)});
         if(ids.length !== 0){
             url += "&tags=" + ids.map((obj) => obj.id).join(",")
         }
-        const response = await axios.get(url);
+        // const response = await axios.get(url);
+        console.log(url)
+        const response = await callApi(url, "get", {}, cookies.token)
         setPages(response.data.totalPages)
         setTextures(response.data.videos)
       } catch{
+        console.log("AAAAAAAAAAAAA")
       }
     }
 
@@ -97,11 +100,12 @@ export default function TexturePage(){
       setLastTags(values)
       setTextures(null)
       var ids = tags.filter((tag) => {return values.includes(tag.emoji + tag.name)});
-      var url = BaseUrl+"/api/videos"
+      var url = "/api/videos"
       if(ids.length !== 0){
         url += "?tags=" + ids.map((obj) => obj.id).join(",")
       }
-      const response = await axios.get(url);
+      // const response = await axios.get(url);
+      const response = await callApi(url, "get", {}, cookies.token)
       setPages(response.data.totalPages)
       setTextures(response.data.videos)
     }

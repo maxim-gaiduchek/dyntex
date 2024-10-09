@@ -5,12 +5,14 @@ import { useEffect } from "react"
 import axios from "axios"
 import { useState } from "react"
 import BaseUrl from "../../BaseUrl"
+import { callApi } from "../../utils"
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
 
     const getStats = async () => {
         try{
-            const response = await axios.get(BaseUrl+"/api/statistics")
+            // const response = await axios.get(BaseUrl+"/api/statistics")
+            const response = await callApi("/api/statistics", "get")
             setStats(response.data)
         }catch(e){
             console.log(e)
