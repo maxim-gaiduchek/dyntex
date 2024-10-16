@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = [MediaMapper::class, TagMapper::class])
+        uses = [VideoMapper::class, MaskMapper::class, TagMapper::class])
 abstract class UserAccountMapper {
 
     @Named("toUserAccountDto")
@@ -24,7 +24,9 @@ abstract class UserAccountMapper {
 
     @BeforeMapping
     fun sortMedia(userAccount: UserAccount?) {
-        userAccount?.likedMedia?.sortBy { it.createdAt }
-        userAccount?.createdMedia?.sortBy { it.createdAt }
+        userAccount?.likedVideos?.sortBy { it.createdAt }
+        userAccount?.likedMasks?.sortBy { it.createdAt }
+        userAccount?.createdVideos?.sortBy { it.createdAt }
+        userAccount?.createdMasks?.sortBy { it.createdAt }
     }
 }

@@ -73,7 +73,7 @@ class MaskServiceImpl(
         val user = userAccountService.getByAuthentication()
         val tags = tagService.getAllByIds(maskDto.tagIds!!)
         mask.createdBy = user
-        user.createdMedia.add(mask)
+        user.createdMasks.add(mask)
         mask.tags = tags
         tags.forEach { it.media.add(mask) }
     }
@@ -82,7 +82,7 @@ class MaskServiceImpl(
         val mask = getByIdOrThrow(id)
         fileStorage.delete(mask.path)
         mask.tags.forEach { it.media.remove(mask) }
-        mask.likedBy.forEach { it.likedMedia.remove(mask) }
+        mask.likedBy.forEach { it.likedMasks.remove(mask) }
         maskRepository.delete(mask)
     }
 
@@ -101,11 +101,11 @@ class MaskServiceImpl(
     override fun toggleLike(maskId: Long, userId: Long): Mask {
         val mask = getByIdOrThrow(maskId)
         val user = userAccountService.getByIdOrThrow(userId)
-        if (user.likedMedia.contains(mask)) {
-            user.likedMedia.remove(mask)
+        if (user.likedMasks.contains(mask)) {
+            user.likedMasks.remove(mask)
             mask.likedBy.remove(user)
         } else {
-            user.likedMedia.add(mask)
+            user.likedMasks.add(mask)
             mask.likedBy.add(user)
         }
         return maskRepository.save(mask)
