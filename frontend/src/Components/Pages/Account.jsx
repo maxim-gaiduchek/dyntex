@@ -62,7 +62,7 @@ export default function Account(){
                     <Title order={3}>{user.name}</Title>
                     <Text c="dimmed" size="xs">{user.email}</Text>
                     Role: {user.role} <br/>
-                    Media Uploaded: {user.createdMedia.length}
+                    Media Uploaded: {user.createdMasks.length + user.createdVideos.length}
                     <br/>
                     <br/>
                     {
