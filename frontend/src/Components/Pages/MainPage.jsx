@@ -12,6 +12,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import DropZoneMask from '../Textures/DropZoneMask';
 import { Link } from 'react-router-dom';
+import { ActionIcon } from '@mantine/core';
+import { IconQuestionMark } from '@tabler/icons-react';
+import { Tour, Space } from "antd";
 
 import CategorySearch from '../Textures/CategorySearch';
 import MaskCard from '../Card/MaskCard';
@@ -24,18 +27,31 @@ export default function MainPage(){
     const [textures, setTextures] = React.useState(null)
     const [opened, { open, close }] = useDisclosure(false);
     const [tags, setTags] = React.useState([])
+    const [tourOpen, setTourOpen] = React.useState(false);
     const [lastTags, setLastTags] = React.useState([])
     const [totalPages, setPages] = React.useState(0)
     const [cookies, setCookie, removeCookie] = useCookies(['dyntex']);
     const [user, setUser] = React.useState(undefined)
     const [masks, setMasks] = React.useState(null)
     const navigate = useNavigate()
+    const ref1 = React.useRef(null);
+    const ref2 = React.useRef(null);
+    const ref3 = React.useRef(null);
 
-    const options = {
-      headers: {
-        'Authorization': "Bearer " + cookies.token
+
+    const tourSteps = [
+      {
+        title: "List Textures",
+        description: "Here you can see all the textures uploaded by the users.",
+        target: () => ref1.current,
+      },
+      {
+        title: "Add Media",
+        placement: "left",
+        description: "You can upload your own media here.",
+        target: () => ref2.current,
       }
-    };
+    ]
 
     const changeMode = (mode) => {
       if(value === mode){
@@ -131,22 +147,40 @@ export default function MainPage(){
 
     return (
         <>
-          <h2>All Medias</h2>
-          {
-            value === "Textures" ?
-            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+          <div style={{height: 75}}>
+            <h2 style={{float: "left"}}>
+              All Medias 
+            </h2>
+            <ActionIcon
+              style={
+                {
+                  float: "left",
+                  marginTop: 25,
+                  marginLeft: 20
+                }
+              }
+              onClick={() => setTourOpen(true)}
+              size="sm"
+              aria-label="Gradient action icon"
+            >
+              <IconQuestionMark />
+            </ActionIcon>
+          </div>
+            {
+              value === "Textures" ?
+              <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
                   <DropZone tags={tags} fetchData={fetchData} close={close}/>
-            </Modal>
-            :
-            <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
+              </Modal>
+              :
+              <Modal opened={opened} onClose={close} title="Add Texture" size="lg">
                   <DropZoneMask tags={tags} fetchData={fetchMasks} close={close}/>
-            </Modal>
-          }
+              </Modal>
+            }
           <Group justify='right'>
             <Grid style={{paddingRight: 10}}>
               {
                 value === "Textures" ?
-                <Button onClick={open}>Add Texture</Button>
+                <Button onClick={open} ref={ref2}>Add Texture</Button>
                 :
                 <Button onClick={open}>Add Mask</Button>
               }
@@ -155,7 +189,7 @@ export default function MainPage(){
           <br/>
           <Group justify="space-between" grow>
             <CategorySearch tags={tags} changeSearch={changeSearch} />
-            <SegmentedControl onChange={changeMode} value={value} data={['Textures', 'Masks']} />
+            <SegmentedControl onChange={changeMode} value={value} ref={ref1} data={['Textures', 'Masks']} />
           </Group>
           <div style={{marginBottom: 20}}>
           </div>
@@ -247,6 +281,7 @@ export default function MainPage(){
               }
             }}/>
           </Center>
+          <Tour open={tourOpen} onClose={() => setTourOpen(false)} steps={tourSteps} />
         </>
     )
 }

@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { createTheme, MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import { ConfigProvider } from 'antd';
 
 const theme = createTheme({
   autoContrast: true,
