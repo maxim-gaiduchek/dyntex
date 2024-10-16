@@ -213,7 +213,7 @@ export default function MainPage(){
                      {
                          textures.map((texture) => (
                              <Grid.Col key={texture.title} span={{xs: 12, md: 6, lg: 4}}>
-                                <TextureCard liked={user === undefined ? false : (user.likedMedia?.some(media => media.id === texture.id) || false)} texture = {texture}/>
+                                <TextureCard liked={user === undefined ? false : (user.likedVideos?.some(media => media.id === texture.id) || false)} texture = {texture}/>
                              </Grid.Col>
                          ))
                      }

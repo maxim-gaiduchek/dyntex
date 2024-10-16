@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import { ShareButton } from '../UI/ShareButton';
 
 export default function MaskCard(props) {
-  const linkProps = { href: '/mask/' + props.mask.id, target: '_self', rel: 'Mask' };
+  const linkProps = { to: '/mask/' + props.mask.id };
   const theme = useMantineTheme();
 
   console.log(props.mask)
@@ -25,9 +25,9 @@ export default function MaskCard(props) {
   return (
     <Card withBorder radius="md" className={classes.card}>
       <Card.Section>
-        <a {...linkProps}>
+        <Link {...linkProps}>
           <Image src={BaseUrl + "/api/media/previews/"+props.mask.path} height={180} />
-        </a>
+        </Link>
       </Card.Section>
 
       {/* <Badge className={classes.rating} variant="gradient" gradient={{ from: 'yellow', to: 'red' }}>
