@@ -3,15 +3,10 @@ package cz.cvut.fit.sp1.api.security.service.impl
 import cz.cvut.fit.sp1.api.data.model.UserAccount
 import cz.cvut.fit.sp1.api.security.constants.JwtClaimsConstants
 import cz.cvut.fit.sp1.api.security.service.interfaces.JwtProvider
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.MalformedJwtException
-import io.jsonwebtoken.UnsupportedJwtException
+import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import lombok.extern.slf4j.Slf4j
-import org.hibernate.query.sqm.TemporalUnit
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
