@@ -11,6 +11,7 @@ import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import lombok.extern.slf4j.Slf4j
+import org.hibernate.query.sqm.TemporalUnit
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -24,7 +25,8 @@ import javax.crypto.SecretKey
 @Service
 class JwtProviderImpl(
     @Value("\${jwt.secret.access}") jwtAccessSecret: String?,
-    @Value("\${jwt.secret.refresh}") jwtRefreshSecret: String?
+    @Value("\${jwt.secret.refresh}") jwtRefreshSecret: String?,
+    @Value("\${jwt.cookie.age.refresh}") val jwtRefreshLifetime: Long,
 ) : JwtProvider {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -48,7 +50,9 @@ class JwtProviderImpl(
 
     override fun generateRefreshToken(userAccount: UserAccount): String {
         val now = LocalDateTime.now()
-        val expirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant()
+        val expirationInstant = now.plusSeconds(jwtRefreshLifetime)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
         val expiration = Date.from(expirationInstant)
         return Jwts.builder()
             .setSubject(userAccount.name)
