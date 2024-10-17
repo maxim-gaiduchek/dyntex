@@ -21,7 +21,8 @@ import javax.crypto.SecretKey
 class JwtProviderImpl(
     @Value("\${jwt.secret.access}") jwtAccessSecret: String?,
     @Value("\${jwt.secret.refresh}") jwtRefreshSecret: String?,
-    @Value("\${jwt.cookie.age.refresh}") val jwtRefreshLifetime: Long,
+    @Value("\${jwt.cookie.age.refresh}") val jwtAccessAge: Long,
+    @Value("\${jwt.cookie.age.refresh}") val jwtRefreshAge: Long,
 ) : JwtProvider {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -30,7 +31,9 @@ class JwtProviderImpl(
 
     override fun generateAccessToken(userAccount: UserAccount): String {
         val now = LocalDateTime.now()
-        val expirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant()
+        val expirationInstant = now.plusSeconds(jwtAccessAge)
+            .atZone(ZoneId.systemDefault())
+            .toInstant()
         val expiration = Date.from(expirationInstant)
         return Jwts.builder()
             .setSubject(userAccount.email)
@@ -45,7 +48,7 @@ class JwtProviderImpl(
 
     override fun generateRefreshToken(userAccount: UserAccount): String {
         val now = LocalDateTime.now()
-        val expirationInstant = now.plusSeconds(jwtRefreshLifetime)
+        val expirationInstant = now.plusSeconds(jwtRefreshAge)
             .atZone(ZoneId.systemDefault())
             .toInstant()
         val expiration = Date.from(expirationInstant)
