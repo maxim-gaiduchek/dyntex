@@ -12,7 +12,7 @@ Obecný popis webové aplikace:
 - Základ klasifikaci (tagů) DynTex (http://dyntex.univ-lr.fr/classification_datasets/classification_datasets.html). 
 - Základ anotačního systému DynTex (http://dyntex.univ-lr.fr/annotations/annotations.html). 
 Technologie: 
-- Beckend:  Kotlin, Spring, Postgres
+- Beckend:  Kotlin, Spring, PostgreSQL
 - Frontend: React
 
 ## Table of Contents
