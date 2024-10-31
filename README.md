@@ -1,9 +1,5 @@
 # SP1
 
-описание потом напишем сделайте кому не лень пж) [проект тут](https://sos.fit.cvut.cz/login/?next=/courses/bi-sp121/teams/be27196b-e5da-40e7-8028-c593ee6493d9/).
-
-гайды как делать -> [WIKI](https://gitlab.fit.cvut.cz/stojkiva/sp1/-/wikis/Home)
-
 ## Table of Contents
 
 1. [Project Goals](#project-goals)
